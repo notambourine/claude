@@ -24,9 +24,11 @@ jobs:
         run: npm install -g @anthropic-ai/claude-code
 
       # Schema-validates marketplace.json, plugin.json, and skill/agent/hook
-      # frontmatter. --strict promotes unrecognized-field warnings to errors.
+      # frontmatter. Runs without --strict on purpose: this plugin ships no
+      # version field by design, and --strict promotes that "no version"
+      # warning to a hard error. Genuine schema errors still fail the step.
       - name: Validate plugin + marketplace schema
-        run: claude plugin validate . --strict
+        run: claude plugin validate .
 
       # claude plugin validate does NOT check that the two description fields
       # agree -- they are allowed to differ by design. This repo keeps them in
