@@ -8,9 +8,9 @@
   },
   "plugins": [
     {
-      "name": "soul",
-      "source": "./plugins/soul",
-      "description": "NoTambourine brand source of truth: wordmark rules, and /soul:brand-check to audit copy against them."
+      "name": "brand",
+      "source": "./plugins/brand",
+      "description": "NoTambourine brand source of truth: wordmark rules, and /brand:check to audit copy against them."
     },
     {
       "name": "wormhook",
