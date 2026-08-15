@@ -1,82 +1,90 @@
-# notambourine/claude-plugin
+# notambourine/claude-marketplace
 
-The `notambourine-internal` marketplace: a thin catalog of the practice's Claude
-Code plugins, plus the one plugin that lives here.
-
-**Install**
+The `notambourine` marketplace. Add it once, then turn individual plugins on and
+off.
 
 ```bash
-claude plugin marketplace add notambourine/claude-plugin
-claude plugin install nt@notambourine-internal --scope user
+claude plugin marketplace add notambourine/claude-marketplace
+claude plugin install soul@notambourine --scope user
 ```
 
-Slash commands become `/nt:<name>`.
+Slash commands are namespaced by plugin: `/soul:brand-check`.
 
 ## Catalog
 
-Every plugin in the marketplace, and where its code lives:
-
-| Plugin | Source | What it does |
+| Plugin | Lives in | For |
 | --- | --- | --- |
-| `nt` | this repo | Brand wordmark audit for the NoTambourine brand system. |
-| `share` | [notambourine/share](https://github.com/notambourine/share) | Share artifacts as branded unguessable links on share.notambourine.com. |
-| `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware and agent-hijack persistence at the hook. |
+| `soul` | this repo | Brand source of truth: wordmark rules and the audit that checks copy against them. |
+| `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
 
-Install any of them from this marketplace:
+## Turning plugins on and off
+
+Per machine:
 
 ```bash
-claude plugin install wormhook@notambourine-internal --scope user
+claude plugin install qrspi@notambourine --scope user
+claude plugin disable qrspi@notambourine
+```
+
+Per repo, committed so the whole team gets the same set, in
+`.claude/settings.json`:
+
+```json
+{ "enabledPlugins": { "soul@notambourine": true } }
 ```
 
 ## Where a plugin lives
 
-A plugin belongs in the repo that owns its domain, and this catalog lists it by
-GitHub reference. The `wormhook` scanner ships from `notambourine/wormhook`;
-the `share` commands ship from the repo that runs share.notambourine.com. That
-keeps each plugin versioned and released with the code it wraps, so a change and
-its plugin move in one commit.
+**A plugin lives in the repo that owns its domain. With no domain, it lives
+here.**
 
-Only practice-wide content with no natural home lives here; today that is the
-`nt` plugin. Before adding a directory to this repo, name the repo that owns the
-domain; if one exists, the plugin goes there and gets a row in the catalog above.
+`wormhook` and `qrspi` own domains, so they stay in their own repos and this
+catalog lists them by `github:` reference. They version and release with the code
+they wrap. Practice-wide content with no home lives in `plugins/` here, because a
+repo for four markdown files costs more in CI and release overhead than it
+returns.
 
-**Add a catalog entry** by appending to `plugins` in
-`.claude-plugin/marketplace.json`:
+Promote a local plugin to its own repo when it grows a build step, tests, or a
+hook. One line changes:
 
 ```json
-{
-  "name": "example",
-  "source": { "source": "github", "repo": "notambourine/example" },
-  "description": "One line, copied from that repo's own marketplace.json."
-}
+"source": "./plugins/dev"
+"source": { "source": "github", "repo": "notambourine/dev" }
 ```
 
-The `github:owner/repo` shorthand does not validate; use the object form.
+Note the object form. The `github:owner/repo` shorthand does not validate.
 
-## What ships from this repo
+## One rule for grouping: hooks force a split
 
-- **`/nt:brand-check`** — audit a file, directory, or git diff for wordmark
-  violations: lowercase `notambourine` in human-facing copy where the
-  `NoTambourine` wordmark belongs, plus overuse of `NoTambourine LLC` outside
-  contract signature blocks.
+A skill is lazy. It costs one description line of context and activates only when
+its trigger matches, so grouping several in one plugin is close to free. A hook
+runs every session whether the person wanted it or not.
 
-## Brand rules
+So group skills by audience, and give any plugin that ships a hook its own
+plugin. Nobody installing a set of skills should inherit a `SessionStart` hook
+along with them. `wormhook` is hooks-only for exactly this reason.
 
-- **`NoTambourine`** = wordmark. All human-facing copy.
-- **`notambourine`** = slug. Only where tooling demands lowercase — paths, URLs,
-  domains, the GitHub org, npm package names, CSS classes.
-- **`NoTambourine LLC`** = legal form. Only in contract signature blocks and one
-  Definitions anchor (e.g. `"Consultant" means NoTambourine LLC…`).
+Name a plugin after who turns it on. If you cannot name that audience, the plugin
+is a junk drawer.
 
-## Extending the `nt` plugin
+## Adding a plugin
 
-For practice-wide content only. Anything tied to a product or a service goes in
-the repo that owns it. Add a skill under `skills/<name>/SKILL.md`, a single markdown
-file with YAML frontmatter and a body. To add hooks, create `hooks/hooks.json`
-referencing bundled scripts in `scripts/` via `${CLAUDE_PLUGIN_ROOT}`; see
-[wormhook](https://github.com/notambourine/wormhook) for a worked example. The
-`agents/` directory is scaffolded (keeps a `.gitkeep`) but currently empty.
+Local, for practice-wide content:
+
+```
+plugins/<name>/
+  .claude-plugin/plugin.json     name, description, author, license
+  skills/<skill>/SKILL.md        YAML frontmatter plus a body
+```
+
+Then add the row to `plugins` in `.claude-plugin/marketplace.json` with
+`"source": "./plugins/<name>"`. CI checks that the two `description` fields
+match, so write it once and copy it.
+
+External, for a plugin that ships from its own repo: add the row with a `github:`
+source and copy the description from that repo's `plugin.json`. Nothing here can
+detect it drifting later.
 
 ## License
 

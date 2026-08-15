@@ -1,9 +1,9 @@
 ---
 name: brand-check
-description: Audit a file, directory, or git diff for wordmark violations — lowercase `notambourine` appearing in human-facing copy where it should be the `NoTambourine` wordmark. Also flags overuse of `NoTambourine LLC` outside contract signature blocks.
+description: Audit a file, directory, or git diff for wordmark violations: lowercase `notambourine` appearing in human-facing copy where it should be the `NoTambourine` wordmark. Also flags overuse of `NoTambourine LLC` outside contract signature blocks.
 ---
 
-# /nt:brand-check
+# /soul:brand-check
 
 ## Rules
 
@@ -17,16 +17,15 @@ description: Audit a file, directory, or git diff for wordmark violations — lo
 # Lowercase notambourine outside of code/paths/URLs
 grep -nE '(^|[^/.\-_a-z`])notambourine([^/.\-_a-z`]|$)' <file>
 
-# NoTambourine LLC usage — should be 2x max (sig block + Definitions)
+# NoTambourine LLC usage, 2x max (sig block + Definitions)
 grep -nc 'NoTambourine LLC' <file>
 ```
 
 ## Audit a directory (human-facing files only)
 
 ```bash
-# Markdown files in an org folder
 grep -rnE '(^|[^/.\-_a-z`])notambourine([^/.\-_a-z`]|$)' \
-  kb/orgs/{slug}/ --include='*.md'
+  <dir>/ --include='*.md'
 ```
 
 ## Audit a git diff (pre-commit)
@@ -49,4 +48,4 @@ For any hit, ask: "if a client read this, would they expect the wordmark or the 
 
 ## Scope
 
-This skill checks the wordmark only. For a full doc/deck review that also covers voice, density, and structure, use a general-purpose review pass — the grep recipes above are the wordmark-specific layer.
+This skill checks the wordmark only. For a full doc/deck review that also covers voice, density, and structure, use a general-purpose review pass; the grep recipes above are the wordmark-specific layer.
