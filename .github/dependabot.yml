@@ -17,3 +17,9 @@ updates:
         update-types:
           - minor
           - patch
+      # A groups: block defaults to applies-to: version-updates, so without this
+      # second group every advisory opens its own branch.
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
