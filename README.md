@@ -5,17 +5,29 @@ off.
 
 ```bash
 claude plugin marketplace add notambourine/claude
-claude plugin install brand@notambourine --scope user
+claude plugin install nt-brand@notambourine --scope user
 ```
 
-Slash commands are namespaced by plugin: `/brand:check`. Namespacing is exactly
-two segments, so a subdirectory under `skills/` adds nothing to the name.
+Slash commands are namespaced by plugin: `/nt-brand:check`. Namespacing is
+exactly two segments, so a subdirectory under `skills/` adds nothing to the name.
+
+## Naming: plugins in this repo start with `nt-`
+
+A person's command list mixes plugins from several marketplaces, and the plugin
+name is the only prefix a command carries. `nt-` is what makes ours findable:
+type `/nt-` and the list is this practice's, with nothing from
+`claude-plugins-official` in it.
+
+The prefix applies to plugins that live here. `wormhook` and `qrspi` ship from
+their own public repos and are named for what they do, which is what an outside
+user searching for a supply-chain hook needs to find. A plugin that leaves this
+repo drops the prefix with the move.
 
 ## Catalog
 
 | Plugin | Lives in | For |
 | --- | --- | --- |
-| `brand` | this repo | Brand source of truth: wordmark rules and the audit that checks copy against them. |
+| `nt-brand` | this repo | Brand source of truth: wordmark rules and the audit that checks copy against them. |
 | `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
 
@@ -32,7 +44,7 @@ Per repo, committed so the whole team gets the same set, in
 `.claude/settings.json`:
 
 ```json
-{ "enabledPlugins": { "brand@notambourine": true } }
+{ "enabledPlugins": { "nt-brand@notambourine": true } }
 ```
 
 ## Where a plugin lives
@@ -47,14 +59,17 @@ repo for four markdown files costs more in CI and release overhead than it
 returns.
 
 Promote a local plugin to its own repo when it grows a build step, tests, or a
-hook. One line changes:
+hook. One line changes, and the plugin drops its `nt-` prefix on the way out:
 
 ```json
-"source": "./plugins/dev"
+"source": "./plugins/nt-dev"
 "source": { "source": "github", "repo": "notambourine/dev" }
 ```
 
 Note the object form. The `github:owner/repo` shorthand does not validate.
+
+The rename breaks anyone who installed the old name, so promote before you share
+a plugin outside the team, not after.
 
 ## One rule for grouping: hooks force a split
 
@@ -74,14 +89,18 @@ is a junk drawer.
 Local, for practice-wide content:
 
 ```
-plugins/<name>/
+plugins/nt-<name>/
   .claude-plugin/plugin.json     name, description, author, license
   skills/<skill>/SKILL.md        YAML frontmatter plus a body
 ```
 
 Then add the row to `plugins` in `.claude-plugin/marketplace.json` with
-`"source": "./plugins/<name>"`. CI checks that the two `description` fields
+`"source": "./plugins/nt-<name>"`. CI checks that the two `description` fields
 match, so write it once and copy it.
+
+Do not repeat the plugin name in the skill name. The command is two segments, so
+`nt-brand` plus a `brand-check` skill reads `/nt-brand:brand-check`. Name the
+skill for the verb alone: `check`.
 
 External, for a plugin that ships from its own repo: add the row with a `github:`
 source and copy the description from that repo's `plugin.json`. Nothing here can

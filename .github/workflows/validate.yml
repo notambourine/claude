@@ -34,6 +34,17 @@ jobs:
       - name: Validate plugin + marketplace schema
         run: claude plugin validate .
 
+      # Every plugin that lives here is nt-prefixed, so `/nt-` lists this
+      # practice's commands and nothing else. A github: row is named for what it
+      # does, because an outside user finds it by that name, not by our prefix.
+      - name: Check nt- prefix on local plugins
+        run: |
+          bad=$(jq -r '.plugins[] | select(.source | type == "string")
+                        | select(.name | startswith("nt-") | not) | .name' \
+                 .claude-plugin/marketplace.json)
+          [ -z "$bad" ] || { echo "::error::local plugin missing nt- prefix: $bad"; exit 1; }
+          echo "all local plugins are nt-prefixed"
+
       # claude plugin validate does NOT check that the two description fields
       # agree -- they are allowed to differ by design. This repo keeps them in
       # sync deliberately, so guard against silent drift. Covers local plugins

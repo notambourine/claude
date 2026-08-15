@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "brand",
-  "description": "NoTambourine brand source of truth: wordmark rules, and /brand:check to audit copy against them.",
+  "name": "nt-brand",
+  "description": "NoTambourine brand source of truth: wordmark rules, and /nt-brand:check to audit copy against them.",
   "author": {
     "name": "NoTambourine LLC",
     "url": "https://notambourine.com"
