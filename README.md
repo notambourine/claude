@@ -53,23 +53,34 @@ Per repo, committed so the whole team gets the same set, in
 here.**
 
 `wormhook` and `qrspi` own domains, so they stay in their own repos and this
-catalog lists them by `github:` reference. They version and release with the code
-they wrap. Practice-wide content with no home lives in `plugins/` here, because a
-repo for four markdown files costs more in CI and release overhead than it
-returns.
+catalog lists them by URL. They version and release with the code they wrap.
+Practice-wide content with no home lives in `plugins/` here, because a repo for
+four markdown files costs more in CI and release overhead than it returns.
 
 Promote a local plugin to its own repo when it grows a build step, tests, or a
 hook. One line changes, and the plugin drops its `nt-` prefix on the way out:
 
 ```json
 "source": "./plugins/nt-dev"
-"source": { "source": "github", "repo": "notambourine/dev" }
+"source": { "source": "url", "url": "https://github.com/notambourine/dev.git" }
 ```
-
-Note the object form. The `github:owner/repo` shorthand does not validate.
 
 The rename breaks anyone who installed the old name, so promote before you share
 a plugin outside the team, not after.
+
+## Why remote rows use an https `url`, not `github`
+
+Use `{"source": "url", "url": "https://github.com/OWNER/REPO.git"}` for a plugin
+in another repo. The `{"source": "github", "repo": "OWNER/REPO"}` form clones
+over SSH, which fails for anyone without a working GitHub SSH key:
+
+```
+git@github.com: Permission denied (publickey).
+```
+
+Every repo this catalog points at is public, so https needs no credential at all
+and works on a fresh machine and on a client's laptop. The `github:owner/repo`
+string shorthand is a third form, and it does not validate at all.
 
 ## One rule for grouping: hooks force a split
 
@@ -102,9 +113,9 @@ Do not repeat the plugin name in the skill name. The command is two segments, so
 `nt-brand` plus a `brand-check` skill reads `/nt-brand:brand-check`. Name the
 skill for the verb alone: `check`.
 
-External, for a plugin that ships from its own repo: add the row with a `github:`
-source and copy the description from that repo's `plugin.json`. Nothing here can
-detect it drifting later.
+External, for a plugin that ships from its own repo: add the row with an https
+`url` source and copy the description from that repo's `plugin.json`. Nothing
+here can detect it drifting later.
 
 ## License
 

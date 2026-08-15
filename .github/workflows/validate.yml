@@ -35,7 +35,7 @@ jobs:
         run: claude plugin validate .
 
       # Every plugin that lives here is nt-prefixed, so `/nt-` lists this
-      # practice's commands and nothing else. A github: row is named for what it
+      # practice's commands and nothing else. A remote row is named for what it
       # does, because an outside user finds it by that name, not by our prefix.
       - name: Check nt- prefix on local plugins
         run: |
@@ -48,7 +48,7 @@ jobs:
       # claude plugin validate does NOT check that the two description fields
       # agree -- they are allowed to differ by design. This repo keeps them in
       # sync deliberately, so guard against silent drift. Covers local plugins
-      # only; a github: row's description is a point-in-time copy of the one in
+      # only; a remote row's description is a point-in-time copy of the one in
       # that repo, and nothing here can see it drift.
       - name: Check description parity (plugin.json <-> marketplace.json)
         run: |
