@@ -1,20 +1,21 @@
-# notambourine/claude-marketplace
+# notambourine/claude
 
 The `notambourine` marketplace. Add it once, then turn individual plugins on and
 off.
 
 ```bash
-claude plugin marketplace add notambourine/claude-marketplace
-claude plugin install soul@notambourine --scope user
+claude plugin marketplace add notambourine/claude
+claude plugin install brand@notambourine --scope user
 ```
 
-Slash commands are namespaced by plugin: `/soul:brand-check`.
+Slash commands are namespaced by plugin: `/brand:check`. Namespacing is exactly
+two segments, so a subdirectory under `skills/` adds nothing to the name.
 
 ## Catalog
 
 | Plugin | Lives in | For |
 | --- | --- | --- |
-| `soul` | this repo | Brand source of truth: wordmark rules and the audit that checks copy against them. |
+| `brand` | this repo | Brand source of truth: wordmark rules and the audit that checks copy against them. |
 | `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
 
@@ -31,7 +32,7 @@ Per repo, committed so the whole team gets the same set, in
 `.claude/settings.json`:
 
 ```json
-{ "enabledPlugins": { "soul@notambourine": true } }
+{ "enabledPlugins": { "brand@notambourine": true } }
 ```
 
 ## Where a plugin lives
