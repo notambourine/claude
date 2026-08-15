@@ -1,16 +1,26 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
-  "name": "notambourine-internal",
-  "description": "Internal Claude Code plugins for the NoTambourine consulting practice.",
+  "name": "notambourine",
+  "description": "Claude Code plugins for the NoTambourine consulting practice.",
   "owner": {
     "name": "NoTambourine LLC",
     "url": "https://notambourine.com"
   },
   "plugins": [
     {
-      "name": "nt",
-      "source": "./",
-      "description": "NoTambourine consulting-practice plugin for Claude Code. Ships /nt:brand-check, a wordmark audit for the NoTambourine brand system."
+      "name": "soul",
+      "source": "./plugins/soul",
+      "description": "NoTambourine brand source of truth: wordmark rules, and /soul:brand-check to audit copy against them."
+    },
+    {
+      "name": "wormhook",
+      "source": { "source": "github", "repo": "notambourine/wormhook" },
+      "description": "Blocks npm/PyPI supply-chain malware and agent-hijack persistence at the Claude Code hook — before it can run."
+    },
+    {
+      "name": "qrspi",
+      "source": { "source": "github", "repo": "notambourine/qrspi" },
+      "description": "GitHub-native structured feature development: Query, Research, Spec, Plan, Implement."
     }
   ]
 }

@@ -36,15 +36,26 @@ jobs:
 
       # claude plugin validate does NOT check that the two description fields
       # agree -- they are allowed to differ by design. This repo keeps them in
-      # sync deliberately, so guard against silent drift.
+      # sync deliberately, so guard against silent drift. Covers local plugins
+      # only; a github: row's description is a point-in-time copy of the one in
+      # that repo, and nothing here can see it drift.
       - name: Check description parity (plugin.json <-> marketplace.json)
         run: |
-          plugin_desc=$(jq -r '.description' .claude-plugin/plugin.json)
-          market_desc=$(jq -r '.plugins[] | select(.name == "nt") | .description' .claude-plugin/marketplace.json)
-          if [ "$plugin_desc" != "$market_desc" ]; then
-            echo "::error::description drift between plugin.json and marketplace.json"
-            echo "  plugin.json:      $plugin_desc"
-            echo "  marketplace.json: $market_desc"
-            exit 1
-          fi
-          echo "descriptions match: $plugin_desc"
+          fail=0
+          while read -r name src; do
+            case "$src" in ./*) ;; *) continue ;; esac
+            plugin_desc=$(jq -r '.description' "$src/.claude-plugin/plugin.json")
+            market_desc=$(jq -r --arg n "$name" \
+              '.plugins[] | select(.name == $n) | .description' \
+              .claude-plugin/marketplace.json)
+            if [ "$plugin_desc" != "$market_desc" ]; then
+              echo "::error::description drift for $name"
+              echo "  $src/.claude-plugin/plugin.json: $plugin_desc"
+              echo "  marketplace.json:                $market_desc"
+              fail=1
+            else
+              echo "$name: descriptions match"
+            fi
+          done < <(jq -r '.plugins[] | select(.source | type == "string")
+                          | "\(.name) \(.source)"' .claude-plugin/marketplace.json)
+          exit $fail
