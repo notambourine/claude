@@ -11,6 +11,21 @@
       "name": "nt",
       "source": "./",
       "description": "NoTambourine consulting-practice plugin for Claude Code. Ships /nt:brand-check, a wordmark audit for the NoTambourine brand system."
+    },
+    {
+      "name": "share",
+      "source": { "source": "github", "repo": "notambourine/share" },
+      "description": "Share artifacts as branded unguessable links on share.notambourine.com — upload, sign, list, revoke."
+    },
+    {
+      "name": "wormhook",
+      "source": { "source": "github", "repo": "notambourine/wormhook" },
+      "description": "Blocks npm/PyPI supply-chain malware and agent-hijack persistence at the Claude Code hook — before it can run."
+    },
+    {
+      "name": "qrspi",
+      "source": { "source": "github", "repo": "notambourine/qrspi" },
+      "description": "GitHub-native structured feature development: Query, Research, Spec, Plan, Implement."
     }
   ]
 }
