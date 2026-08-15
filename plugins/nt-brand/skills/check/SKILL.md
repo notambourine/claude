@@ -3,7 +3,7 @@ name: check
 description: Audit a file, directory, or git diff for wordmark violations: lowercase `notambourine` appearing in human-facing copy where it should be the `NoTambourine` wordmark. Also flags overuse of `NoTambourine LLC` outside contract signature blocks.
 ---
 
-# /brand:check
+# /nt-brand:check
 
 ## Rules
 
