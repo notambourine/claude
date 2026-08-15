@@ -26,6 +26,11 @@
       "name": "qrspi",
       "source": { "source": "url", "url": "https://github.com/notambourine/qrspi.git" },
       "description": "GitHub-native structured feature development: Query, Research, Spec, Plan, Implement."
+    },
+    {
+      "name": "share",
+      "source": { "source": "url", "url": "https://github.com/notambourine/share.git" },
+      "description": "Share a file, folder, or screenshot as one branded, unguessable link on share.notambourine.com. Browsers get a rendered page, curl and Slack unfurls get raw bytes from the same URL. Needs a NoTambourine-issued token."
     }
   ]
 }
