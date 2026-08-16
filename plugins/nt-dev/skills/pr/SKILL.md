@@ -28,7 +28,7 @@ LOCAL=~/sandbox/git-repos/notambourine/dot-github/.github/pull_request_template.
 if [ -f "$LOCAL" ]; then
   TEMPLATE="$LOCAL"
 else
-  TEMPLATE=$(mktemp -t prtemplate)
+  TEMPLATE=$(mktemp)
   curl -fsSL -o "$TEMPLATE" \
     https://raw.githubusercontent.com/notambourine/.github/main/.github/pull_request_template.md
 fi
@@ -63,14 +63,14 @@ The template's own comments say what each section wants; read them rather than g
 Write the body to a file. A multi-section body passed as a `--body` string loses its newlines, and `\n` escapes reach GitHub literally.
 
 ```bash
-BODY=$(mktemp -t prbody)
+BODY=$(mktemp)
 # ...write the filled template to "$BODY"...
 gh pr create --draft --title "<subject>" --body-file "$BODY"
 ```
 
 - The title carries the scope and the count - `chore(edge): performance tuning for Railway and the CDN, 6 URL classes`. Goal elaborates that line rather than expanding it into its parts.
 - `--draft` by default. Pass `--ready` to the skill to drop it.
-- Push first if the branch is unpushed. If your setup gates pushes behind a hardware key or a passphrase prompt, that command can hang - wrap it (`gtimeout 60 git push`), and on a timeout say so and stop rather than retry.
+- Push first if the branch is unpushed. If your setup gates pushes behind a hardware key or a passphrase prompt, that command can hang. Wrap it in whichever timeout the machine has - `timeout 60 git push` on Linux, `gtimeout 60 git push` on macOS with Homebrew coreutils - and where there is none, such as Git Bash on Windows, run it bare and stop on a hang. On a timeout say so and stop rather than retry.
 - Never `--fill` or `--fill-verbose`. They replace the body with commit text and drop every section above.
 
 Revise an open PR the same way: `gh pr edit <n> --body-file "$BODY"`.

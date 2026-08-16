@@ -39,9 +39,15 @@ Large tool outputs are NOT inline: the JSONL keeps a `<persisted-output>` stub a
 **1. Locate the project directory:**
 
 ```bash
-PROJ_DIR="$HOME/.claude/projects/$(printf '%s' "$PWD" | tr '/' '-')"
+PROJ_DIR=$(/bin/ls -dt "$HOME"/.claude/projects/*"-$(basename "$PWD")" 2>/dev/null | head -1)
 /bin/ls -t "$PROJ_DIR"/*.jsonl 2>/dev/null
 ```
+
+Match on the trailing folder name rather than building the whole slug. Claude Code derives
+the directory name from the host path, so the slug is `-Users-me-repo` on macOS and
+`C--Users-me-repo` on Windows, and the same `tr` never produces both. Two repos sharing a
+folder name both match: the newest wins, so check the `cwd` field of a line before you
+trust a transcript.
 
 The newest file is *this* session. The second-newest is usually what "the last convo" means.
 
@@ -72,8 +78,8 @@ Tested working - this output lands in your context as the Bash tool result.
 ```bash
 for f in $(/bin/ls -t "$PROJ_DIR"/*.jsonl | head -8); do
   first=$(jq -r 'select(.type=="user" and (.message.content|type)=="string") | select(.message.content | startswith("<") | not) | .message.content' "$f" | head -1 | cut -c1-80)
-  mtime=$(/usr/bin/stat -f '%Sm' -t '%Y-%m-%d %H:%M' "$f")
-  echo "$mtime  $(basename "$f" .jsonl)  $first"
+  started=$(jq -r 'select(.timestamp) | .timestamp' "$f" | head -1 | cut -c1-16)
+  echo "$started  $(basename "$f" .jsonl)  $first"
 done
 ```
 
@@ -115,8 +121,9 @@ grep -l "keyword" "$HOME/.claude/projects/"*/*.jsonl | head -5
 ## Gotchas
 
 - **Use `/bin/ls`, not bare `ls`.** A shell that aliases `ls` to `eza` reads `-t` as `--time <FIELD>`, so bare `ls -t` inside `$( )` errors or silently returns nothing.
-- **`stat` flags differ by platform.** The `-f '%Sm' -t` form above is BSD and macOS. On GNU coreutils it is `stat -c '%y'`. Probe once (`stat --version >/dev/null 2>&1`) rather than guessing.
+- **Read the session's own first `timestamp`, never `stat`.** The flags split by platform - BSD and macOS take `-f '%Sm'`, GNU coreutils takes `-c '%y'` - and the JSONL carries the time already.
 - Filenames are session UUIDs, not timestamps - always sort by `/bin/ls -t` (mtime).
+- **Windows runs this through Git Bash**, so the shell here works as written. `jq` is the one thing it does not ship: install it (`winget install jqlang.jq`) before the transcript pull.
 - `$PROJ_DIR` also contains bare per-session UUID *directories* (`tool-results/` persistence) - the `*.jsonl` glob skips them, but a plain dir listing shows both.
 - Current session's JSONL is being written right now; reading it just echoes this conversation back.
 - If `cwd` differs (worktree, symlinked repo), fall back to `grep -l` across `~/.claude/projects/*/` or ask the user which repo.
