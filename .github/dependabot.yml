@@ -2,6 +2,21 @@
 # minor+patch grouped into one PR, majors individual, cooldown-gated.
 version: 2
 updates:
+  # plugins/nt-brand/skills/system -> notambourine/brand-kit, the golden set.
+  # The bump PR is the whole update: the skill directory is the submodule, so
+  # moving the pin moves the bytes an install ships.
+  #
+  # No cooldown and a daily interval, unlike the actions block below. That one
+  # waits out a supply-chain window on code from strangers. This is a repo we
+  # own, and a brand correction is worth nothing sitting in a queue.
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: America/Chicago
+    open-pull-requests-limit: 1
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
