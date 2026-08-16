@@ -60,13 +60,23 @@ executes, which makes upstream untrusted input: read the prose diff and re-read 
 referrer before merging. The script only ever writes fetched bytes to disk, and it
 never opens the PR.
 
-## The brand system is the golden set
+## The brand system lives in its own repo
 
-`plugins/nt-brand/skills/system/` holds the brand's only corrected copy:
-`tokens.css`, `components.css`, the six self-hosted woff2 faces, and a
-`hello-world.html` that renders on brand from `file://`.
+`plugins/nt-brand/skills/system/` is the
+[notambourine/brand-kit](https://github.com/notambourine/brand-kit) submodule:
+`tokens.css`, `components.css`, `deck.css`, the seven self-hosted woff2 faces,
+and a `hello-world.html` that renders on brand from `file://`. A marketplace
+install initialises it, so the skill ships whole.
 
-Correct a value there and never sync one in. Anything that disagrees is
+```bash
+git submodule update --init   # after a fresh clone, or the skill reads empty
+```
+
+The kit is its own repo because three surfaces read it and Dependabot tracks a
+repo, not a subtree. Pinned here, in `notambourine/share`, and in the site, each
+bump PR is about the brand and nothing else.
+
+Correct a value in `brand-kit` and never sync one in. Anything that disagrees is
 downstream and stale, however it renders. Both stylesheets are native CSS with
 no build step, so they drop into a plain HTML file, a Worker, or a React app
 unchanged. Build against the semantic layer (`--bg`, `--fg1`, `--accent`,
