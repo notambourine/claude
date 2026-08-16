@@ -18,10 +18,14 @@ name is the only prefix a command carries. `nt-` is what makes ours findable:
 type `/nt-` and the list is this practice's, with nothing from
 `claude-plugins-official` in it.
 
-The prefix applies to plugins that live here. `wormhook` and `qrspi` ship from
-their own public repos and are named for what they do, which is what an outside
-user searching for a supply-chain hook needs to find. A plugin that leaves this
-repo drops the prefix with the move.
+The prefix follows the audience, not the repo. `wormhook` and `qrspi` ship from
+their own public repos under plain names because an outside user searching for a
+supply-chain hook finds them by what they do. `nt-share` also ships from its own
+repo and keeps the prefix, because it reads a NoTambourine-issued token and
+writes to our domain: there is no outside user for a generic name to reach.
+
+Ask who can turn the plugin on. Anyone, and it gets the name of the job; only
+us, and it gets `nt-`.
 
 ## Catalog
 
@@ -32,7 +36,7 @@ repo drops the prefix with the move.
 | `nt-vendor` | this repo | Third-party skills mirrored whole from their upstream repos. |
 | `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
-| `share` | [notambourine/share](https://github.com/notambourine/share) | One branded unguessable link for a file, folder, or screenshot. Ships a Worker, so it stands alone. |
+| `nt-share` | [notambourine/share](https://github.com/notambourine/share) | One branded unguessable link for a file, folder, or screenshot. Ships a Worker, so it stands alone. |
 
 ## `nt-vendor` is somebody else's work
 
@@ -103,21 +107,28 @@ Per repo, committed so the whole team gets the same set, in
 **A plugin lives in the repo that owns its domain. With no domain, it lives
 here.**
 
-`wormhook` and `qrspi` own domains, so they stay in their own repos and this
-catalog lists them by URL. They version and release with the code they wrap.
-Practice-wide content with no home lives in `plugins/` here, because a repo for
-four markdown files costs more in CI and release overhead than it returns.
+`wormhook`, `qrspi`, and `nt-share` own domains, so they stay in their own repos
+and this catalog lists them by URL. They version and release with the code they
+wrap. Practice-wide content with no home lives in `plugins/` here, because a repo
+for four markdown files costs more in CI and release overhead than it returns.
 
 Promote a local plugin to its own repo when it grows a build step, tests, or a
-hook. One line changes, and the plugin drops its `nt-` prefix on the way out:
+hook. One line changes:
 
 ```json
 "source": "./plugins/nt-dev"
 "source": { "source": "url", "url": "https://github.com/notambourine/dev.git" }
 ```
 
-The rename breaks anyone who installed the old name, so promote before you share
-a plugin outside the team, not after.
+Moving out is not what drops the prefix; opening it to outsiders is. `nt-share`
+moved and kept it. Rename only when the plugin becomes something a stranger would
+install, and do it before you share it outside the team, because the rename
+breaks anyone already on the old name.
+
+A rename lives in the plugin's own `.claude-plugin/plugin.json`. The `name` there
+is what namespaces the commands, and the marketplace row below only sets the id
+you install by - change one and not the other and you get `nt-share@notambourine`
+answering to `/share:share`.
 
 ## Why remote rows use an https `url`, not `github`
 
