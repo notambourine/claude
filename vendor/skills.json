@@ -1,0 +1,124 @@
+{
+  "$comment": "Third-party skill directories vendored into .claude/skills/. `path` is a directory, copied whole. `sha`, `files`, and `copyright` are written by `npm run vendor:skills pull`. Do not hand-edit them. To add a skill, append name/repo/ref/path/license and run pull.",
+  "$exclude": "Dropped from every copy: other-harness config, and anything that could be mistaken for our own repo wiring. Everything else comes across, because these skills link to their siblings.",
+  "skills": [
+    {
+      "name": "anti-slop",
+      "repo": "elithrar/dotfiles",
+      "ref": "main",
+      "path": ".agents/skills/anti-slop",
+      "exclude": [
+        "agents/**"
+      ],
+      "license": "MIT",
+      "sha": "5e7254bc955093d0e70d2af52bb61d2a3de4c72e",
+      "files": {
+        "SKILL.md": "sha256-fjIYS2Ah9Zgh/MTB0HtI0xpophNGc6hQFzAPLa/ICLU=",
+        "references/tells.md": "sha256-OgP8nRzMyVDbt893NM2pmqiMI2I32w1aGhmzIDEW8z8="
+      },
+      "copyright": "Copyright (c) 2014 Matt Silverlock"
+    },
+    {
+      "name": "codebase-design",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/codebase-design",
+      "exclude": [
+        "agents/**"
+      ],
+      "license": "MIT",
+      "sha": "c0d69015e0cc8b66715beb3f93f9e53256e20f30",
+      "files": {
+        "DEEPENING.md": "sha256-El5rd0E60rx896dyvHQzbVgKUPnnl9sheO0TPWIzPQY=",
+        "DESIGN-IT-TWICE.md": "sha256-CfmUjqdjak03BMWrkJdi6HbAs5hJ7vsU0uA6OYzJx+c=",
+        "SKILL.md": "sha256-qNUKusWkAY9g4dkR1Lb042RUyhTWw5DAaVpXjH3mXa0="
+      },
+      "copyright": "Copyright (c) 2026 Matt Pocock"
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "repo": "mattpocock/skills",
+      "ref": "main",
+      "path": "skills/engineering/improve-codebase-architecture",
+      "exclude": [
+        "agents/**"
+      ],
+      "license": "MIT",
+      "sha": "fcf0071560d32913c9d4f820e0d7ca467c881619",
+      "files": {
+        "HTML-REPORT.md": "sha256-Cwk2EEFYq+73JG/2y6vvpNwFXxdYnygz8tkwAUIZEKE=",
+        "SKILL.md": "sha256-OH840hNndhyU1LTc6p6dfT4x+JbE3s6/SYRIPkISXPw="
+      },
+      "copyright": "Copyright (c) 2026 Matt Pocock"
+    },
+    {
+      "name": "humanizer",
+      "repo": "blader/humanizer",
+      "ref": "main",
+      "path": "",
+      "exclude": [
+        ".github/**",
+        ".claude-plugin/**",
+        "agents/**"
+      ],
+      "license": "MIT",
+      "sha": "523374dee72d67c7b2b5f858ea0094ffda49c3ac",
+      "files": {
+        "AGENTS.md": "sha256-k5Qxm4V5XxNSe2RirGYNjlmsQ90OhPK7LDoYkeYq1AI=",
+        "LICENSE": "sha256-SsSBAlSrNtRUGRQa645pv1BlLPr+Wy2rlH0G1E5cv5Y=",
+        "README.md": "sha256-y3caWsmAQLcuoUefJb7eyeYZyF+LFJPCBRBaO3FKnYY=",
+        "SKILL.md": "sha256-cJOPPM4llw4d7V/dGUt1XAPx5OT6doIJWM54+Gtnexo=",
+        "scripts/validate-package.py": "sha256-0sVJbKc6jOLT8MrWaBckFw2FZr71TTbfweXTlyWXthQ="
+      },
+      "copyright": "Copyright (c) 2025 Siqi Chen"
+    },
+    {
+      "name": "install-anti-slop",
+      "repo": "dmmulroy/anti-slop",
+      "ref": "main",
+      "path": "skills/install-anti-slop",
+      "exclude": [
+        "agents/**"
+      ],
+      "license": "MIT",
+      "sha": "446268e5d15baa968eaec669ff65358d36ae6259",
+      "files": {
+        "SKILL.md": "sha256-hTL0Kcwe49RzopigxpJ7DSlej9wiVGJGMjNOjoCsOso=",
+        "assets/anti-slop/index.ts": "sha256-1y1+n4yPLJVX9/jexhO0I1ouFcnX9DuMj8GGiK4fgU8=",
+        "assets/anti-slop/rules/no-chained-type-assertions.ts": "sha256-cvjpgVIPlK2sD/vauPjoTl8qRZXxTkpkcb6ReoWiChU=",
+        "assets/anti-slop/rules/no-conditional-empty-object-spread.ts": "sha256-M/BEAw0gj8wQvnO7GcgXLCdcUinfSwyo7BDwabvmAGI=",
+        "assets/anti-slop/rules/no-known-value-widening.ts": "sha256-1jH5y2o2KdHZInpFaMZusujiuTilfL7DS2sl/LMb9i4=",
+        "assets/anti-slop/rules/no-module-mocking.ts": "sha256-kM/BZqKOeFRKk05KAAgRMwweptM9kMswmxvtJ+UeefM=",
+        "assets/anti-slop/rules/no-object-parameters.ts": "sha256-PXUBMM91IOdUHLdY6+0N+mA6DkggYaYKw6Ev6IIaRGk=",
+        "assets/anti-slop/rules/no-reflect-apply.ts": "sha256-95IKMyEGJS1qJM3JF6LBpDPrQ4eSmWzM61olzW5ZHbs=",
+        "assets/anti-slop/rules/no-reflect-get.ts": "sha256-lcWqD44jsQ2TRbF3YILghwTsZZApgXao7ejf2258tW8=",
+        "assets/anti-slop/rules/no-runtime-typeof.ts": "sha256-7tY9Vmd2PdvEimuDZi5EbxAMREzd78PQZqwAFWcFkLg=",
+        "assets/anti-slop/rules/no-shape-in-symbol-names.ts": "sha256-VK6/67JcH48s4YH4+C/QVBOgpj982sUunVcOoc0oRRA=",
+        "assets/anti-slop/rules/no-unknown-parameters.ts": "sha256-q1zTGppGTdEuTpMCmPzXc8HBut+vZmGZFdVDW11X22E=",
+        "assets/anti-slop/rules/no-unknown-returns.ts": "sha256-/KemEzS5Aux2c2ttitW5WoSg1DZtzHrhvERJJSMFLzs=",
+        "assets/anti-slop/rules/no-unknown-type-aliases.ts": "sha256-Wd8rzG/ciS5nZQxkZiwqwD0DlsLczpwnKJHJS6WkwEE=",
+        "assets/anti-slop/rules/no-unsafe-dictionary-type.ts": "sha256-vsjlQOBadJ4GR0sce9k4eXR7MzDwuch/0aP/6Vms4HU=",
+        "assets/anti-slop/rules/no-widen-then-assert.ts": "sha256-Y/LAfMQritYKfoaO+9eynkYrm6lg+9B7vI9ZDvnj+Hk=",
+        "assets/anti-slop/rules/require-safety-comment-for-type-assertion.ts": "sha256-eLrTaPzBN/DtnW8hYmuu1cmA/j6m0JPJOsTtmFi5owk=",
+        "assets/anti-slop/shared/dictionary-types.ts": "sha256-pXuWSrVaOTlsiSL0ALCRLjR5y50o3nFqSlNqvPcoOWY=",
+        "assets/anti-slop/shared/lexical-type-parameters.ts": "sha256-GuCqPsJF8dxDxLu9i+Hi5CMOXcOJ0cpOjej1G2LO/yk=",
+        "assets/anti-slop/shared/reflect-method.ts": "sha256-MY9WsX2QYxNIYP5MUcLiLLClXn9CGg/0zO21qenCstk=",
+        "scripts/install.mjs": "sha256-ZJRWcUoV2Td0gRSQHJTM37yT2LL/aUl9vVhI6UMYkao="
+      },
+      "copyright": "Copyright (c) 2026 Dillon Mulroy"
+    },
+    {
+      "name": "audit-codebase",
+      "gist": "8735edbe48532f97ee5ea818db4dbd47",
+      "owner": "aarondfrancis",
+      "entry": "audit-your-codebase.md",
+      "license": "unstated",
+      "$note": "Public gist with no LICENSE file. Redistributed here with attribution; see vendor/NOTICE.md.",
+      "sha": "959a2a9c1ed1648f39872885b2686ce5b576e78c",
+      "files": {
+        "SKILL.md": "sha256-ASB5rfu/q0/BrVz7GI0J+qBfDh1O9F2KTSyuHiece/Q="
+      },
+      "copyright": null
+    }
+  ]
+}

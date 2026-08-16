@@ -1,0 +1,36 @@
+name: vendor-skills
+
+# Reports upstream drift in the third-party skills under plugins/nt-vendor/skills/. It
+# never writes: a failed run is the notification, and a human runs
+# `node scripts/vendor-skills.mjs pull` locally, reads the prose diff, audits every
+# referrer the run names, and opens the PR. That keeps this public repo at
+# `contents: read` with no stored token and no "Actions can create and approve pull
+# requests" policy flip.
+#
+# GOTCHA: this repo is public, so GitHub disables this schedule after 60 days with no
+# repository activity. Re-arm with `gh workflow enable vendor-skills.yml`.
+
+on:
+  schedule:
+    - cron: '17 13 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - run: node scripts/vendor-skills.mjs check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # lifts the anonymous API rate limit

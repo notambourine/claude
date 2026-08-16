@@ -18,6 +18,11 @@
       "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the org template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context."
     },
     {
+      "name": "nt-vendor",
+      "source": "./plugins/nt-vendor",
+      "description": "Third-party skills mirrored whole from their upstream repos, kept here so our own skills can call them by name. The nt-vendor prefix marks every skill in it as someone else's work."
+    },
+    {
       "name": "wormhook",
       "source": { "source": "url", "url": "https://github.com/notambourine/wormhook.git" },
       "description": "Blocks npm/PyPI supply-chain malware and agent-hijack persistence at the Claude Code hook — before it can run."
