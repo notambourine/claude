@@ -8,6 +8,16 @@ claude plugin marketplace add notambourine/claude
 claude plugin install nt-brand@notambourine --scope user
 ```
 
+To take the whole set, read the names off the marketplace rather than typing the
+catalog out. `--available` lists only what is not installed yet, so this is also
+how you pick up a plugin added after your last run:
+
+```bash
+claude plugin list --available --json |
+  jq -r '.available[] | select(.marketplaceName == "notambourine") | .pluginId' |
+  while read -r plugin; do claude plugin install "$plugin" --scope user; done
+```
+
 Slash commands are namespaced by plugin: `/nt-brand:system`. Namespacing is
 exactly two segments, so a subdirectory under `skills/` adds nothing to the name.
 
