@@ -10,6 +10,9 @@ description: Audit a file, directory, or git diff for wordmark violations: lower
 - `NoTambourine` = wordmark. All human-facing copy.
 - `notambourine` = slug. Only in paths, URLs, domains, GH org, npm package names, CSS classes.
 - `NoTambourine LLC` = legal form. **Only** in contract signature blocks and one Definitions anchor (e.g. `"Consultant" means NoTambourine LLC...`). Not in H1, party table, body paragraphs, cover email signoff, or metadata.
+- `Notambourine` = not a valid form. Sentence case does not exist in the brand system.
+
+The same three rules are published for outside agents at `notambourine.com/AGENTS.md`, under "How to cite this site". Fetch it when a client or vendor disputes a flag.
 
 ## Audit a single file
 
@@ -37,7 +40,7 @@ git diff --cached | grep -nE '^\+.*[^/.\-_a-z`]notambourine[^/.\-_a-z`]'
 ## False positives to ignore
 
 - Slug in frontmatter (`slug: notambourine`, `kind: notambourine/kb`)
-- Paths (`kb/notambourine/`, `playbook/notambourine.css`)
+- Paths (`plugins/notambourine/`, `styles/notambourine.css`)
 - URLs (`https://notambourine.com`)
 - CSS classes, npm package names, GH remotes
 - Code fences and inline `backticks` (the pattern above excludes them)
@@ -48,4 +51,4 @@ For any hit, ask: "if a client read this, would they expect the wordmark or the 
 
 ## Scope
 
-This skill checks the wordmark only. For a full doc/deck review that also covers voice, density, and structure, use a general-purpose review pass; the grep recipes above are the wordmark-specific layer.
+This skill checks the wordmark only. The grep recipes above are the wordmark-specific layer. For voice, density, structure, and the AI-tell read, use `/nt-brand:system` - it holds those rules and the tokens the copy sits on.

@@ -27,9 +27,21 @@ repo drops the prefix with the move.
 
 | Plugin | Lives in | For |
 | --- | --- | --- |
-| `nt-brand` | this repo | Brand source of truth: wordmark rules and the audit that checks copy against them. |
+| `nt-brand` | this repo | Brand source of truth: the token, component, font, and voice system, plus the audit that checks copy against the wordmark rules. |
 | `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
+
+## The brand system is the golden set
+
+`plugins/nt-brand/skills/system/` holds the brand's only corrected copy:
+`tokens.css`, `components.css`, the six self-hosted woff2 faces, and a
+`hello-world.html` that renders on brand from `file://`.
+
+Correct a value there and never sync one in. Anything that disagrees is
+downstream and stale, however it renders. Both stylesheets are native CSS with
+no build step, so they drop into a plain HTML file, a Worker, or a React app
+unchanged. Build against the semantic layer (`--bg`, `--fg1`, `--accent`,
+`--sp-*`, `--r-*`) rather than the `--nt-*` palette beneath it.
 
 ## Turning plugins on and off
 
@@ -103,7 +115,12 @@ Local, for practice-wide content:
 plugins/nt-<name>/
   .claude-plugin/plugin.json     name, description, author, license
   skills/<skill>/SKILL.md        YAML frontmatter plus a body
+  skills/<skill>/<assets>        anything the skill hands over, read on demand
 ```
+
+A skill directory can carry files, not just prose. `nt-brand`'s `system` skill
+ships stylesheets and fonts that way. Only the description stays resident, so
+the weight costs nothing until the skill fires.
 
 Then add the row to `plugins` in `.claude-plugin/marketplace.json` with
 `"source": "./plugins/nt-<name>"`. CI checks that the two `description` fields

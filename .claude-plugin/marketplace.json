@@ -10,7 +10,7 @@
     {
       "name": "nt-brand",
       "source": "./plugins/nt-brand",
-      "description": "NoTambourine brand source of truth: wordmark rules, and /nt-brand:check to audit copy against them."
+      "description": "NoTambourine brand source of truth: /nt-brand:system ships the tokens, components, fonts, and voice; /nt-brand:check audits copy against the wordmark rules."
     },
     {
       "name": "nt-dev",
