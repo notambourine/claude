@@ -28,8 +28,37 @@ repo drops the prefix with the move.
 | Plugin | Lives in | For |
 | --- | --- | --- |
 | `nt-brand` | this repo | Brand source of truth: the token, component, font, and voice system, plus the audit that checks work against it. |
+| `nt-dev` | this repo | Everyday development workflow: PR bodies, repo cleanup, prior-session recall. |
+| `nt-vendor` | this repo | Third-party skills mirrored whole from their upstream repos. |
 | `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
+| `share` | [notambourine/share](https://github.com/notambourine/share) | One branded unguessable link for a file, folder, or screenshot. Ships a Worker, so it stands alone. |
+
+## `nt-vendor` is somebody else's work
+
+Every other plugin here is ours. `nt-vendor` is a mirror: each skill under
+`plugins/nt-vendor/skills/` is copied whole from an upstream repo under its own
+license, and `vendor/NOTICE.md` names the copyright holder for each. The prefix is
+the point. When a first-party skill says `nt-vendor:codebase-design`, the reader
+knows the vocabulary it is borrowing did not come from this practice.
+
+```bash
+node scripts/vendor-skills.mjs check   # network. upstream moved? weekly in CI
+node scripts/vendor-skills.mjs verify  # offline. merge base still matches the pins
+node scripts/vendor-skills.mjs pull    # network. three-way merge, keeps local edits
+node scripts/vendor-skills.mjs refs    # offline. who calls each vendored skill
+```
+
+A source can be a repo directory or a gist. A gist holding a bare prompt becomes a skill
+through the manifest's `entry` field, which names the upstream file that maps to
+`SKILL.md`, plus frontmatter written in locally. `verify` reports that skill as edited,
+not as a clean mirror, which is the honest reading.
+
+`check` and `pull` print the `refs` index for every skill they report as moved, so an
+update PR names its own audit surface. A vendored skill is prose an agent later
+executes, which makes upstream untrusted input: read the prose diff and re-read every
+referrer before merging. The script only ever writes fetched bytes to disk, and it
+never opens the PR.
 
 ## The brand system is the golden set
 

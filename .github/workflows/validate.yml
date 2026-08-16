@@ -35,6 +35,12 @@ jobs:
       - name: Validate plugin + marketplace schema
         run: claude plugin validate .
 
+      # Offline half of the vendoring contract: vendor/pristine must still hash to the
+      # manifest pins, so the merge base a `pull` reads is the bytes it was cut from.
+      # The network half is vendor-skills.yml, weekly.
+      - name: Verify vendored skill merge base
+        run: node scripts/vendor-skills.mjs verify
+
       # Every plugin that lives here is nt-prefixed, so `/nt-` lists this
       # practice's commands and nothing else. A remote row is named for what it
       # does, because an outside user finds it by that name, not by our prefix.
