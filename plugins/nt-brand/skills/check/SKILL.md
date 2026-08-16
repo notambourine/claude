@@ -48,4 +48,4 @@ For any hit, ask: "if a client read this, would they expect the wordmark or the 
 
 ## Scope
 
-This skill checks the wordmark only. For a full doc/deck review that also covers voice, density, and structure, use a general-purpose review pass; the grep recipes above are the wordmark-specific layer.
+This skill checks the wordmark only. The grep recipes above are the wordmark-specific layer. For voice, density, structure, and the AI-tell read, use `/nt-brand:system` - it holds those rules and the tokens the copy sits on.

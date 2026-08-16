@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hello world · NoTambourine</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* Page scaffolding only: every brand value comes from the two stylesheets. */
+  body   { margin: 0; }
+  main   { max-width: 640px; margin: 0 auto; padding: var(--sp-16) var(--sp-6) var(--sp-20); }
+  .stack { display: flex; flex-direction: column; gap: var(--sp-6); }
+  .row   { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+  .grid  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nt-nav">
+  <span class="nt-nav__brand">notambourine</span>
+  <div class="nt-nav__links">
+    <a href="#" aria-current="page">Practice</a>
+    <a href="#">Engagements</a>
+    <a href="#">Writing</a>
+  </div>
+  <span style="margin-left:auto"></span>
+  <button class="nt-btn nt-btn--primary nt-btn--sm">Start a sprint</button>
+</nav>
+
+<main class="stack">
+
+  <div class="stack" style="gap:var(--sp-4)">
+    <span class="eyebrow">Hello world</span>
+    <!-- One pink word, via <em>. Hanken Grotesk has a drawn italic, so it slants too. -->
+    <h1 class="display">Senior engineers.<br>No <em>tambourine</em>.</h1>
+    <p class="lede">A small team who embed with yours and ship. Opinionated, allergic to
+      ceremony. Tell us what you're building. We'll write back the same day.</p>
+  </div>
+
+  <div class="row">
+    <button class="nt-btn nt-btn--primary">Start a conversation</button>
+    <button class="nt-btn nt-btn--secondary">See how it works</button>
+    <button class="nt-btn nt-btn--ghost">Skip for now</button>
+  </div>
+
+  <div class="row">
+    <span class="nt-badge nt-badge--pink"><span class="nt-badge__dot"></span>Live</span>
+    <span class="nt-badge nt-badge--mint"><span class="nt-badge__dot"></span>Synced</span>
+    <span class="nt-badge nt-badge--ink">New</span>
+    <span class="nt-badge nt-badge--outline">Beta</span>
+  </div>
+
+  <div class="grid">
+    <div class="nt-card nt-card--hover">
+      <h4>Sprint</h4>
+      <p style="margin-top:var(--sp-2)">Two engineers, six weeks, one shipped feature.
+        No standups about standups.</p>
+    </div>
+    <div class="nt-card nt-card--hover nt-card--accent">
+      <h4>Pod</h4>
+      <p style="margin-top:var(--sp-2)">An embedded team that owns a surface end to end.
+        Most asked for.</p>
+    </div>
+  </div>
+
+  <div class="nt-field">
+    <label for="email">Email</label>
+    <input class="nt-input" id="email" type="email" placeholder="you@studio.work">
+    <span class="nt-hint">We'll write back the same day.</span>
+  </div>
+
+  <div class="grid">
+    <div class="nt-toggle-row">
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--fg1)">Email me</span>
+      <button class="nt-switch" role="switch" aria-checked="true" aria-label="Email me"></button>
+    </div>
+    <div class="nt-toggle-row">
+      <span class="nt-radio" role="radio" aria-checked="true"></span>
+      <span style="font-size:14px;font-weight:500;color:var(--fg1)">AI engineering</span>
+    </div>
+  </div>
+
+  <p><small>Tokens live in <code>tokens.css</code> &middot; recipes in
+    <code>components.css</code> &middot; rules in <a href="#">SKILL.md</a></small></p>
+
+</main>
+</body>
+</html>
