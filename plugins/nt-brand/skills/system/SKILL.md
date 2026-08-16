@@ -1,6 +1,6 @@
 ---
 name: system
-description: NoTambourine brand system - colors, type, spacing, component recipes, voice, and the audit that checks work against them. Use when building or styling anything NoTambourine-branded (site, landing page, mock, prototype, deck, email, README banner, slide), when asked for "the brand colors"/"brand tokens"/"our pink", when a design needs to match notambourine.com, or when checking copy before it ships to a client - wordmark forms, ASCII punctuation, sentence case, and AI tells. Ships tokens.css + components.css to drop straight in.
+description: NoTambourine brand system - colors, type, spacing, component recipes, voice, and the audit that checks work against them. Use when building or styling anything NoTambourine-branded (site, landing page, mock, prototype, deck, email, README banner, slide), when asked for "the brand colors"/"brand tokens"/"our pink", when a design needs to match notambourine.com, or when checking copy before it ships to a client - wordmark forms, ASCII punctuation, sentence case, and AI tells. Ships tokens.css, components.css, and a Marpit deck theme to drop straight in.
 ---
 
 # NoTambourine brand
@@ -34,13 +34,15 @@ them is not evidence of anything. Client material is unpublished and stays that 
 
 ## Use the files
 
-Two files cover ~80% of any build. Copy them next to your output, or inline them.
+Two stylesheets cover ~80% of any build, and a third renders a deck. Copy them next to
+your output, or inline them.
 
 | File | What it does |
 |---|---|
 | `tokens.css` | Every token as a CSS var, plus base element styles. Load first and `h1`, `p`, `a`, `code`, `.eyebrow`, `.display`, `.lede` all come styled. |
 | `components.css` | `.nt-btn`, `.nt-badge`, `.nt-chip`, `.nt-input`, `.nt-card`, `.nt-nav`, `.nt-switch`/`.nt-check`/`.nt-radio`. All `var()`-based. |
-| `fonts/` | Six woff2: Nunito, Hanken Grotesk, JetBrains Mono, roman and italic each. Latin subset, variable, SIL OFL 1.1 (`fonts/OFL.txt`). |
+| `deck.css` | Marpit slide theme, 1280x720. Every value a `var()` off `tokens.css`. See "Decks" below for how to feed it markdown. |
+| `fonts/` | Six woff2: Nunito, Hanken Grotesk, JetBrains Mono, roman and italic each. Latin subset, variable, SIL OFL 1.1 (`fonts/OFL.txt`). Plus `nunito-wordmark-800.woff2`, a ten-glyph static subset for the lockup alone - 1.5 KB against Nunito's 39 KB, so a PDF or an offline snapshot inlines it as a data URI. |
 | `hello-world.html` | Working page using both stylesheets. Start here for a mock; open it to eyeball the brand. |
 
 ```html
@@ -48,7 +50,7 @@ Two files cover ~80% of any build. Copy them next to your output, or inline them
 <link rel="stylesheet" href="components.css">
 ```
 
-**Copy the whole skill directory, not the two stylesheets.** `tokens.css` declares
+**Copy the whole skill directory, not the stylesheets alone.** `tokens.css` declares
 its own `@font-face` blocks against `./fonts/`, so type is wired up with no network
 and no third party - a mock renders on brand from `file://` on a plane. Those paths
 resolve against the CSS file, so inlining `tokens.css` into a `<style>` block instead
@@ -231,24 +233,45 @@ the words were padding.
 
 ## Where truth lives
 
-**This skill is the golden set.** `tokens.css` and `components.css` here are the brand's
-only corrected copy. Read a value from this file, correct a value in this file, and never
-sync one in. Anything that disagrees with it is downstream and stale, however it renders.
+**This skill is the golden set.** `tokens.css`, `components.css`, and `deck.css` here are
+the brand's only corrected copy. Read a value from this file, correct a value in this
+file, and never sync one in. Anything that disagrees with it is downstream and stale,
+however it renders.
+
+A surface that cannot fetch at runtime has to vendor a copy - `share.notambourine.com`
+holds `tokens.css` and `deck.css` byte-for-byte, because a self-only CSP forbids a CDN.
+A vendored copy is not a fork: it carries the upstream SHA in a lock file, its CI fails
+the moment the bytes drift, and a scheduled job fails again when this skill moves ahead
+of it. Correct the value here and let the copy catch up.
 
 This skill is the complete system, so nothing has to be looked up elsewhere. It carries
 both themes: dark surfaces by default, and the light primitives behind `.theme-light`
 (`--nt-ink`, `--nt-white`, `--nt-line`, the pink and mint tints, `--nt-paper-warm`).
 A shipping surface may render dark only. That is a choice it made, not a shorter system.
 
-Both stylesheets are native CSS with no build step, so they load into a plain HTML file,
+Every stylesheet here is native CSS with no build step, so they load into a plain HTML file,
 a Worker, an email template, or a React app unchanged. Write against the semantic layer -
 `--bg`, `--bg-card`, `--fg1`/`2`/`3`, `--accent`, `--accent-fg`, `--support`, `--line`,
 `--sp-*`, `--r-*`, `--shadow-*`, `--ring-accent`, `--font-*`. It is the stable API and it
 survives a theme swap. The `--nt-*` primitives beneath it are the raw palette; reach past
 the alias to one only when no alias covers what you need, and never inline a literal
-color - `.theme-light` only works because no component hardcodes one.
+color - `.theme-light` only works because no component hardcodes one. A `var()` fallback
+is the one place a literal is correct, and `deck.css` uses them: a renderer can receive
+that theme without `tokens.css` beside it, and the deck still comes out on brand.
 
-Decks have their own grammar: numbered eyebrow → lowercase display headline with one
-pink `<em>` word → short body → ALL-CAPS sublabel → typographic concept diagram → running
-footer. Every "image" is a diagram built from the same tokens. No photography, no icons
-standing in for a chart.
+## Decks
+
+Grammar first: numbered eyebrow → lowercase display headline with one pink `<em>` word →
+short body → ALL-CAPS sublabel → typographic concept diagram → running footer. Every
+"image" is a diagram built from the same tokens. No photography, no icons standing in for
+a chart.
+
+`deck.css` is the theme that renders it. Markdown in, slides out, through Marpit: `---`
+splits a slide, `<!-- _class: lead -->` centers a title slide, `<!-- paginate: true -->`
+turns on slide numbers. Load `tokens.css` on the page too - `deck.css` declares no
+`:root`, so it reads its colors and faces from whatever the document root defines, and a
+brand correction reaches a deck with no second edit.
+
+`share.notambourine.com` runs this theme in its browser renderer and its PDF export, so a
+deck shared from there and a deck built by hand come out the same. That copy is vendored
+and gated against this one; correct a value here.
