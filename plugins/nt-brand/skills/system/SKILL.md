@@ -1,6 +1,6 @@
 ---
 name: system
-description: NoTambourine brand system - colors, type, spacing, component recipes, and voice. Use when building or styling anything NoTambourine-branded (site, landing page, mock, prototype, deck, email, README banner, slide), when asked for "the brand colors"/"brand tokens"/"our pink", or when a design needs to match notambourine.com. Ships tokens.css + components.css to drop straight in.
+description: NoTambourine brand system - colors, type, spacing, component recipes, voice, and the audit that checks work against them. Use when building or styling anything NoTambourine-branded (site, landing page, mock, prototype, deck, email, README banner, slide), when asked for "the brand colors"/"brand tokens"/"our pink", when a design needs to match notambourine.com, or when checking copy before it ships to a client - wordmark forms, ASCII punctuation, sentence case, and AI tells. Ships tokens.css + components.css to drop straight in.
 ---
 
 # NoTambourine brand
@@ -68,7 +68,7 @@ These are the rules that get broken. Check your output against them.
 - **One pink.** `#E75A7C` is the only accent. One pink CTA per screen. Mint (`#58C9B9`) is
   structural - borders, status dots, supporting icons - **never** a CTA.
 - **No gradients.** Not on sections, not on buttons, not on heroes. One radial halo behind
-  a hero wordmark is the sole exception, and it must read as lighting.
+  a hero lockup is the sole exception, and it must read as lighting.
 - **No stock photography, no AI imagery, no hand-drawn textures.** Imagery is flat,
   geometric, two-color. Ask for real assets before papering over.
 - **Pill buttons** (`--r-pill`), 14px cards (`--r-md`). Never mix a sharp and a round
@@ -78,7 +78,7 @@ These are the rules that get broken. Check your output against them.
   translate, no scale on hover, no parallax, no looping animation.
 - **No emoji in UI chrome, no icon fonts.** Icons are Lucide SVG, 1.75px stroke, rounded
   caps - 20px in nav/buttons, 24px in features, 16px in inputs.
-- **The wordmark is `notambourine` set in Nunito 800**, as SVG `<text>` - live text, not
+- **The lockup is `notambourine` set in Nunito 800**, as SVG `<text>` - live text, not
   a traced path. `--font-wordmark` exists for the lockup and nothing else; a heading that
   reaches for it is a bug. A distributable `logo.svg` inlines a ten-glyph Nunito subset as
   a data URI, because SVG-as-image is a sandbox that fetches no font at all - so that file
@@ -101,8 +101,14 @@ Concise, warm, playful - in that order.
   Reach for an adjective only where no number exists.
 - **Name the mess without blaming anyone for it.** The client lived every decision that
   built it. Copy that indicts them loses the room.
+- **Four wordmark forms, and only four.** `NoTambourine` in every human-facing sentence.
+  `notambourine` is the technical slug, correct only in a path, URL, domain, GitHub org,
+  npm name, or CSS class. `NoTambourine LLC` is the legal entity and appears twice at most
+  in a contract - the signature block and one Definitions anchor - and nowhere else.
+  `Notambourine` is not a valid form. The same rules are published for outside agents at
+  `notambourine.com/AGENTS.md`, so a disputed flag has a public citation.
 - **Sentence case everywhere** - headlines, buttons, nav, labels. "Get started", not
-  "Get Started". The wordmark is lowercase `notambourine`.
+  "Get Started". The lockup renders lowercase.
 - **ALL CAPS has one job:** the pink eyebrow above a heading, tracked `+0.08em`. Never a
   button, never body.
 - Five to twelve word sentences. No throat-clearing, no superlatives, no exclamation
@@ -150,7 +156,7 @@ Three brand fixtures read as tells and must survive the read:
   **Body and mono** JetBrains Mono 400. Monospace body is the practitioner signal; it is
   the point, not an accident. Every face is variable across its full axis, so no weight
   here is ever synthesized.
-- **The rounded wordmark carries the play; the headings stay sober.** The reader is a PE
+- **The rounded lockup carries the play; the headings stay sober.** The reader is a PE
   operating partner, so only the lockup gets to be warm.
 - Body runs `1.7` leading and `+0.01em` tracking. Monospace at a sans's 1.55 reads cramped.
 - Tracking tightens as size grows: `--ls-display` (-0.02em) is the floor, and hero type
@@ -161,6 +167,67 @@ Three brand fixtures read as tells and must survive the read:
 - 4pt grid. `--sp-16` between big blocks, `--sp-6` inside a card, `--sp-2` label-to-field.
   When unsure, add room.
 - The nav is the only sticky element. No sticky CTAs, chat bubbles, or cookie banners.
+
+## Audit copy against all of the above
+
+Run this over anything a client or a stranger sees before it ships: deck, proposal, SOW,
+cover email, README, landing page, release note. The greps are a first pass that finds
+candidates. Every hit needs the rules above to judge it, which is why they live in one
+file with them.
+
+```bash
+# Wordmark: lowercase in prose, outside code, paths, and URLs
+grep -nE '(^|[^/.\-_a-z`])notambourine([^/.\-_a-z`]|$)' <file>
+
+# Sentence case: never a valid form
+grep -n 'Notambourine' <file>
+
+# Legal entity, 2x max (signature block + Definitions anchor)
+grep -nc 'NoTambourine LLC' <file>
+
+# Em dash, en dash, curly quotes, single-char ellipsis. Interpunct deliberately absent.
+perl -CSD -ne 'print "$.:$_" if /[\x{2014}\x{2013}\x{2018}\x{2019}\x{201C}\x{201D}\x{2026}]/' <file>
+
+# Puffery adjectives
+grep -niE '\b(proven|world-class|battle-tested|results-driven|cutting-edge|best-in-class|seamless|robust|leverage|synergy|holistic|bespoke)\b' <file>
+
+# Participle tails: cut the sentence at the comma
+grep -niE ',\s+(ensuring|enabling|allowing|helping|driving|empowering|delivering|providing)\b' <file>
+
+# Importance-flagging and throat-clearing
+grep -niE "\b(this matters|it's worth noting|it is worth noting|needless to say|at the end of the day|in today's)\b" <file>
+
+# Exclamation marks in body, and first person
+grep -nE '!(\s|$)' <file>
+grep -nE '\bI\b' <file>
+```
+
+Perl rather than `grep -P` for the punctuation pass. Stock macOS `grep` is BSD and
+rejects `-P`, so that flag only works where someone installed GNU grep. Escapes rather
+than literal characters, so this file stays ASCII and never trips its own check.
+
+Across a directory, or a staged diff so a flag lands on work in progress:
+
+```bash
+grep -rnE '(^|[^/.\-_a-z`])notambourine([^/.\-_a-z`]|$)' <dir>/ --include='*.md'
+
+git diff --cached | grep -nE '^\+.*[^/.\-_a-z`]notambourine[^/.\-_a-z`]'
+git diff --cached | perl -CSD -ne 'print if /^\+.*[\x{2014}\x{2013}\x{2018}\x{2019}\x{201C}\x{201D}\x{2026}]/'
+```
+
+Then read for the two tells no grep finds: **grandiose scope**, and a **three-item line
+spending its slots on adjectives** rather than numbers. Leave the three fixtures above
+alone - they read as tells and stay.
+
+**Ignore:** the slug in frontmatter, paths, URLs, CSS classes, npm names, GH remotes, and
+anything inside a code fence or backticks (the wordmark pattern already excludes them). A
+puffery word used literally about a thing rather than as a boast - "a robust error path".
+`I` inside a quotation, a code identifier, or a name.
+
+**Judge a hit two ways.** For the wordmark: would a client reading this expect the
+wordmark or the slug? A path, URL, or identifier is the slug, so ignore it. For
+everything else: would cutting this weaken the claim? If the sentence survives the cut,
+the words were padding.
 
 ## Where truth lives
 
