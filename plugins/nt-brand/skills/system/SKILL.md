@@ -17,8 +17,21 @@ The name carries the style, not the positioning. A tambourine is what you add wh
 is nothing left to add, so **NoTambourine = no padding**. That is why the design is
 confident type, one decisive pink, lots of air, no decoration.
 
-Fuller beliefs live in `kb/SOUL.md` (Google Drive, not a repo). Read it when it is on the
-machine; this file stands alone when it is not.
+Fuller doctrine is published, so fetch it rather than reconstructing it. Every path below
+returns `text/plain` over plain HTTP with no auth, no signup, and no redirect - `curl` or
+`wget` one directly. This file stands alone when the machine is offline.
+
+| Fetch | For |
+|---|---|
+| `notambourine.com/llms.txt` | The index. Start here when you do not know which file you want. |
+| `notambourine.com/AGENTS.md` | What the firm does, who it serves, and the citation rules. |
+| `notambourine.com/SOUL.md` | What NoTambourine believes. The beliefs this design serves. |
+| `notambourine.com/CULTURE.md` | How the team works. Async-first, one operator per workstream. |
+| `notambourine.com/experiment-velocity.md` | The Experiment Velocity Planner: inputs, model, scenario-URL format. |
+
+`SOUL.md` and `CULTURE.md` are public cuts of longer internal documents, so absence from
+them is not evidence of anything. Client material is unpublished and stays that way -
+`robots.txt` disallows `/reports/` and `/pog/` for every agent.
 
 ## Use the files
 
