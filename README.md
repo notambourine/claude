@@ -8,7 +8,7 @@ claude plugin marketplace add notambourine/claude
 claude plugin install nt-brand@notambourine --scope user
 ```
 
-Slash commands are namespaced by plugin: `/nt-brand:check`. Namespacing is
+Slash commands are namespaced by plugin: `/nt-brand:system`. Namespacing is
 exactly two segments, so a subdirectory under `skills/` adds nothing to the name.
 
 ## Naming: plugins in this repo start with `nt-`
@@ -27,7 +27,7 @@ repo drops the prefix with the move.
 
 | Plugin | Lives in | For |
 | --- | --- | --- |
-| `nt-brand` | this repo | Brand source of truth: the token, component, font, and voice system, plus the audit that checks copy against the wordmark rules. |
+| `nt-brand` | this repo | Brand source of truth: the token, component, font, and voice system, plus the audit that checks work against it. |
 | `wormhook` | [notambourine/wormhook](https://github.com/notambourine/wormhook) | Blocks npm/PyPI supply-chain malware at the hook. Ships hooks, so it stands alone. |
 | `qrspi` | [notambourine/qrspi](https://github.com/notambourine/qrspi) | GitHub-native Query, Research, Spec, Plan, Implement workflow. |
 
@@ -94,11 +94,17 @@ Every repo this catalog points at is public, so https needs no credential at all
 and works on a fresh machine and on a client's laptop. The `github:owner/repo`
 string shorthand is a third form, and it does not validate at all.
 
-## One rule for grouping: hooks force a split
+## Grouping: hooks force a split, shared rules force a merge
 
 A skill is lazy. It costs one description line of context and activates only when
 its trigger matches, so grouping several in one plugin is close to free. A hook
 runs every session whether the person wanted it or not.
+
+The opposite mistake is a split that should never have happened. A skill that has
+to load another skill before it can do its job is not a skill, it is a section of
+one. `nt-brand` shipped `check` alongside `system` until `check` opened with
+"read `system` first" and duplicated three of its paragraphs. Two descriptions
+stayed resident to describe one thing. Merge on that signal.
 
 So group skills by audience, and give any plugin that ships a hook its own
 plugin. Nobody installing a set of skills should inherit a `SessionStart` hook
@@ -127,8 +133,8 @@ Then add the row to `plugins` in `.claude-plugin/marketplace.json` with
 match, so write it once and copy it.
 
 Do not repeat the plugin name in the skill name. The command is two segments, so
-`nt-brand` plus a `brand-check` skill reads `/nt-brand:brand-check`. Name the
-skill for the verb alone: `check`.
+`nt-brand` plus a `brand-system` skill reads `/nt-brand:brand-system`. Name the
+skill for the noun or verb alone: `system`.
 
 External, for a plugin that ships from its own repo: add the row with an https
 `url` source and copy the description from that repo's `plugin.json`. Nothing
