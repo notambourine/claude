@@ -41,6 +41,12 @@ jobs:
       - name: Verify vendored skill merge base
         run: node scripts/vendor-skills.mjs verify
 
+      # A SKILL.md is prose an agent runs verbatim, and nothing else here puts it
+      # through a shell. This is the only gate between a macOS-only invocation and a
+      # teammate on Windows or Linux running it.
+      - name: Check portable shell in first-party skills
+        run: node scripts/check-portable.mjs
+
       # Every plugin that lives here is nt-prefixed, so `/nt-` lists this
       # practice's commands and nothing else. A remote row is named for what it
       # does, because an outside user finds it by that name, not by our prefix.
@@ -77,3 +83,25 @@ jobs:
           done < <(jq -r '.plugins[] | select(.source | type == "string")
                           | "\(.name) \(.source)"' .claude-plugin/marketplace.json)
           exit $fail
+
+  # The practice runs on macOS and CI runs on Linux, so a Windows teammate is the one
+  # person no other job stands in for. This runner is what makes the two Windows
+  # contracts fail loudly: .gitattributes keeping the checkout at LF, and the vendoring
+  # script keying its trees by forward slash whatever node:path reports.
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Verify vendored skill merge base
+        run: node scripts/vendor-skills.mjs verify
+
+      - name: Check portable shell in first-party skills
+        run: node scripts/check-portable.mjs
