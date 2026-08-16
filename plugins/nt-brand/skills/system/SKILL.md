@@ -27,7 +27,6 @@ returns `text/plain` over plain HTTP with no auth, no signup, and no redirect - 
 | `notambourine.com/AGENTS.md` | What the firm does, who it serves, and the citation rules. |
 | `notambourine.com/SOUL.md` | What NoTambourine believes. The beliefs this design serves. |
 | `notambourine.com/CULTURE.md` | How the team works. Async-first, one operator per workstream. |
-| `notambourine.com/experiment-velocity.md` | The Experiment Velocity Planner: inputs, model, scenario-URL format. |
 
 `SOUL.md` and `CULTURE.md` are public cuts of longer internal documents, so absence from
 them is not evidence of anything. Client material is unpublished and stays that way -
