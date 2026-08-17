@@ -9,6 +9,10 @@ updates:
   # No cooldown and a daily interval, unlike the actions block below. That one
   # waits out a supply-chain window on code from strangers. This is a repo we
   # own, and a brand correction is worth nothing sitting in a queue.
+  #
+  # No security-updates group either: that half runs off Dependabot alerts, and
+  # gitsubmodule raises none - the graph records a commit SHA, not a version an
+  # advisory can match. The group would be config that never fires.
   - package-ecosystem: gitsubmodule
     directory: /
     schedule:
