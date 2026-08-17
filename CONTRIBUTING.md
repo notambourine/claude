@@ -64,6 +64,7 @@ plugins/nt-<name>/
   .claude-plugin/plugin.json     name, description, author, license
   skills/<skill>/SKILL.md        YAML frontmatter plus a body
   skills/<skill>/<assets>        anything the skill hands over, read on demand
+  output-styles/<name>.md        optional, auto-loaded, see below
 ```
 
 A skill directory can carry files, not just prose. `nt-brand`'s `system` skill
@@ -91,6 +92,20 @@ git@github.com: Permission denied (publickey).
 Every repo this catalog points at is public, so https needs no credential and works
 on a fresh machine or a client's laptop. The `github:owner/repo` string shorthand is
 a third form, and it does not validate at all.
+
+## Output styles
+
+A plugin's `output-styles/` directory is auto-loaded, so a `.md` there needs no
+`plugin.json` entry. Name the style in frontmatter (`name`, `description`), and
+set `keep-coding-instructions: true` unless the style is meant to replace the
+default coding instructions rather than sit alongside them.
+
+An output style is an option, never a default. Installing the plugin adds it to
+the `/config` picker; nothing switches to it until someone chooses it or a
+settings file names it in `outputStyle`.
+
+Unlike a skill, a style's whole body is resident once selected. That is the
+opposite of the skill economics above, so keep one short and ship few.
 
 ## The brand system is a submodule
 
