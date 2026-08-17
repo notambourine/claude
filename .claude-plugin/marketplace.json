@@ -15,7 +15,7 @@
     {
       "name": "nt-dev",
       "source": "./plugins/nt-dev",
-      "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the org template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context."
+      "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the org template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context, and the Attentive output style trades asking for acting, then reports what changed."
     },
     {
       "name": "nt-vendor",
@@ -24,17 +24,26 @@
     },
     {
       "name": "wormhook",
-      "source": { "source": "url", "url": "https://github.com/notambourine/wormhook.git" },
+      "source": {
+        "source": "url",
+        "url": "https://github.com/notambourine/wormhook.git"
+      },
       "description": "Blocks npm/PyPI supply-chain malware and agent-hijack persistence at the Claude Code hook — before it can run."
     },
     {
       "name": "qrspi",
-      "source": { "source": "url", "url": "https://github.com/notambourine/qrspi.git" },
+      "source": {
+        "source": "url",
+        "url": "https://github.com/notambourine/qrspi.git"
+      },
       "description": "GitHub-native structured feature development: Query, Research, Spec, Plan, Implement."
     },
     {
       "name": "nt-share",
-      "source": { "source": "url", "url": "https://github.com/notambourine/share.git" },
+      "source": {
+        "source": "url",
+        "url": "https://github.com/notambourine/share.git"
+      },
       "description": "Share a file, folder, or screenshot as one branded, unguessable link on share.notambourine.com. Browsers get a rendered page, curl and Slack unfurls get raw bytes from the same URL. Needs a NoTambourine-issued token."
     }
   ]

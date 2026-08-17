@@ -28,13 +28,39 @@ plugin added since your last run.
 | Plugin | Commands | What it does |
 | --- | --- | --- |
 | `nt-brand` | `/nt-brand:system` | Colors, type, spacing, component CSS, a Marpit deck theme, and the voice rules, plus the audit that checks work against them. Native CSS with no build step, so it drops into a page, a Worker, or a React app. |
-| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:recall` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, reads a prior session in this repo back into context. |
+| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:recall` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, reads a prior session in this repo back into context. Also ships the `Attentive` output style, below. |
 | `nt-vendor` | `/nt-vendor:humanizer` `/nt-vendor:anti-slop` `/nt-vendor:codebase-design` and three more | Skills mirrored whole from other people's repos, kept under a prefix that says so. |
 | `nt-share` | `/nt-share:share` | Turns a file, folder, or screenshot into one branded unguessable link. Browsers get a rendered page, `curl` and Slack unfurls get raw bytes from the same URL. Needs a NoTambourine-issued token. |
 | `wormhook` | runs as a hook | Blocks npm and PyPI supply-chain malware, and the rogue hooks and MCP entries that malware writes to persist, before any of it executes. Local and zero-network. |
 | `qrspi` | `/qrspi:query` through `/qrspi:implement` | Feature work as five tracked stages on a GitHub Project board: query, research, spec, plan, implement. |
 
 Commands are namespaced by plugin, always two segments: `/nt-brand:system`.
+
+## The Attentive output style
+
+`nt-dev` ships one output style. Installing the plugin only puts it in the
+picker; pick it under `/config` → Output style, or name it in settings:
+
+```json
+{ "outputStyle": "Attentive" }
+```
+
+It merges two halves that usually ship apart. From the built-in `Proactive`
+style it takes the license to act: start the work, assume rather than interrupt,
+and stop only at a step that destroys data or sends your information outward.
+On top of that it puts a reporting contract, because a Claude that works ahead
+of you is *reporting*, not answering. It leads with what changed, never lets
+"done" outrun the evidence, and says what it skipped and why.
+
+Pick it when you want Claude working unattended. `Proactive` alone acts fast but
+hands back whatever shape it likes; `Attentive` acts just as fast and makes the
+handback readable.
+
+Credit where it is due: the attention-protection half is our own clean-room
+write-up of ideas from Alex Greenshtein's
+[attention-span](https://github.com/alexgreensh/attention-span). No text was
+copied, so this stays MIT while the original is AGPL-3.0. If you want the
+original rather than our merge, install it from that repo.
 
 ## Turning plugins on and off
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
   "name": "nt-dev",
-  "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the org template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context.",
+  "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the org template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context, and the Attentive output style trades asking for acting, then reports what changed.",
   "author": {
     "name": "NoTambourine LLC",
     "url": "https://notambourine.com"
