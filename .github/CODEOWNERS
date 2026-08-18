@@ -1,9 +1,11 @@
 # Merging a diff into one of these dirs changes what the next session or CI run
 # executes: a settings.json hook, a workflow, an editor task. No leading slash on
 # any pattern, so a config dir added at a new depth is owned from its first commit.
-# This repo tracks no dependency manifest or lockfile; add one and it belongs here.
+# A manifest or lockfile belongs here for the same reason: it picks the code CI runs.
 
 .claude/ @tomfuertes
 .agents/ @tomfuertes
 .vscode/ @tomfuertes
 .github/ @tomfuertes
+package.json @tomfuertes
+package-lock.json @tomfuertes
