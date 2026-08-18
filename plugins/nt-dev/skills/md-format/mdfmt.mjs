@@ -16,7 +16,14 @@
    A whole tree opts out through `excludes` in the repo's own dprint.json.
 */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,6 +46,7 @@ anything uncommitted or newly added.
 Options:
   --width <n>          wrap column, e.g. 80 or 120 or 200
   --width never        no wrapping - one physical line per paragraph
+  --nowrap             same as --width never; the form a PR body wants
   --width keep         leave existing line breaks alone, fix structure only
   --base <ref>         branch to diff against (default: the remote's HEAD)
   --exclude <glob>     skip matching paths, repeatable
@@ -71,6 +79,7 @@ for (let i = 0; i < argv.length; i += 1) {
     console.log(USAGE);
     process.exit(0);
   } else if (a === '--width' || a === '--wrap') opts.width = next();
+  else if (a === '--nowrap') opts.width = 'never';
   else if (a === '--base') opts.base = next();
   else if (a === '--exclude') opts.excludes.push(next());
   else if (a === '--config') opts.config = next();
@@ -143,10 +152,22 @@ if (opts.staged) {
   });
 }
 
+/* Real paths, not the ones handed in: dprint compares a file argument against its working
+   directory as text, so on macOS a `mktemp` path under /var and a cwd under /private/var
+   look like different trees and the file is dropped without a word. */
+const real = (p) => {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
+};
+
 const files = [...new Set(paths)]
   .filter((p) => MD.test(p))
   .map((p) => (isAbsolute(p) ? p : join(root, p)))
-  .filter((p) => existsSync(p));
+  .filter((p) => existsSync(p))
+  .map(real);
 
 if (opts.mode === 'list') {
   files.forEach((f) => console.log(f));
@@ -223,16 +244,36 @@ function cli() {
 }
 
 const [bin, prefix] = cli();
-const args = [
-  ...prefix,
-  opts.mode === 'fmt' ? 'fmt' : 'check',
-  '--config',
-  configPath,
-  '--config-discovery=false',
-  '--allow-no-files',
-];
-if (cliExcludes.length) args.push('--excludes-override', ...cliExcludes.map(absolute));
-args.push('--', ...files);
+
+/* dprint walks down from its working directory and drops any path above it without a
+   word, so a file outside the repo needs its own run rooted at its own directory. That
+   is the scratch-file case: a PR body in a temp dir, formatted before it is posted. */
+const realRoot = real(root);
+const byCwd = new Map();
+for (const file of files) {
+  const inside = !relative(realRoot, file).startsWith('..');
+  const cwd = inside ? realRoot : dirname(file);
+  if (!byCwd.has(cwd)) byCwd.set(cwd, []);
+  byCwd.get(cwd).push(file);
+}
+
+function run(cwd, group) {
+  const args = [
+    ...prefix,
+    opts.mode === 'fmt' ? 'fmt' : 'check',
+    '--config',
+    configPath,
+    '--config-discovery=false',
+    '--allow-no-files',
+  ];
+  if (cliExcludes.length) args.push('--excludes-override', ...cliExcludes.map(absolute));
+  args.push('--', ...group);
+  const r = spawnSync(bin, args, { cwd, stdio: 'inherit' });
+  if (r.error) die(`could not run ${bin}: ${r.error.message}`);
+  /* dprint exits 20 from `check` when a file would change. That is this script's one, not
+     a crash. */
+  return r.status === 20 ? 1 : (r.status ?? 2);
+}
 
 const width =
   opts.width ?? `${base.markdown?.lineWidth ?? 80} (${base.markdown?.textWrap ?? 'maintain'})`;
@@ -240,8 +281,6 @@ console.log(
   `md-format: ${files.length} file(s), ${source}, width ${width}, config ${configPath}`,
 );
 
-const run = spawnSync(bin, args, { cwd: root, stdio: 'inherit' });
-if (run.error) die(`could not run ${bin}: ${run.error.message}`);
-/* dprint exits 20 from `check` when a file would change. That is this script's one, not
-   a crash. */
-process.exit(run.status === 20 ? 1 : (run.status ?? 2));
+let status = 0;
+for (const [cwd, group] of byCwd) status = run(cwd, group) || status;
+process.exit(status);
