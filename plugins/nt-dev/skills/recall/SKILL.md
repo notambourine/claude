@@ -6,6 +6,9 @@ allowed-tools:
   - Read
 ---
 
+<!-- dprint-ignore-file -->
+<!-- Unwrapped on purpose: one paragraph is one physical line, and the agent mirrors it. -->
+
 # recall - desire-path into prior session context
 
 The user is referencing a past session you don't remember. Past sessions for the current repo live as JSONL files under `~/.claude/projects/<cwd-with-slashes-as-dashes>/`. Walk them, pull text into context, then respond.

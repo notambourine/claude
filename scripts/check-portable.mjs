@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-const SCANNED = /^(plugins\/.+\.md|scripts\/.+\.mjs)$/;
+const SCANNED = /^(plugins\/.+\.(md|mjs)|scripts\/.+\.mjs)$/;
 const SKIPPED = /^plugins\/nt-vendor\/skills\//;
 const SELF = 'scripts/check-portable.mjs';
 

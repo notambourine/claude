@@ -5,6 +5,8 @@ allowed-tools: Bash, Read, Write, Glob
 argument-hint: "[--ready] [pr-number-to-edit]"
 ---
 
+<!-- dprint-ignore-file -->
+
 # pr - write the body, then open the PR
 
 This file is written unwrapped on purpose. Every paragraph and bullet below is one physical line, however long it runs, because a PR body must be written the same way and you will mirror whatever shape you read here.
