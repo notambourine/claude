@@ -5,6 +5,8 @@ allowed-tools: Bash, Read, Write, Glob
 argument-hint: "[--ready] [pr-number-to-edit]"
 ---
 
+<!-- dprint-ignore-file -->
+
 # pr - write the body, then open the PR
 
 This file is written unwrapped on purpose. Every paragraph and bullet below is one physical line, however long it runs, because a PR body must be written the same way and you will mirror whatever shape you read here.
@@ -46,7 +48,14 @@ GitHub renders a single newline as `<br>`, so prose wrapped at 80 columns comes 
 
 - This outranks every other formatting habit you carry into the file, including the 80-column norm for source and the one-instruction-per-sentence rule for prose. Those govern a file a diff reads; this governs a page a browser renders.
 - A continuation line indented under a bullet or a checkbox is worse than ragged. Four spaces of indent makes GitHub render it as a code block, so `- [x] zizmor clean` with an indented parenthetical under it comes out as a grey box.
-- Read the finished body file back before you post it. Every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box - nothing else.
+
+Then stop trusting yourself about it and run the formatter over the finished file, before `gh` ever sees it. It joins every wrapped paragraph and pulls every indented continuation back onto its bullet, and it leaves fenced code, tables, and frontmatter alone:
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY"
+```
+
+The body file has to end in `.md` for the formatter to pick it up, which step 5 handles. Read it back afterward: every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box - nothing else.
 
 ## 3. Fill it
 
@@ -80,8 +89,9 @@ The endpoint is undocumented and carries no deprecation contract. On a 422 or a 
 Write the body to a file. A multi-section body passed as a `--body` string loses its newlines, and `\n` escapes reach GitHub literally.
 
 ```bash
-BODY=$(mktemp)
+BODY="$(mktemp -d)/pr-body.md"
 # ...write the filled template to "$BODY"...
+node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY"
 gh pr create --draft --title "<subject>" --body-file "$BODY"
 ```
 
