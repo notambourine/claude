@@ -58,7 +58,24 @@ The template's own comments say what each section wants; read them rather than g
 
 **A diagram is optional, and one is the maximum.** Reach for mermaid only when the change is a shape a sentence cannot hold - a flow, a lifecycle, an order of calls across actors. If Before and After would hold the same boxes and only a label differs, write the sentence instead. When you do draw one, put both states in a single fenced block as two subgraphs so they render at the same scale, keep each under about six nodes, quote any label holding punctuation (`L["len(str)"]`), and give the two sides distinct node ids. Validate it with `maid "$BODY"` if that tool is on PATH; a block that fails to parse renders as a red error box, which is worse than no diagram at all.
 
-## 4. Open it
+## 4. Screenshots
+
+Upload the file, embed the URL it returns. Never commit a screenshot, never open a branch of PNGs, and never reach for a third-party image host - the first two pollute history and render broken on a private repo, the third leaks the shot. Needs `jq`.
+
+```bash
+FILE=shot.png; REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+URL=$(curl -s -X POST \
+  "https://uploads.github.com/user-attachments/assets?name=$(basename "$FILE")&content_type=image/png&repository_id=$(gh api "repos/$REPO" --jq .id)" \
+  -H "Authorization: Bearer $(gh auth token)" \
+  -H "Accept: application/json" \
+  --data-binary "@$FILE" | jq -r .url)
+```
+
+That is the same URL the web UI's drag-and-drop produces, so a private repo's access control comes with it. Put `![before]($URL)` in the body file, or `gh pr comment <n> --body "![before]($URL)"` after the fact.
+
+The endpoint is undocumented and carries no deprecation contract. On a 422 or a 404 the token is not the problem, the endpoint moved: fall back to `gh release create pr-<n>-shots --prerelease "$FILE"`, embed the asset's `browser_download_url`, and delete the release when the PR merges.
+
+## 5. Open it
 
 Write the body to a file. A multi-section body passed as a `--body` string loses its newlines, and `\n` escapes reach GitHub literally.
 
