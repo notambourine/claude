@@ -2,24 +2,23 @@
 # minor+patch grouped into one PR, majors individual, cooldown-gated.
 version: 2
 updates:
-  # plugins/nt-brand/skills/system -> notambourine/brand-kit, the golden set.
-  # The bump PR is the whole update: the skill directory is the submodule, so
-  # moving the pin moves the bytes an install ships.
+  # @notambourine/brand-kit, the golden set behind the nt-brand system skill.
+  #
+  # Dependabot only moves the pin. The bytes an install ships live in
+  # plugins/nt-brand/skills/system/, so every bump PR needs `npm run brand:sync`
+  # committed on top of it or `npm run brand` fails the PR.
   #
   # No cooldown and a daily interval, unlike the actions block below. That one
-  # waits out a supply-chain window on code from strangers. This is a repo we
-  # own, and a brand correction is worth nothing sitting in a queue.
-  #
-  # No security-updates group either: that half runs off Dependabot alerts, and
-  # gitsubmodule raises none - the graph records a commit SHA, not a version an
-  # advisory can match. The group would be config that never fires.
-  - package-ecosystem: gitsubmodule
+  # waits out a supply-chain window on code from strangers. This is a package we
+  # publish, and a brand correction is worth nothing sitting in a queue.
+  - package-ecosystem: npm
     directory: /
     schedule:
       interval: daily
       time: "09:00"
       timezone: America/Chicago
     open-pull-requests-limit: 1
+    versioning-strategy: increase
 
   - package-ecosystem: github-actions
     directory: /

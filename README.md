@@ -85,7 +85,7 @@ ships alone.
 ## Working on these plugins
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for the layout, the naming rule, how to
-add a plugin, and how the vendored and submoduled content is kept honest.
+add a plugin, and how the mirrored content is kept honest.
 
 ## License
 

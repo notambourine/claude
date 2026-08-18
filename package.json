@@ -1,0 +1,14 @@
+{
+  "name": "notambourine-claude",
+  "private": true,
+  "description": "Claude Code plugin marketplace for the NoTambourine consulting practice.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "brand": "node scripts/brand-kit.mjs verify",
+    "brand:sync": "node scripts/brand-kit.mjs sync"
+  },
+  "dependencies": {
+    "@notambourine/brand-kit": "1.0.0"
+  }
+}

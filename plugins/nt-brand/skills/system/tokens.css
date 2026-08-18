@@ -1,0 +1,19 @@
+/* =========================================================
+   NoTambourine: the whole system in one link
+   ---------------------------------------------------------
+   The golden set, composed. Link this file and a bare HTML
+   page comes out on brand: the faces load, every value is a
+   custom property, and h1/p/a/code are styled with no classes.
+
+   The name says it all: no extra noise. Sober sans headlines over
+   a monospace body, a rounded wordmark, generous whitespace, one
+   decisive pink, and a mint that hums quietly in the back.
+
+   A surface that ships its own faces and its own base layer -
+   a Tailwind site, say - imports vars.css alone and takes the
+   values without the opinions.
+   ========================================================= */
+
+@import './fonts.css';
+@import './vars.css';
+@import './elements.css';

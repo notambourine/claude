@@ -39,9 +39,7 @@ const RULES = [
   { re: /\bC:\\\\?[Uu]sers\\/, why: 'absolute path from one machine' },
 ];
 
-// --recurse-submodules: nt-brand's system skill is the brand-kit submodule, and a
-// plain ls-files stops at its gitlink, so the SKILL.md inside would go unscanned.
-const files = spawnSync('git', ['ls-files', '--recurse-submodules'], { cwd: root, encoding: 'utf8' })
+const files = spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' })
   .stdout.split('\n')
   .filter((p) => SCANNED.test(p) && !SKIPPED.test(p) && p !== SELF);
 
