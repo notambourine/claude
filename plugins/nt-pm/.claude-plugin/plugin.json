@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
   "name": "nt-pm",
-  "description": "Plain-English deploy notes for Slack: /nt-pm:shipped summarizes what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, read from the reflog), grouped by category for a non-technical audience. Never posts, never deploys.",
+  "description": "Plain-English status updates for a non-technical audience: /nt-pm:shipped summarizes what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, read from the reflog), grouped by category; /nt-pm:weekly-recap summarizes the week's merged, in-review, and in-progress work across the whole team. Never posts, never deploys.",
   "author": {
     "name": "NoTambourine LLC",
     "url": "https://notambourine.com"
