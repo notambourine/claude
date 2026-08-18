@@ -1,4 +1,0 @@
-[submodule "plugins/nt-brand/skills/system"]
-	path = plugins/nt-brand/skills/system
-	url = https://github.com/notambourine/brand-kit.git
-	branch = main

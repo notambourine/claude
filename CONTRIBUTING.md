@@ -107,27 +107,37 @@ settings file names it in `outputStyle`.
 Unlike a skill, a style's whole body is resident once selected. That is the
 opposite of the skill economics above, so keep one short and ship few.
 
-## The brand system is a submodule
+## The brand system is a mirror of a published package
 
 `plugins/nt-brand/skills/system/` is
-[notambourine/brand-kit](https://github.com/notambourine/brand-kit): the
-stylesheets, the deck theme, the logo set, the self-hosted woff2 faces, and a
-`hello-world.html` that renders on brand from `file://`.
+[`@notambourine/brand-kit`](https://www.npmjs.com/package/@notambourine/brand-kit)
+unpacked: the stylesheets, the deck theme, the logo set, and the self-hosted
+woff2 faces.
+
+The bytes are committed, which is the one place this repo copies a dependency
+instead of reading it. Claude Code finds a skill by walking
+`plugins/<plugin>/skills/<name>/SKILL.md` in the checked-out tree and a plugin
+install runs no npm, so `node_modules/` is absent on every machine that installs
+`nt-brand`. A path into it would make the skill read empty for everyone.
 
 ```bash
-git submodule update --init   # after a fresh clone, or the skill reads empty
+npm ci
+npm run brand        # mirror still matches the pinned package?
+npm run brand:sync   # write the pinned package over the mirror
 ```
 
-A marketplace install runs that for you, so the skill ships whole.
+`npm run brand` is a CI gate on Linux and Windows. It byte-compares the mirror
+against the installed tarball and fails on a changed, missing, or stray file, so
+a hand-edited token or a drifted font byte cannot ship. It also fails a range
+pin: a caret would move the brand with no diff to review.
 
-The kit is its own repo because three surfaces read it and Dependabot tracks a
-repo, not a subtree. Pinned here, in `notambourine/share`, and in the site, each
-bump PR is about the brand and nothing else.
+Dependabot bumps the pin daily and only the pin, so a bump PR needs
+`npm run brand:sync` committed on top of it before the gate passes.
 
-Correct a value in `brand-kit` and never sync one in. Anything that disagrees is
-downstream and stale, however it renders. Build against the semantic layer
-(`--bg`, `--fg1`, `--accent`, `--sp-*`, `--r-*`) rather than the `--nt-*` palette
-beneath it.
+Correct a value in `brand-kit`, release, then bump here. Never edit the mirror.
+Anything that disagrees is downstream and stale, however it renders. Build
+against the semantic layer (`--bg`, `--fg1`, `--accent`, `--sp-*`, `--r-*`)
+rather than the `--nt-*` palette beneath it.
 
 ## Vendored skills
 

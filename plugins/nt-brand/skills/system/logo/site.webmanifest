@@ -1,0 +1,13 @@
+{
+  "name": "NoTambourine",
+  "short_name": "NoTambourine",
+  "theme_color": "#0B0B0C",
+  "background_color": "#0B0B0C",
+  "display": "standalone",
+  "icons": [
+    {"src": "export/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "export/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "export/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    {"src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
+  ]
+}

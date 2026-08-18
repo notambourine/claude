@@ -16,9 +16,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          # nt-brand's system skill is the brand-kit submodule. Without this the
-          # skill directory is empty and `claude plugin validate` finds no SKILL.md.
-          submodules: true
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -31,12 +28,23 @@ jobs:
       - name: Install Claude Code CLI
         run: sfw npm install -g @anthropic-ai/claude-code
 
+      # Fetches the pinned brand-kit tarball, which is what `npm run brand` below
+      # compares the committed mirror against.
+      - name: Install dependencies
+        run: sfw npm ci
+
       # Schema-validates marketplace.json, plugin.json, and skill/agent/hook
       # frontmatter. Runs without --strict on purpose: this plugin ships no
       # version field by design, and --strict promotes that "no version"
       # warning to a hard error. Genuine schema errors still fail the step.
       - name: Validate plugin + marketplace schema
         run: claude plugin validate .
+
+      # A plugin install runs no npm, so nt-brand's skill directory has to be committed
+      # bytes. This is the only thing standing between a hand-edit there and a brand the
+      # published package never said - a stale token or a drifted font byte.
+      - name: Verify brand-kit mirror
+        run: npm run brand
 
       # Offline half of the vendoring contract: vendor/pristine must still hash to the
       # manifest pins, so the merge base a `pull` reads is the bytes it was cut from.
@@ -89,8 +97,8 @@ jobs:
 
   # The practice runs on macOS and CI runs on Linux, so a Windows teammate is the one
   # person no other job stands in for. This runner is what makes the two Windows
-  # contracts fail loudly: .gitattributes keeping the checkout at LF, and the vendoring
-  # script keying its trees by forward slash whatever node:path reports.
+  # contracts fail loudly: .gitattributes keeping the checkout at LF, and the mirror
+  # scripts keying their trees by forward slash whatever node:path reports.
   windows:
     runs-on: windows-latest
     timeout-minutes: 5
@@ -98,11 +106,16 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          submodules: true
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify brand-kit mirror
+        run: npm run brand
 
       - name: Verify vendored skill merge base
         run: node scripts/vendor-skills.mjs verify
