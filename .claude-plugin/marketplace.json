@@ -18,6 +18,11 @@
       "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the org template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context, and the Attentive output style trades asking for acting, then reports what changed."
     },
     {
+      "name": "nt-pm",
+      "source": "./plugins/nt-pm",
+      "description": "Plain-English deploy notes for Slack: /nt-pm:shipped summarizes what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, read from the reflog), grouped by category for a non-technical audience. Never posts, never deploys."
+    },
+    {
       "name": "nt-vendor",
       "source": "./plugins/nt-vendor",
       "description": "Third-party skills mirrored whole from their upstream repos, kept here so our own skills can call them by name. The nt-vendor prefix marks every skill in it as someone else's work."

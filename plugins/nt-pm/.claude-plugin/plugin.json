@@ -1,0 +1,11 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "nt-pm",
+  "description": "Plain-English deploy notes for Slack: /nt-pm:shipped summarizes what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, read from the reflog), grouped by category for a non-technical audience. Never posts, never deploys.",
+  "author": {
+    "name": "NoTambourine LLC",
+    "url": "https://notambourine.com"
+  },
+  "repository": "https://github.com/notambourine/claude",
+  "license": "MIT"
+}
