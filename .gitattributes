@@ -1,10 +1,11 @@
 # Git for Windows defaults to core.autocrlf=true. Without these rules a Windows checkout
-# rewrites every line ending, and `vendor-skills.mjs verify` reports the whole mirror as
-# drifted because the manifest digests hash the bytes upstream published.
+# rewrites every line ending, and a mirror verify reports the whole tree as drifted
+# because it hashes the bytes the source published.
 
 * text=auto eol=lf
 *.woff2 binary
 
-# Vendored trees round-trip verbatim: no normalization in either direction.
+# Mirrored trees round-trip verbatim: no normalization in either direction.
 vendor/pristine/** -text
 plugins/nt-vendor/skills/** -text
+plugins/nt-brand/skills/system/** -text

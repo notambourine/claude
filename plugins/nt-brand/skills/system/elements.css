@@ -1,0 +1,100 @@
+/* =========================================================
+   NoTambourine: semantic element styles
+   ---------------------------------------------------------
+   Part of the golden set. Reads vars.css and styles bare HTML,
+   so a page that links tokens.css comes styled with no classes.
+   A surface with its own base layer imports vars.css instead.
+   ========================================================= */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg2);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 700, not 400. A serif holds a headline at regular weight and a sans
+   goes limp, so Hanken Grotesk needs the weight to read as deliberate
+   rather than unstyled. 800 is the hero's, which keeps .display distinct
+   from an ordinary h1. */
+h1, h2, h3, h4, .display {
+  font-family: var(--font-display);
+  color: var(--fg1);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-h);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.display     { font-size: var(--fs-display); line-height: var(--lh-display);
+               letter-spacing: var(--ls-display); font-weight: var(--fw-black); }
+h1           { font-size: var(--fs-h1); }
+h2           { font-size: var(--fs-h2); }
+h3           { font-size: var(--fs-h3); }
+h4           { font-size: var(--fs-h4); }
+
+p            { font-size: var(--fs-body); line-height: var(--lh-body);
+               color: var(--fg2); margin: 0; text-wrap: pretty; }
+.lede        { font-size: var(--fs-lede); line-height: var(--lh-lede); color: var(--fg2); }
+small        { font-size: var(--fs-caption); color: var(--fg3); }
+/* Sentence-case supporting label, used under a heading or over a logo wall.
+   The sentence-case counterpart to .eyebrow; never ALL CAPS. */
+.caption     { font-size: var(--fs-caption); color: var(--fg3);
+               font-family: var(--font-accent); font-weight: var(--fw-medium); }
+.eyebrow     { font-size: var(--fs-caption); letter-spacing: var(--ls-allcaps);
+               text-transform: uppercase; color: var(--accent-text);
+               font-weight: var(--fw-semibold); font-family: var(--font-accent); }
+
+/* One pink word per headline. Hanken Grotesk ships a drawn italic, so
+   the emphasis gets both the accent and a real slant, never a faked skew. */
+h1 em, h2 em, .display em { color: var(--accent-text); font-style: italic; }
+
+/* Pink links are for prose. Links in chrome (nav, footer, buttons,
+   a logo lockup) set `color: inherit` and take their color from
+   the component. */
+a            { color: var(--accent-text); text-decoration: none;
+               border-bottom: 1.5px solid transparent;
+               transition: border-color var(--dur-2) var(--ease-out); }
+a:hover      { border-bottom-color: var(--accent-text); }
+
+/* Never ship without this. Pink ring, offset so it clears a pill.
+   The outline traces the element's own corners, so no radius here: at
+   (0,1,1) this rule outranks a component class and would square a pill. */
+a:focus-visible, button:focus-visible,
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+[role='switch']:focus-visible, [role='checkbox']:focus-visible,
+[role='radio']:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+/* Links have no radius of their own to trace. */
+a:focus-visible { border-radius: var(--r-xs); }
+
+code, kbd, pre { font-family: var(--font-mono); font-size: var(--fs-mono); }
+code         { background: var(--accent-soft); color: var(--accent-fg);
+               padding: 2px 6px; border-radius: var(--r-xs); }
+
+hr           { border: 0; border-top: 1px solid var(--line); margin: var(--sp-8) 0; }
+
+::selection  { background: var(--accent); color: var(--fg-on-pink); }
+
+/* "No looping animation" needs a mechanism, not just a rule.
+   Entrance animations resolve to their final state rather than
+   being skipped, so nothing stays invisible. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* The light-theme token remap lives in vars.css, so the vars-alone
+   import path carries both themes. This only applies the ground. */
+.theme-light { background: var(--bg); color: var(--fg2); }

@@ -1,0 +1,66 @@
+/* =========================================================
+   NoTambourine: the six self-hosted faces
+   ---------------------------------------------------------
+   Part of the golden set. Loaded through tokens.css; import
+   this file alone when a surface already ships its own faces
+   and wants only vars.css.
+   ========================================================= */
+
+/* Three faces, three jobs. Nunito is the wordmark only, so the
+   lockup matches the rounded geometric sans in the raster logo.
+   Hanken Grotesk carries headings. JetBrains Mono carries body,
+   code, and accent text, so there is no separate accent face.
+   Monospace body is the technical-practitioner signal and it
+   outranks type-system uniformity.
+
+   Self-hosted, never a Google Fonts link: that leaks the visited
+   URL to Google as a Referer, which is why the site deleted its
+   own. Paths are relative to THIS FILE, so `fonts/` has to travel
+   with it - copy the skill directory, not the two stylesheets.
+   Inline this CSS into a <style> block instead and the paths
+   resolve against the HTML, so `fonts/` goes beside the page.
+   Latin subset, variable, SIL OFL 1.1 - see fonts/OFL.txt. One
+   file per family, so no unicode-range: a glyph the subset lacks
+   falls back on its own. */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('./fonts/nunito-latin-var.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: italic;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('./fonts/nunito-latin-var-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('./fonts/hanken-grotesk-latin-var.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('./fonts/hanken-grotesk-latin-var-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono-latin-var.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono-latin-var-italic.woff2') format('woff2');
+}
