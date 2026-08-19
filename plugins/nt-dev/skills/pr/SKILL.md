@@ -57,6 +57,14 @@ node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY"
 
 The body file has to end in `.md` for the formatter to pick it up, which step 5 handles. Read it back afterward: every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box - nothing else.
 
+This plugin also ships a `PreToolUse` hook, `hooks/gh-body-file-nowrap.mjs`, that runs the same formatter over any `--body-file` or `--notes-file` a `gh` command names, in the moment between the file being written and `gh` reading it. It is a backstop, not a substitute: it cannot reach a path only the shell knows, such as `--body-file "$BODY"`, so it denies that command instead - which is why step 5 runs the formatter in the same command as `gh`. Config, in a repo's `.claude/settings.json` or your own, under `env`:
+
+| `NT_DEV_PR_FORMAT` | What the hook does |
+| --- | --- |
+| unset | Unwraps every body file it can read. Denies one it cannot, and says how to fix it. |
+| `strict` | The above, plus: `gh pr create` and `gh pr edit` may not pass `--body` inline or `--fill`, so a PR body cannot skip this skill even when nothing triggered it. |
+| `off` | Nothing. |
+
 ## 3. Fill it
 
 **Read the diff first** - `git diff main...HEAD`, not the branch name and not the commit subjects. A body assembled from those describes the change instead of explaining it.
@@ -90,14 +98,16 @@ Write the body to a file. A multi-section body passed as a `--body` string loses
 
 ```bash
 BODY="$(mktemp -d)/pr-body.md"
-# ...write the filled template to "$BODY"...
-node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY"
-gh pr create --draft --title "<subject>" --body-file "$BODY"
+# ...write the filled template to "$BODY" with the Write tool...
+node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY" &&
+  gh pr create --draft --title "<subject>" --body-file "$BODY"
 ```
+
+- Format and post in **one** command, chained as above. A `$BODY` set by an earlier Bash call is gone by the next one, and the hook in step 2 denies a `--body-file` it cannot read unless the same command formats it.
 
 - The title carries the scope and the count - `chore(edge): performance tuning for Railway and the CDN, 6 URL classes`. Goal elaborates that line rather than expanding it into its parts.
 - `--draft` by default. Pass `--ready` to the skill to drop it.
 - Push first if the branch is unpushed. If your setup gates pushes behind a hardware key or a passphrase prompt, that command can hang. Wrap it in whichever timeout the machine has - `timeout 60 git push` on Linux, `gtimeout 60 git push` on macOS with Homebrew coreutils - and where there is none, such as Git Bash on Windows, run it bare and stop on a hang. On a timeout say so and stop rather than retry.
 - Never `--fill` or `--fill-verbose`. They replace the body with commit text and drop every section above.
 
-Revise an open PR the same way: `gh pr edit <n> --body-file "$BODY"`.
+Revise an open PR the same way, formatter and `gh` in one chain: `node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY" && gh pr edit <n> --body-file "$BODY"`.

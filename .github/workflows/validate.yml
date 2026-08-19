@@ -58,6 +58,11 @@ jobs:
       - name: Check portable shell in first-party skills
         run: node scripts/check-portable.mjs
 
+      # A hook runs on somebody's machine with no one reading its output, so its decision
+      # table is the one thing here that has to be executable rather than reviewed.
+      - name: Run plugin hook tests
+        run: npm test
+
       # Every plugin that lives here is nt-prefixed, so `/nt-` lists this
       # practice's commands and nothing else. A remote row is named for what it
       # does, because an outside user finds it by that name, not by our prefix.
@@ -97,8 +102,9 @@ jobs:
 
   # The practice runs on macOS and CI runs on Linux, so a Windows teammate is the one
   # person no other job stands in for. This runner is what makes the two Windows
-  # contracts fail loudly: .gitattributes keeping the checkout at LF, and the mirror
-  # scripts keying their trees by forward slash whatever node:path reports.
+  # contracts fail loudly: .gitattributes keeping the checkout at LF, the mirror scripts
+  # keying their trees by forward slash whatever node:path reports, and the hooks
+  # resolving a body-file path the Git Bash shell handed them.
   windows:
     runs-on: windows-latest
     timeout-minutes: 5
@@ -122,3 +128,9 @@ jobs:
 
       - name: Check portable shell in first-party skills
         run: node scripts/check-portable.mjs
+
+      # The reason these run here and not only on Linux: a hook reads paths out of a shell
+      # command, and Git Bash hands it an MSYS `/tmp/...` root that win32 node resolves to
+      # the wrong drive. Nothing but this runner catches that.
+      - name: Run plugin hook tests
+        run: npm test
