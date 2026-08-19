@@ -191,6 +191,30 @@ describe('a payload it cannot use', () => {
   }
 });
 
+/* Step 1 of skills/pr/SKILL.md names this path in prose, and prose does not fail a build.
+   The skill has no other template to fall back on now that the org repo is gone, so a
+   rename here is a skill that resolves nothing. */
+describe('the shipped PR template', () => {
+  const TEMPLATE = join(HERE, '..', 'skills', 'pr', '.github', 'pull_request_template.md');
+
+  it('sits where the skill says it does', () => {
+    ok(readFileSync(TEMPLATE, 'utf8').length > 0);
+  });
+
+  it('carries the section contract the skill and the hook both assume', () => {
+    const headings = [...readFileSync(TEMPLATE, 'utf8').matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+    deepStrictEqual(headings, ['Goal', 'Summary', 'Key Decisions', 'Screenshots', 'Test Plan']);
+  });
+
+  it('is named in the skill by a path that resolves', () => {
+    const skill = readFileSync(join(HERE, '..', 'skills', 'pr', 'SKILL.md'), 'utf8');
+    const quoted = skill.match(/\$\{CLAUDE_PLUGIN_ROOT\}\/skills\/pr\/[^`\s]+/);
+    ok(quoted, 'SKILL.md no longer names the template path');
+    const relative = quoted[0].replace('${CLAUDE_PLUGIN_ROOT}/', '');
+    ok(readFileSync(join(HERE, '..', relative), 'utf8').length > 0);
+  });
+});
+
 describe('the hook config', () => {
   it('is registered for Bash, and points at a file that exists', () => {
     const config = JSON.parse(readFileSync(join(HERE, 'hooks.json'), 'utf8'));

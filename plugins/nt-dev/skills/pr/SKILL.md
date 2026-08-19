@@ -13,9 +13,7 @@ This file is written unwrapped on purpose. Every paragraph and bullet below is o
 
 ## 1. Resolve the template
 
-The template carries the section contract, so find it before writing anything. Take the first that exists:
-
-**A. The repo's own committed template.** It is what the web UI already shows a contributor, so it wins outright.
+The template carries the section contract, so find it before writing anything. Two places, same shape, and the repo's own wins:
 
 ```bash
 TOP=$(git rev-parse --show-toplevel)
@@ -23,22 +21,11 @@ ls "$TOP"/.github/pull_request_template.md "$TOP"/.github/PULL_REQUEST_TEMPLATE.
    "$TOP"/.github/PULL_REQUEST_TEMPLATE/*.md "$TOP"/docs/pull_request_template.md 2>/dev/null
 ```
 
-**B. The org template**, `notambourine/.github`. Prefer a local checkout so an offline session still works, and fall back to the published copy:
+**A. The repo's own committed template**, if that listed anything. It is what the web UI already shows a contributor, so it wins outright.
 
-```bash
-LOCAL=~/sandbox/git-repos/notambourine/dot-github/.github/pull_request_template.md
-if [ -f "$LOCAL" ]; then
-  TEMPLATE="$LOCAL"
-else
-  TEMPLATE=$(mktemp)
-  curl -fsSL -o "$TEMPLATE" \
-    https://raw.githubusercontent.com/notambourine/.github/main/.github/pull_request_template.md
-fi
-```
+**B. Otherwise this skill's**, at `${CLAUDE_PLUGIN_ROOT}/skills/pr/.github/pull_request_template.md`. It ships with the plugin, so it is on disk before the session starts: no network, no second checkout, nothing to be offline for.
 
-That repo is public and PR-able. A section that reads wrong for the work you keep doing is a pull request against it, not a local override.
-
-**C. Neither reachable.** Write `Goal`, `Summary`, `Key Decisions`, `Test Plan`, and say in your reply that the template was unavailable.
+That copy is the house standard, and it is version-controlled where you are reading this. A section that reads wrong for the work you keep doing is a pull request against this repo, not a local override.
 
 Whichever you land on, follow its headings verbatim. Do not reorder them, and do not graft a heading from one template onto another.
 
