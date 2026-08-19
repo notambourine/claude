@@ -65,6 +65,7 @@ plugins/nt-<name>/
   skills/<skill>/SKILL.md        YAML frontmatter plus a body
   skills/<skill>/<assets>        anything the skill hands over, read on demand
   output-styles/<name>.md        optional, auto-loaded, see below
+  hooks/hooks.json               optional, auto-loaded, see below
 ```
 
 A skill directory can carry files, not just prose. `nt-brand`'s `system` skill
@@ -92,6 +93,28 @@ git@github.com: Permission denied (publickey).
 Every repo this catalog points at is public, so https needs no credential and works
 on a fresh machine or a client's laptop. The `github:owner/repo` string shorthand is
 a third form, and it does not validate at all.
+
+## Hooks
+
+A plugin's `hooks/hooks.json` is auto-loaded, so a hook needs no `plugin.json`
+entry either. Point its `command` at `${CLAUDE_PLUGIN_ROOT}/hooks/<file>` - the
+only spelling that resolves the same from a marketplace checkout, a per-revision
+cache copy, and this working tree.
+
+Three rules, because a hook is the one thing here that runs whether or not
+anybody asked for it:
+
+- **Write it in node, not bash.** `jq` ships on no platform by default, and the
+  bounded stdin read a hook needs is `gtimeout` on macOS, `timeout` on Linux, and
+  nothing at all in Git Bash. `node` is already a hard dependency.
+- **Fail open.** Every exit is `0` except a deliberate `deny`. A hook that throws
+  on a payload it did not understand blocks a tool call it never had an opinion
+  about.
+- **Give it an off switch and a test.** The switch is an env var a repo can set
+  under `env` in `.claude/settings.json`. The test is a `*.test.mjs` beside the
+  hook, run by `npm test` on both the Linux and the Windows CI job - a hook's
+  decision table is the one thing in this repo that has to be executable rather
+  than reviewed, because nobody is reading its output when it fires.
 
 ## Output styles
 

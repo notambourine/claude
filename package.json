@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "brand": "node scripts/brand-kit.mjs verify",
-    "brand:sync": "node scripts/brand-kit.mjs sync"
+    "brand:sync": "node scripts/brand-kit.mjs sync",
+    "test": "node --test \"plugins/**/*.test.mjs\""
   },
   "dependencies": {
     "@notambourine/brand-kit": "1.0.0"

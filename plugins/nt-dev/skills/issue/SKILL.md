@@ -96,3 +96,26 @@ gh project item-edit --project-id <project-id> --id <item-id> \
 Edit into the shape, never append a log. A new finding goes under the heading it belongs to. A
 comment is for a decision or a result, dated. Fix the title and backfill the missing metadata in
 the same pass.
+
+## The hook behind this file
+
+This skill only fires when something in the prompt trips its description. "File this as a ticket"
+does; "also open an issue for the flaky test" often does not, and the issue that lands has no
+milestone, no label, and a one-line body.
+
+So the plugin ships `hooks/gh-skill-nudge.mjs`, a `PreToolUse` hook that names this file rather
+than second-guessing your command. It refuses a `gh issue create`, or a `Write` to an issue body
+file, and says to read this skill first - which is how the message reaches you. Invoking the skill
+is the all-clear: the hook sees the `Skill` call and stops asking for the rest of the session.
+`--web` is left alone because GitHub shows the repo's forms itself.
+
+The hook checks nothing about the issue. It cannot see whether a `**Dev Notes:**` is any good, and
+an earlier version that graded flags put this standard in two places and drifted. You have read the
+standard; you judge the issue against it. Config, under `env` in a repo's `.claude/settings.json`
+or your own:
+
+| `NT_DEV_SKILL_NUDGE` | What the hook does |
+| --- | --- |
+| unset | Names this skill once per session, then advises without blocking. |
+| `strict` | Names it on every issue until the skill is actually read. |
+| `off` | Nothing. |
