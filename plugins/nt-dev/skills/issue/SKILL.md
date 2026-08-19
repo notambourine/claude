@@ -96,3 +96,25 @@ gh project item-edit --project-id <project-id> --id <item-id> \
 Edit into the shape, never append a log. A new finding goes under the heading it belongs to. A
 comment is for a decision or a result, dated. Fix the title and backfill the missing metadata in
 the same pass.
+
+## The hook behind this file
+
+This skill only fires when something in the prompt trips its description. "File this as a ticket"
+does; "also open an issue for the flaky test" often does not, and the issue that lands has no
+milestone, no label, and a one-line body.
+
+So the plugin ships `hooks/gh-issue-standard.mjs`, a `PreToolUse` hook that reads a `gh issue
+create` before it runs and names what is missing against the parts of this file a hook can see: a
+milestone, a label, the repo's own `.github/ISSUE_TEMPLATE/` forms, and whether the body carries
+any section leads at all. It refuses the first such command in a session, which is how the message
+reaches you; after that it advises and steps aside. A command that already meets the standard never
+hears from it, and `--web` is left alone because GitHub shows the forms itself.
+
+It is a nudge, not a validator - it cannot tell whether a `**Dev Notes:**` is any good, only that
+one is there. Config, under `env` in a repo's `.claude/settings.json` or your own:
+
+| `NT_DEV_ISSUE_STANDARD` | What the hook does |
+| --- | --- |
+| unset | Denies the first `gh issue create` in a session that has a gap, then advises without blocking. |
+| `strict` | Denies every time there is a gap. |
+| `off` | Nothing. |
