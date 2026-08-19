@@ -66,15 +66,19 @@ function readStdin() {
   return '';
 }
 
-/* The Bash command this hook was fired for, plus where it will run, or null when there is
-   nothing here to have an opinion about. */
-export function bashPayload() {
-  let payload;
+/* The harness payload as it arrived, or null when it is not JSON. Read it once: stdin is a
+   pipe, and a second read comes back empty. */
+export function rawPayload() {
   try {
-    payload = JSON.parse(readStdin());
+    return JSON.parse(readStdin());
   } catch {
     return null;
   }
+}
+
+/* The Bash command this hook was fired for, plus where it will run, or null when there is
+   nothing here to have an opinion about. */
+export function bashPayload(payload = rawPayload()) {
   const command = payload?.tool_input?.command;
   if (typeof command !== 'string' || !command) return null;
   return {

@@ -52,6 +52,12 @@ This plugin also ships a `PreToolUse` hook, `hooks/gh-body-file-nowrap.mjs`, tha
 | `strict` | The above, plus: `gh pr create` and `gh pr edit` may not pass `--body` inline or `--fill`, so a PR body cannot skip this skill even when nothing triggered it. |
 | `off` | Nothing. |
 
+A second hook, `hooks/gh-skill-nudge.mjs`, names this file for the PR that never triggered it. It
+refuses the first `Write` of a PR body file (`pr-body.md`, `prbody.md`, `pr.md`) or `gh pr create`
+in a session and says to read this skill - the `Write` case landing before a line of body exists,
+where the nudge is free. Invoking the skill is the all-clear, so the `gh pr create` in step 5 never
+hears from it. `NT_DEV_SKILL_NUDGE` takes `strict` (until the skill is read) and `off`.
+
 ## 3. Fill it
 
 **Read the diff first** - `git diff main...HEAD`, not the branch name and not the commit subjects. A body assembled from those describes the change instead of explaining it.

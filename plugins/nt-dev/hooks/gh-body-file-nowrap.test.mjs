@@ -216,14 +216,18 @@ describe('the shipped PR template', () => {
 });
 
 describe('the hook config', () => {
-  it('is registered for Bash, and points at a file that exists', () => {
+  it('registers every hook for Bash at least, and points each at a file that exists', () => {
     const config = JSON.parse(readFileSync(join(HERE, 'hooks.json'), 'utf8'));
     const entries = config.hooks.PreToolUse;
-    deepStrictEqual(entries.map((e) => e.matcher), ['Bash']);
-    const command = entries[0].hooks[0].command;
-    match(command, /\$\{CLAUDE_PLUGIN_ROOT\}/);
-    /* The path in that command, resolved the way the harness resolves it. */
-    const relative = command.match(/\$\{CLAUDE_PLUGIN_ROOT\}([^"]+)/)[1];
-    ok(readFileSync(join(HERE, '..', relative), 'utf8').length > 0);
+    ok(entries.length, 'no PreToolUse entries');
+    for (const entry of entries) {
+      match(entry.matcher, /(^|\|)Bash(\||$)/);
+      for (const { command } of entry.hooks) {
+        match(command, /\$\{CLAUDE_PLUGIN_ROOT\}/);
+        /* The path in that command, resolved the way the harness resolves it. */
+        const relative = command.match(/\$\{CLAUDE_PLUGIN_ROOT\}([^"]+)/)[1];
+        ok(readFileSync(join(HERE, '..', relative), 'utf8').length > 0);
+      }
+    }
   });
 });

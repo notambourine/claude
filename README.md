@@ -88,19 +88,28 @@ command runs the formatter itself.
 | `strict` | Also refuses an inline `--body` or a `--fill` on `gh pr create` and `gh pr edit`, so a PR body has to go through `/nt-dev:pr` even when nothing triggered it. |
 | `off` | Nothing. |
 
-**The issue hook.** Reads a `gh issue create` against the house standard in
-`/nt-dev:issue` and names what is missing: a milestone, a label, the repo's own
-`.github/ISSUE_TEMPLATE/` forms, a body with no section leads at all. It refuses
-the first such command in a session, which is how the message reaches the model,
-then advises and steps aside. A command that already meets the standard never
-hears from it, and `--web` is left alone because GitHub shows the forms itself.
-It is a nudge, not a validator: it can tell that a `**Dev Notes:**` is missing,
-never that one is any good.
+**The skill-nudge hook.** A skill only fires when the prompt trips its
+description. "File this as a ticket" trips `/nt-dev:issue`; "also open an issue
+for the flaky test" often does not, and the issue that lands has no milestone, no
+label, and a one-line body. So this hook names the skill instead of grading the
+command: it refuses a `gh pr create` or `gh issue create`, and a `Write` to a
+body file the model is about to fill (`pr-body.md`, `prbody.md`, `pr.md` - the
+names those bodies actually get), saying to read `/nt-dev:pr` or `/nt-dev:issue`
+first. The `Write` case is the cheap one, landing before a line of body exists.
+Invoking the skill is the all-clear: the hook sees the `Skill` call and goes quiet
+for the session, so the skill's own `gh pr create` never hears from it. `--web` is
+left alone because GitHub shows the repo's forms itself.
 
-| `NT_DEV_ISSUE_STANDARD` | What the hook does |
+It checks nothing about the PR or the issue. An earlier version graded flags -
+milestone, label, section headings - which put the standard in two places and let
+it drift; it ended up advising `--template`, a flag `gh` refuses alongside
+`--body-file`. The skill is the standard, and a model that has read it can judge
+its own body.
+
+| `NT_DEV_SKILL_NUDGE` | What the hook does |
 | --- | --- |
-| unset | Denies the first `gh issue create` in a session that has a gap, then advises without blocking. |
-| `strict` | Denies every time there is a gap. |
+| unset | Names the skill once per kind per session, then advises without blocking. |
+| `strict` | Names it every time until the skill is actually read. |
 | `off` | Nothing. |
 
 ## Turning plugins on and off

@@ -103,18 +103,19 @@ This skill only fires when something in the prompt trips its description. "File 
 does; "also open an issue for the flaky test" often does not, and the issue that lands has no
 milestone, no label, and a one-line body.
 
-So the plugin ships `hooks/gh-issue-standard.mjs`, a `PreToolUse` hook that reads a `gh issue
-create` before it runs and names what is missing against the parts of this file a hook can see: a
-milestone, a label, the repo's own `.github/ISSUE_TEMPLATE/` forms, and whether the body carries
-any section leads at all. It refuses the first such command in a session, which is how the message
-reaches you; after that it advises and steps aside. A command that already meets the standard never
-hears from it, and `--web` is left alone because GitHub shows the forms itself.
+So the plugin ships `hooks/gh-skill-nudge.mjs`, a `PreToolUse` hook that names this file rather
+than second-guessing your command. It refuses a `gh issue create`, or a `Write` to an issue body
+file, and says to read this skill first - which is how the message reaches you. Invoking the skill
+is the all-clear: the hook sees the `Skill` call and stops asking for the rest of the session.
+`--web` is left alone because GitHub shows the repo's forms itself.
 
-It is a nudge, not a validator - it cannot tell whether a `**Dev Notes:**` is any good, only that
-one is there. Config, under `env` in a repo's `.claude/settings.json` or your own:
+The hook checks nothing about the issue. It cannot see whether a `**Dev Notes:**` is any good, and
+an earlier version that graded flags put this standard in two places and drifted. You have read the
+standard; you judge the issue against it. Config, under `env` in a repo's `.claude/settings.json`
+or your own:
 
-| `NT_DEV_ISSUE_STANDARD` | What the hook does |
+| `NT_DEV_SKILL_NUDGE` | What the hook does |
 | --- | --- |
-| unset | Denies the first `gh issue create` in a session that has a gap, then advises without blocking. |
-| `strict` | Denies every time there is a gap. |
+| unset | Names this skill once per session, then advises without blocking. |
+| `strict` | Names it on every issue until the skill is actually read. |
 | `off` | Nothing. |
