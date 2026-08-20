@@ -1,6 +1,6 @@
 ---
 name: anti-slop
-description: Detect and remove AI writing tells ("slop") from prose while preserving the author's voice. Load when drafting or reviewing prose, blog posts, essays, white papers, marketing copy, emails, docs, or reports, and when a human asks to make writing sound less AI-generated or to review someone else's writing for AI tells. Triggers on "sounds like AI", "slop", "AI tell", "make this more human", "editorial pass", or "review my writing".
+description: The SURGICAL half of the prose voice pass - remove AI writing tells as minimal phrasing edits, never touching facts, numbers, or structure. Do not load this from a bare "make this sound human"; /nt-voice:human-voice triages that ask and routes here or to nt-vendor:humanizer. Load directly only when the caller has already chosen surgical, or names this skill.
 ---
 <!-- vendored: elithrar/dotfiles@5e7254b .agents/skills/anti-slop (MIT). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
 
