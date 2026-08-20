@@ -23,6 +23,11 @@
       "description": "Plain-English status updates for a non-technical audience: /nt-pm:shipped summarizes what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, read from the reflog), grouped by category; /nt-pm:weekly-recap summarizes the week's merged, in-review, and in-progress work across the whole team. Never posts, never deploys."
     },
     {
+      "name": "nt-voice",
+      "source": "./plugins/nt-voice",
+      "description": "One door to the prose voice pass. /nt-voice:human-voice claims every way of asking - \"sounds like AI\", \"slop\", \"humanize this\", \"editorial pass\" - then picks surgical or rewrite and hands off to the vendored skill that does that job. Needs nt-vendor."
+    },
+    {
       "name": "nt-vendor",
       "source": "./plugins/nt-vendor",
       "description": "Third-party skills mirrored whole from their upstream repos, kept here so our own skills can call them by name. The nt-vendor prefix marks every skill in it as someone else's work."

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "nt-voice",
+  "description": "One door to the prose voice pass. /nt-voice:human-voice claims every way of asking - \"sounds like AI\", \"slop\", \"humanize this\", \"editorial pass\" - then picks surgical or rewrite and hands off to the vendored skill that does that job.",
+  "author": {
+    "name": "NoTambourine LLC",
+    "url": "https://notambourine.com"
+  },
+  "repository": "https://github.com/notambourine/claude",
+  "license": "MIT"
+}
