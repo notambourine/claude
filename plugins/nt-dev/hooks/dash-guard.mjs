@@ -226,9 +226,9 @@ function gateScope(path) {
    directory that exists, plus whatever of the path lies below it.
 
    KEY-DECISION 2026-08-22: ask git for the prefix, never diff two paths this hook resolved
-   separately. One temp directory is `C:\Users\RUNNER~1\...` to node and
-   `C:\Users\runneradmin\...` to git on Windows, and `/var` against `/private/var` on
-   macOS. The two then share no prefix, and every file in the repo reads as outside it. */
+   separately. A temp directory reaches node under its 8.3 short name and git under the long
+   one on Windows, and one side holds the symlink while the other holds its target on macOS.
+   The two then share no prefix, and every file in the repo reads as outside it. */
 function inside(from, path) {
   const run = git(from, ['rev-parse', '--show-prefix']);
   if (run.status !== 0) return '';
