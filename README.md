@@ -29,8 +29,8 @@ plugin added since your last run.
 | --- | --- | --- |
 | `nt-brand` | `/nt-brand:system` | Colors, type, spacing, component CSS, a Marpit deck theme, and the voice rules, plus the audit that checks work against them. Native CSS with no build step, so it drops into a page, a Worker, or a React app. |
 | `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:md-format` `/nt-dev:recall` `/nt-dev:issue` `/nt-dev:eod-update` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, wraps and tidies markdown at a width you pick, reads a prior session in this repo back into context, writes a GitHub issue to the house standard, writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Also ships the `Brief` and `Attentive` output styles and the three hooks, all below. |
-| `nt-pm` | `/nt-pm:shipped` `/nt-pm:weekly-recap` | Plain-English status updates for a non-technical audience. `shipped` writes a "Deploy Updates" summary — what's about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, from the reflog), grouped by category. `weekly-recap` writes a week-level summary of merged, in-review, and in-progress work across the whole team. Never posts, never deploys. |
-| `nt-voice` | `/nt-voice:human-voice` | The prose voice pass, behind one command. Two vendored skills do the work and disagree on method - surgical phrasing edits versus a full rewrite - so this triages the ask, picks one, says which, and hands off. Ask for it any way you like; you no longer have to remember which fork you wanted. Needs `nt-vendor`. |
+| `nt-pm` | `/nt-pm:shipped` `/nt-pm:weekly-recap` | Plain-English status updates for a non-technical audience. `shipped` writes a "Deploy Updates" summary of what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, from the reflog), grouped by category. `weekly-recap` writes a week-level summary of merged, in-review, and in-progress work across the whole team. Never posts, never deploys. |
+| `nt-voice` | `/nt-voice:human-voice` | The prose voice pass, behind one command. Two vendored skills do the work and disagree on method - surgical phrasing edits versus a full rewrite - so this triages the ask, picks one, says which, and hands off. Ask for it any way you like. Needs `nt-vendor`. |
 | `nt-vendor` | `/nt-vendor:humanizer` `/nt-vendor:anti-slop` `/nt-vendor:codebase-design` and three more | Skills mirrored whole from other people's repos, kept under a prefix that says so. The two prose skills are reached through `/nt-voice:human-voice`. |
 | `nt-share` | `/nt-share:share` | Turns a file, folder, or screenshot into one branded unguessable link. Browsers get a rendered page, `curl` and Slack unfurls get raw bytes from the same URL. Needs a NoTambourine-issued token. |
 | `wormhook` | runs as a hook | Blocks npm and PyPI supply-chain malware, and the rogue hooks and MCP entries that malware writes to persist, before any of it executes. Local and zero-network. |
@@ -40,11 +40,11 @@ Commands are namespaced by plugin, always two segments: `/nt-brand:system`.
 
 ## The two output styles
 
-`nt-dev` ships two. Installing the plugin only puts them in the picker; pick one
+`nt-dev` ships two. Installing the plugin only puts them in the picker. Pick one
 under `/config` → Output style, or name it in settings:
 
 ```json
-{ "outputStyle": "Attentive" }
+{ "outputStyle": "Brief" }
 ```
 
 ### Brief
@@ -52,30 +52,26 @@ under `/config` → Output style, or name it in settings:
 Outcome first, then stop. Short declarative sentences at the reader's altitude,
 no preamble and no closing recap.
 
-The reason it exists rather than the built-in `Concise`: `Concise` governs the
-chat reply and nothing else, so a session set to it still writes an
-eight-hundred-word issue comment, because the skill writing that comment asked
-for detail and no cap contradicted it. `Brief` claims every output - issue body,
-PR description, commit message, doc, Slack update - and carries hard word caps
-plus one altitude rule: user-facing behavior by default, file names and API
-specifics only for a reader already in the code. It also names the five things
-that keep their full length, so the cap never eats a failing test's output or a
-warning.
+It exists because the built-in `Concise` governs the chat reply and nothing else.
+A session set to `Concise` still writes an eight-hundred-word issue comment, because
+the skill writing that comment asked for detail and no cap contradicted it. `Brief`
+claims every output - issue body, PR description, commit message, doc, Slack update -
+and carries hard word caps plus one altitude rule: user-facing behavior by default,
+file names and API specifics only for a reader already in the code. It also names the
+five things that keep their full length, so the cap never eats a failing test's output
+or a warning.
 
 ### Attentive
 
 Works autonomously, reports like a colleague. It merges two halves that usually
-ship apart. From the built-in `Proactive`
-style it takes the license to act: start the work, assume rather than interrupt,
-and stop only at a step that destroys data or sends your information outward.
-On top of that it puts a reporting contract, because a Claude that works ahead
-of you is *reporting*, not answering. It leads with what changed, never lets
-"done" outrun the evidence, and says what it skipped and why.
+ship apart. From the built-in `Proactive` style it takes the license to act: start
+the work, assume rather than interrupt, and stop only at a step that destroys data
+or sends your information outward. On top of that it puts a reporting contract,
+because a Claude that works ahead of you is *reporting*. It leads with what changed,
+never lets "done" outrun the evidence, and says what it skipped and why.
 
-Pick it when you want Claude working unattended. `Proactive` alone acts fast but
-hands back whatever shape it likes; `Attentive` acts just as fast and makes the
-handback readable. Pick `Brief` instead when the problem is length rather than
-autonomy.
+Pick `Attentive` when you want Claude working unattended, and `Brief` when the
+problem is length rather than autonomy.
 
 Credit where it is due: the attention-protection half is our own clean-room
 write-up of ideas from Alex Greenshtein's
@@ -87,19 +83,17 @@ original rather than our merge, install it from that repo.
 
 A skill fires only when something in the prompt trips its description. Plenty of
 PRs and issues get opened by a sentence that trips nothing, and what lands is
-whatever the model invented. `nt-dev` ships three hooks for the gap, two of them
-answering a tool call before it runs and one after. Each takes an off switch, and
-each stays silent when there is nothing to say.
+whatever the model invented. `nt-dev` ships three hooks for that gap. Each takes
+an off switch and stays silent when there is nothing to say.
 
 **The PR body hook.** GitHub renders a single newline as `<br>`, so a PR body
-wrapped at 80 columns lands as a ragged strip in a box twice as wide. Every
-model carries the 80-column habit in from source code, and telling it not to has
-not held. So when a `gh` command names a `--body-file` or `--notes-file`, the
-hook runs `md-format --nowrap` over that file in the moment between the model
-writing it and `gh` reading it: one physical line per paragraph, bullet, and
-checkbox, fenced code and tables left alone. Nothing to invoke, nothing to
-remember. The one shape it cannot reach is a path only the shell knows,
-`--body-file "$BODY"`: it denies that and says how to fix it, unless the same
+wrapped at 80 columns lands as a ragged strip in a box twice as wide. Every model
+carries the 80-column habit in from source code, and telling it not to has not
+held. So when a `gh` command names a `--body-file` or `--notes-file`, the hook runs
+`md-format --nowrap` over that file between the model writing it and `gh` reading
+it: one physical line per paragraph, bullet, and checkbox, fenced code and tables
+left alone. The one shape it cannot reach is a path only the shell knows,
+`--body-file "$BODY"`. It denies that and says how to fix it, unless the same
 command runs the formatter itself.
 
 | `NT_DEV_PR_FORMAT` | What the hook does |
@@ -108,21 +102,20 @@ command runs the formatter itself.
 | `strict` | Also refuses an inline `--body` or a `--fill` on `gh pr create` and `gh pr edit`, so a PR body has to go through `/nt-dev:pr` even when nothing triggered it. |
 | `off` | Nothing. |
 
-**The skill-nudge hook.** A skill only fires when the prompt trips its
-description. "File this as a ticket" trips `/nt-dev:issue`; "also open an issue
-for the flaky test" often does not, and the issue that lands has no milestone, no
-label, and a one-line body. So this hook names the skill instead of grading the
-command: it refuses a `gh pr create` or `gh issue create`, and a `Write` to a
-body file the model is about to fill (`pr-body.md`, `prbody.md`, `pr.md` - the
-names those bodies actually get), saying to read `/nt-dev:pr` or `/nt-dev:issue`
-first. The `Write` case is the cheap one, landing before a line of body exists.
-Invoking the skill is the all-clear: the hook sees the `Skill` call and goes quiet
-for the session, so the skill's own `gh pr create` never hears from it. `--web` is
-left alone because GitHub shows the repo's forms itself.
+**The skill-nudge hook.** "File this as a ticket" trips `/nt-dev:issue`; "also
+open an issue for the flaky test" often does not, and the issue that lands has no
+milestone, no label, and a one-line body. So this hook names the skill instead of
+grading the command. It refuses a `gh pr create` or `gh issue create`, and a
+`Write` to a body file the model is about to fill (`pr-body.md`, `prbody.md`,
+`pr.md`), saying to read `/nt-dev:pr` or `/nt-dev:issue` first. The `Write` case is
+the cheap one, landing before a line of body exists. Invoking the skill is the
+all-clear: the hook sees the `Skill` call and goes quiet for the session, so the
+skill's own `gh pr create` never hears from it. `--web` is left alone because
+GitHub shows the repo's forms itself.
 
 It checks nothing about the PR or the issue. An earlier version graded flags -
 milestone, label, section headings - which put the standard in two places and let
-it drift; it ended up advising `--template`, a flag `gh` refuses alongside
+it drift, and ended up advising `--template`, a flag `gh` refuses alongside
 `--body-file`. The skill is the standard, and a model that has read it can judge
 its own body.
 
@@ -136,22 +129,22 @@ its own body.
 [dash-ratchet](https://github.com/notambourine/dash-ratchet) fails a pull request
 on any unicode dash the diff adds. It reports after the commit, so the cheap fix
 arrives one push too late. This hook makes the same assertion at the write: it
-counts the dashes in the text a `Write` or an `Edit` is carrying against what
-that text held before, and when the number rises it names the lines the write
-added. The write lands and the model gets those lines while the sentence is still
-in hand, which is the point. `strict` refuses the write instead.
+counts the dashes in the text a `Write` or an `Edit` is carrying against what that
+text held before, and when the number rises it names the lines the write added.
+The write lands and the model gets those lines while the sentence is still in hand.
+`strict` refuses the write instead.
 
-Counting the delta rather than scanning the payload is the whole trick. A file
-that already holds a dash, an `Edit` whose `old_string` quotes one back, a
-paragraph moved verbatim: a flat scan flags all three over a character it did
-not introduce, and a hook that does that gets switched off. The before it
-measures against is whatever is nearest the write: the patch the harness reports,
-an `Edit`'s own `old_string`, the file on disk, or the blob at the merge base
-with the default branch, which is where the gate starts its own diff. A line
-carrying `dash-ok` is exempt, the same as under the gate, and the excluded
-directories and a renamed marker are read off the gate's call in whichever
-workflow of that file's repo holds it, so the hook and CI cannot disagree about
-scope. A repo with no gate still gets the check.
+Counting the delta rather than scanning the payload is the whole trick. A file that
+already holds a dash, an `Edit` whose `old_string` quotes one back, a paragraph
+moved verbatim: a flat scan flags all three over a character it did not introduce,
+and a hook that does that gets switched off. The before it measures against is
+whatever is nearest the write - the patch the harness reports, an `Edit`'s own
+`old_string`, the file on disk, or the blob at the merge base with the default
+branch, which is where the gate starts its own diff. A line carrying `dash-ok` is
+exempt, the same as under the gate. The excluded directories and a renamed marker
+are read off the gate's call in whichever workflow of that file's repo holds it, so
+the hook and CI cannot disagree about scope. A repo with no gate still gets the
+check.
 
 Each mode answers a different event, because the harness reaches the model two
 different ways: naming the lines is a `PostToolUse` block, whose reason the model

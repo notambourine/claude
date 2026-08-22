@@ -13,7 +13,7 @@ This file is written unwrapped on purpose. Every paragraph and bullet below is o
 
 ## 1. Resolve the template
 
-The template carries the section contract, so find it before writing anything. Two places, same shape, and the repo's own wins:
+The template carries the section contract. Find it before writing anything. Two places, same shape, and the repo's own wins:
 
 ```bash
 TOP=$(git rev-parse --show-toplevel)
@@ -23,9 +23,9 @@ ls "$TOP"/.github/pull_request_template.md "$TOP"/.github/PULL_REQUEST_TEMPLATE.
 
 **A. The repo's own committed template**, if that listed anything. It is what the web UI already shows a contributor, so it wins outright.
 
-**B. Otherwise this skill's**, at `${CLAUDE_PLUGIN_ROOT}/skills/pr/.github/pull_request_template.md`. It ships with the plugin, so it is on disk before the session starts: no network, no second checkout, nothing to be offline for.
+**B. Otherwise this skill's**, at `${CLAUDE_PLUGIN_ROOT}/skills/pr/.github/pull_request_template.md`. It ships with the plugin, on disk before the session starts: no network, no second checkout, nothing to be offline for.
 
-That copy is the house standard, and it is version-controlled where you are reading this. A section that reads wrong for the work you keep doing is a pull request against this repo, not a local override.
+That copy is the house standard, version-controlled where you are reading this. A section that reads wrong for the work you keep doing is a pull request against this repo, not a local override.
 
 Whichever you land on, follow its headings verbatim. Do not reorder them, and do not graft a heading from one template onto another.
 
@@ -36,15 +36,15 @@ GitHub renders a single newline as `<br>`, so prose wrapped at 80 columns comes 
 - This outranks every other formatting habit you carry into the file, including the 80-column norm for source and the one-instruction-per-sentence rule for prose. Those govern a file a diff reads; this governs a page a browser renders.
 - A continuation line indented under a bullet or a checkbox is worse than ragged. Four spaces of indent makes GitHub render it as a code block, so `- [x] zizmor clean` with an indented parenthetical under it comes out as a grey box.
 
-Then stop trusting yourself about it and run the formatter over the finished file, before `gh` ever sees it. It joins every wrapped paragraph and pulls every indented continuation back onto its bullet, and it leaves fenced code, tables, and frontmatter alone:
+Then run the formatter over the finished file, before `gh` ever sees it. It joins every wrapped paragraph, pulls every indented continuation back onto its bullet, and leaves fenced code, tables, and frontmatter alone:
 
 ```bash
 node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap "$BODY"
 ```
 
-The body file has to end in `.md` for the formatter to pick it up, which step 5 handles. Read it back afterward: every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box - nothing else.
+The body file has to end in `.md` for the formatter to pick it up, which step 5 handles. Read it back afterward: every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box.
 
-This plugin also ships a `PreToolUse` hook, `hooks/gh-body-file-nowrap.mjs`, that runs the same formatter over any `--body-file` or `--notes-file` a `gh` command names, in the moment between the file being written and `gh` reading it. It is a backstop, not a substitute: it cannot reach a path only the shell knows, such as `--body-file "$BODY"`, so it denies that command instead - which is why step 5 runs the formatter in the same command as `gh`. Config, in a repo's `.claude/settings.json` or your own, under `env`:
+This plugin also ships a `PreToolUse` hook, `hooks/gh-body-file-nowrap.mjs`, that runs the same formatter over any `--body-file` or `--notes-file` a `gh` command names, between the file being written and `gh` reading it. It is a backstop, not a substitute: it cannot reach a path only the shell knows, such as `--body-file "$BODY"`, so it denies that command instead - which is why step 5 runs the formatter in the same command as `gh`. Config, in a repo's `.claude/settings.json` or your own, under `env`:
 
 | `NT_DEV_PR_FORMAT` | What the hook does |
 | --- | --- |
@@ -52,11 +52,7 @@ This plugin also ships a `PreToolUse` hook, `hooks/gh-body-file-nowrap.mjs`, tha
 | `strict` | The above, plus: `gh pr create` and `gh pr edit` may not pass `--body` inline or `--fill`, so a PR body cannot skip this skill even when nothing triggered it. |
 | `off` | Nothing. |
 
-A second hook, `hooks/gh-skill-nudge.mjs`, names this file for the PR that never triggered it. It
-refuses the first `Write` of a PR body file (`pr-body.md`, `prbody.md`, `pr.md`) or `gh pr create`
-in a session and says to read this skill - the `Write` case landing before a line of body exists,
-where the nudge is free. Invoking the skill is the all-clear, so the `gh pr create` in step 5 never
-hears from it. `NT_DEV_SKILL_NUDGE` takes `strict` (until the skill is read) and `off`.
+A second hook, `hooks/gh-skill-nudge.mjs`, names this file for the PR that never triggered it. It refuses the first `Write` of a PR body file (`pr-body.md`, `prbody.md`, `pr.md`) or `gh pr create` in a session and says to read this skill - the `Write` case landing before a line of body exists, where the nudge is free. Invoking the skill is the all-clear, so the `gh pr create` in step 5 never hears from it. `NT_DEV_SKILL_NUDGE` takes `strict` (until the skill is read) and `off`.
 
 ## 3. Fill it
 
@@ -64,15 +60,15 @@ hears from it. `NT_DEV_SKILL_NUDGE` takes `strict` (until the skill is read) and
 
 Then write none of the diff back. The reviewer already has it, so the body carries what the diff cannot show: the problem, the shape of the change, and the calls that shaped it.
 
-The template's own comments say what each section wants; read them rather than guessing, then strip them as you fill.
+The template's own comments say what each section wants. Read them rather than guessing, then strip them as you fill.
 
 **Budget the whole body at roughly 250 words**, whichever template you landed on. The house copy says so in its own comments; a repo's own template usually says nothing, and the budget applies there too. Past 250 words you are writing the diff back. Cut prose first, never a screenshot and never a `_none_`.
 
 **Open on the outcome and stop when it is delivered.** Short declarative sentences, one idea per bullet. No preamble, no restating the ask, no closing recap, no next steps nobody requested.
 
-**Write at the reader's altitude.** Goal is user-facing: who could not do what, and what they can now. Summary and Key Decisions are read by someone already in the diff, so a file name or an API detail earns its place there when it changes what they check - and nowhere else, and never as a listing.
+**Write at the reader's altitude.** Goal is user-facing: who could not do what, and what they can now. Summary and Key Decisions are read by someone already in the diff, so a file name or an API detail earns its place there when it changes what they check, and nowhere else, and never as a listing.
 
-**A diagram is optional, and one is the maximum.** Reach for mermaid only when the change is a shape a sentence cannot hold - a flow, a lifecycle, an order of calls across actors. If Before and After would hold the same boxes and only a label differs, write the sentence instead. When you do draw one, put both states in a single fenced block as two subgraphs so they render at the same scale, keep each under about six nodes, quote any label holding punctuation (`L["len(str)"]`), and give the two sides distinct node ids. Validate it with `maid "$BODY"` if that tool is on PATH; a block that fails to parse renders as a red error box, which is worse than no diagram at all.
+**A diagram is optional, and one is the maximum.** Reach for mermaid only when the change is a shape a sentence cannot hold - a flow, a lifecycle, an order of calls across actors. If Before and After would hold the same boxes and only a label differs, write the sentence. When you do draw one, put both states in a single fenced block as two subgraphs so they render at the same scale, keep each under about six nodes, quote any label holding punctuation (`L["len(str)"]`), and give the two sides distinct node ids. Validate it with `maid "$BODY"` if that tool is on PATH; a block that fails to parse renders as a red error box, which is worse than no diagram.
 
 ## 4. Screenshots
 
