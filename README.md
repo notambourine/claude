@@ -68,8 +68,9 @@ original rather than our merge, install it from that repo.
 
 A skill fires only when something in the prompt trips its description. Plenty of
 PRs and issues get opened by a sentence that trips nothing, and what lands is
-whatever the model invented. `nt-dev` ships three `PreToolUse` hooks for the gap.
-Each takes an off switch, and each stays silent when there is nothing to say.
+whatever the model invented. `nt-dev` ships three hooks for the gap, two of them
+answering a tool call before it runs and one after. Each takes an off switch, and
+each stays silent when there is nothing to say.
 
 **The PR body hook.** GitHub renders a single newline as `<br>`, so a PR body
 wrapped at 80 columns lands as a ragged strip in a box twice as wide. Every
@@ -117,17 +118,21 @@ its own body.
 on any unicode dash the diff adds. It reports after the commit, so the cheap fix
 arrives one push too late. This hook makes the same assertion at the write: it
 counts the dashes in the text a `Write` or an `Edit` is carrying against what
-that text held before, and names every line when the number rises. The write
-lands and the model gets the sites while the sentence is still in hand, which is
-the point. `strict` refuses the write instead.
+that text held before, and when the number rises it names the lines the write
+added. The write lands and the model gets those lines while the sentence is still
+in hand, which is the point. `strict` refuses the write instead.
 
 Counting the delta rather than scanning the payload is the whole trick. A file
 that already holds a dash, an `Edit` whose `old_string` quotes one back, a
 paragraph moved verbatim: a flat scan flags all three over a character it did
-not introduce, and a hook that does that gets switched off. A line carrying
-`dash-ok` is exempt, the same as under the gate, and the excluded directories and
-a renamed marker are read out of the repo's own `dash-ratchet.yml`, so the hook
-and CI cannot disagree about scope. A repo with no gate still gets the check.
+not introduce, and a hook that does that gets switched off. The before it
+measures against is whatever is nearest the write: the patch the harness reports,
+an `Edit`'s own `old_string`, the file on disk, or the blob at the merge base
+with the default branch, which is where the gate starts its own diff. A line
+carrying `dash-ok` is exempt, the same as under the gate, and the excluded
+directories and a renamed marker are read off the gate's call in whichever
+workflow of that file's repo holds it, so the hook and CI cannot disagree about
+scope. A repo with no gate still gets the check.
 
 Each mode answers a different event, because the harness reaches the model two
 different ways: naming the lines is a `PostToolUse` block, whose reason the model
@@ -135,7 +140,7 @@ reads before it moves on, and refusing the write is a `PreToolUse` deny.
 
 | `NT_DEV_DASH_GUARD` | What the hook does |
 | --- | --- |
-| unset | Lets the write land, then names every line that raised the count. |
+| unset | Lets the write land, then names the lines that raised the count. |
 | `strict` | Refuses the write. |
 | `off` | Nothing. |
 
