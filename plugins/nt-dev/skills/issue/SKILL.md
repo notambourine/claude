@@ -40,9 +40,62 @@ the title is a label, not a link. Link the child for real:
 gh issue edit <child> --repo "$REPO" --parent <epic>
 ```
 
+## Length and altitude
+
+An issue is a tracking artifact, not a briefing. It says what outcome someone wants, how far it
+reaches, and how a human would know it landed. The implementer reads the code; the issue tells
+them which outcome to aim at.
+
+- **Hard budget: 200 words for a body, 150 for a comment.** Past that, write a second issue, not
+  a longer one.
+- **Write at the reader's altitude.** Default to user-facing behavior and business logic. The
+  weeds - implementation steps, API specifics, file names - only where this issue's reader is
+  already working in them, and only the ones that change what they decide.
+- **Open on the outcome and stop when it is delivered.** No preamble, no restating the parent, no
+  closing recap, no next steps nobody asked for. Short declarative bullets.
+- **One bullet level.** A nested list is a child issue trying to be born.
+- **Never restate a decision that lives in another issue or PR - link it.** Writing "recorded in
+  #852 and not re-litigated here" and then re-litigating it is the failure this line exists for.
+- **Cut every sentence that teaches.** A trap belongs at the code site as `// KEY-DECISION
+  <date>:`, or in the skill it traps, not recopied into the tracker.
+
+## Body - the default shape
+
+Three headings, one screen. `Parent: #N` on the first line where the issue has one.
+
+- `## Outcome` - one sentence, the capability someone gains. Not the chore and not the design.
+- `## Scope` - the boundary as short declarative bullets: what this covers, and where it matters,
+  what it does not.
+- `## Acceptance` - how a human confirms it landed, in observable terms. "A merchant can find a
+  product and understand what shoppers see", never "tests pass".
+
+Golden, whole - the length is the point:
+
+```markdown
+Parent: #849
+
+## Outcome
+
+Give merchants a searchable, read-only view of each product's effective customizer configuration.
+
+## Scope
+
+- Search products across the selected store.
+- Show the source and scope of each effective value.
+- Show health problems and affected-product counts.
+
+## Acceptance
+
+- A merchant can find a product and understand what shoppers see.
+- Every displayed value names its source.
+- No store mutation is available in this issue.
+```
+
+The two shapes below are variants of that, not licenses to grow past the budget.
+
 ## Body - design and section work
 
-Four bolded leads, in this order. An empty `**Dev Notes:**` is a smell, not a pass.
+Four bolded leads instead of the three headings. An empty `**Dev Notes:**` is a smell, not a pass.
 
 - `**Goal:**` one sentence, what gets built.
 - `**Context:**` the design screenshot, plus `Replaces: <live URL>` and `Figma: <node-id link>`
@@ -54,14 +107,21 @@ Four bolded leads, in this order. An empty `**Dev Notes:**` is a smell, not a pa
 
 ## Body - engineering work
 
+A migration or a debt paydown has one reader, the person who will do it, and they are already in
+the code. That is the case where Scope may carry the weeds. The budget does not move.
+
 Lead with measured reality, then the constraint, then the target state:
 
 - facts with a date attached, not adjectives ("all measurements taken 2026-08-04")
-- `file.ts:155` behind every claim about the code, quoting the comment that already anticipates
-  the change
-- a table or ASCII diagram of today against target
+- a `file.ts:155` behind a claim the reader would otherwise have to go find - the one or two that
+  change what they do, never a citation behind every sentence
+- at most one table or ASCII diagram, today against target
 - the prerequisite named as a prerequisite, with why it is not just cleanup
 - open questions under their own heading, so nobody guesses
+
+What does not belong here at any length: a slice-by-slice plan, a checklist of the work, or a
+traps section. The plan is the PR's, the checklist is the child issues, and a trap is a code
+comment.
 
 ## Metadata
 
@@ -94,8 +154,9 @@ gh project item-edit --project-id <project-id> --id <item-id> \
 ## Updating an issue
 
 Edit into the shape, never append a log. A new finding goes under the heading it belongs to. A
-comment is for a decision or a result, dated. Fix the title and backfill the missing metadata in
-the same pass.
+comment is for a decision or a result, dated - not a status essay and not the remaining work
+enumerated, which is either the Scope bullets edited or a set of child issues. Fix the title and
+backfill the missing metadata in the same pass.
 
 ## The hook behind this file
 

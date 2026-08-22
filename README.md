@@ -28,7 +28,7 @@ plugin added since your last run.
 | Plugin | Commands | What it does |
 | --- | --- | --- |
 | `nt-brand` | `/nt-brand:system` | Colors, type, spacing, component CSS, a Marpit deck theme, and the voice rules, plus the audit that checks work against them. Native CSS with no build step, so it drops into a page, a Worker, or a React app. |
-| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:md-format` `/nt-dev:recall` `/nt-dev:issue` `/nt-dev:eod-update` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, wraps and tidies markdown at a width you pick, reads a prior session in this repo back into context, writes a GitHub issue to the house standard, writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Also ships the `Attentive` output style and the three hooks, all below. |
+| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:md-format` `/nt-dev:recall` `/nt-dev:issue` `/nt-dev:eod-update` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, wraps and tidies markdown at a width you pick, reads a prior session in this repo back into context, writes a GitHub issue to the house standard, writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Also ships the `Brief` and `Attentive` output styles and the three hooks, all below. |
 | `nt-pm` | `/nt-pm:shipped` `/nt-pm:weekly-recap` | Plain-English status updates for a non-technical audience. `shipped` writes a "Deploy Updates" summary — what's about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, from the reflog), grouped by category. `weekly-recap` writes a week-level summary of merged, in-review, and in-progress work across the whole team. Never posts, never deploys. |
 | `nt-voice` | `/nt-voice:human-voice` | The prose voice pass, behind one command. Two vendored skills do the work and disagree on method - surgical phrasing edits versus a full rewrite - so this triages the ask, picks one, says which, and hands off. Ask for it any way you like; you no longer have to remember which fork you wanted. Needs `nt-vendor`. |
 | `nt-vendor` | `/nt-vendor:humanizer` `/nt-vendor:anti-slop` `/nt-vendor:codebase-design` and three more | Skills mirrored whole from other people's repos, kept under a prefix that says so. The two prose skills are reached through `/nt-voice:human-voice`. |
@@ -38,16 +38,34 @@ plugin added since your last run.
 
 Commands are namespaced by plugin, always two segments: `/nt-brand:system`.
 
-## The Attentive output style
+## The two output styles
 
-`nt-dev` ships one output style. Installing the plugin only puts it in the
-picker; pick it under `/config` → Output style, or name it in settings:
+`nt-dev` ships two. Installing the plugin only puts them in the picker; pick one
+under `/config` → Output style, or name it in settings:
 
 ```json
 { "outputStyle": "Attentive" }
 ```
 
-It merges two halves that usually ship apart. From the built-in `Proactive`
+### Brief
+
+Outcome first, then stop. Short declarative sentences at the reader's altitude,
+no preamble and no closing recap.
+
+The reason it exists rather than the built-in `Concise`: `Concise` governs the
+chat reply and nothing else, so a session set to it still writes an
+eight-hundred-word issue comment, because the skill writing that comment asked
+for detail and no cap contradicted it. `Brief` claims every output - issue body,
+PR description, commit message, doc, Slack update - and carries hard word caps
+plus one altitude rule: user-facing behavior by default, file names and API
+specifics only for a reader already in the code. It also names the five things
+that keep their full length, so the cap never eats a failing test's output or a
+warning.
+
+### Attentive
+
+Works autonomously, reports like a colleague. It merges two halves that usually
+ship apart. From the built-in `Proactive`
 style it takes the license to act: start the work, assume rather than interrupt,
 and stop only at a step that destroys data or sends your information outward.
 On top of that it puts a reporting contract, because a Claude that works ahead
@@ -56,7 +74,8 @@ of you is *reporting*, not answering. It leads with what changed, never lets
 
 Pick it when you want Claude working unattended. `Proactive` alone acts fast but
 hands back whatever shape it likes; `Attentive` acts just as fast and makes the
-handback readable.
+handback readable. Pick `Brief` instead when the problem is length rather than
+autonomy.
 
 Credit where it is due: the attention-protection half is our own clean-room
 write-up of ideas from Alex Greenshtein's

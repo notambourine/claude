@@ -66,6 +66,12 @@ Then write none of the diff back. The reviewer already has it, so the body carri
 
 The template's own comments say what each section wants; read them rather than guessing, then strip them as you fill.
 
+**Budget the whole body at roughly 250 words**, whichever template you landed on. The house copy says so in its own comments; a repo's own template usually says nothing, and the budget applies there too. Past 250 words you are writing the diff back. Cut prose first, never a screenshot and never a `_none_`.
+
+**Open on the outcome and stop when it is delivered.** Short declarative sentences, one idea per bullet. No preamble, no restating the ask, no closing recap, no next steps nobody requested.
+
+**Write at the reader's altitude.** Goal is user-facing: who could not do what, and what they can now. Summary and Key Decisions are read by someone already in the diff, so a file name or an API detail earns its place there when it changes what they check - and nowhere else, and never as a listing.
+
 **A diagram is optional, and one is the maximum.** Reach for mermaid only when the change is a shape a sentence cannot hold - a flow, a lifecycle, an order of calls across actors. If Before and After would hold the same boxes and only a label differs, write the sentence instead. When you do draw one, put both states in a single fenced block as two subgraphs so they render at the same scale, keep each under about six nodes, quote any label holding punctuation (`L["len(str)"]`), and give the two sides distinct node ids. Validate it with `maid "$BODY"` if that tool is on PATH; a block that fails to parse renders as a red error box, which is worse than no diagram at all.
 
 ## 4. Screenshots
