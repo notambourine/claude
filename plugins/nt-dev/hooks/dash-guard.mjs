@@ -37,7 +37,7 @@
    Unset is the default: the write lands, and the model gets the lines to rewrite. A dash is
    a sentence to fix, not a tool call to stop.
 */
-import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { basename, dirname, join, relative, sep } from 'node:path';
 import { deny, feedback, pass, rawPayload, repoRoot, resolvePath } from './lib/hook.mjs';
@@ -213,13 +213,27 @@ function git(root, args) {
 function gateScope(path) {
   /* The target file's repo, not the session's: a write reaches outside the repo the
      session started in, and the scope that governs a file is its own repo's. */
-  const root = repoRoot(nearest(dirname(path)));
+  const from = nearest(dirname(path));
+  const root = repoRoot(from);
   const text = root ? gateConfig(root) : '';
   const marker = value(uncomment(/^[ \t]*marker:[ \t]*(.+)$/m.exec(text)?.[1] ?? '')) || 'dash-ok';
-  const inside = root ? relative(real(root), real(path)).split(sep).join('/') : '';
-  const rel = inside && !inside.startsWith('../') ? inside : '';
+  const rel = root ? inside(from, path) : '';
   const excluded = !!rel && excludes(text).some((one) => rel === one || rel.startsWith(`${one}/`));
   return { marker, excluded, root, rel };
+}
+
+/* The path as git spells it, relative to the repo root: `--show-prefix` from the nearest
+   directory that exists, plus whatever of the path lies below it.
+
+   KEY-DECISION 2026-08-22: ask git for the prefix, never diff two paths this hook resolved
+   separately. One temp directory is `C:\Users\RUNNER~1\...` to node and
+   `C:\Users\runneradmin\...` to git on Windows, and `/var` against `/private/var` on
+   macOS. The two then share no prefix, and every file in the repo reads as outside it. */
+function inside(from, path) {
+  const run = git(from, ['rev-parse', '--show-prefix']);
+  if (run.status !== 0) return '';
+  const under = relative(from, path).split(sep).join('/');
+  return under && !under.startsWith('../') ? `${run.stdout.trim()}${under}` : '';
 }
 
 /* Somewhere git can stand: a `Write` names a path whose parent may not exist yet. */
@@ -328,20 +342,4 @@ function uncomment(raw) {
 
 function value(raw) {
   return String(raw ?? '').trim().replace(/^["']|["']$/g, '');
-}
-
-/* Both sides through the same resolver before they are compared. A temp directory is a
-   symlink on macOS, so `git rev-parse` answers with the real path while the tool call
-   carries the link, and the two then share no prefix at all. */
-function real(path) {
-  try {
-    return realpathSync(path);
-  } catch {
-    /* A Write target that does not exist yet; its parent does. */
-  }
-  try {
-    return join(realpathSync(dirname(path)), basename(path));
-  } catch {
-    return path;
-  }
 }

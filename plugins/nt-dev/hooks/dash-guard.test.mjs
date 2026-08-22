@@ -24,7 +24,7 @@ const temps = [];
 after(() => temps.forEach((path) => rmSync(path, { force: true, recursive: true })));
 
 /* A scratch directory outside any repo, so the gate-scope read finds no workflow and the
-   defaults apply. Realpath because the hook compares resolved paths. */
+   defaults apply. */
 function scratch() {
   const path = realpathSync(mkdtempSync(join(tmpdir(), 'nt-dash-')));
   temps.push(path);
