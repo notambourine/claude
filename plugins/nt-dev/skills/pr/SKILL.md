@@ -62,7 +62,7 @@ Then write none of the diff back. The reviewer already has it, so the body carri
 
 The template's own comments say what each section wants. Read them rather than guessing, then strip them as you fill.
 
-**Budget the whole body at roughly 250 words**, whichever template you landed on. The house copy says so in its own comments; a repo's own template usually says nothing, and the budget applies there too. Past 250 words you are writing the diff back. Cut prose first, never a screenshot and never a `_none_`.
+**Budget the whole body at 150 words**, whichever template you landed on. The house copy says so in its own comments; a repo's own template usually says nothing, and the budget applies there too. Past 150 words you are writing the diff back. Cut prose first, never a screenshot and never a `_none_`.
 
 **Open on the outcome and stop when it is delivered.** Short declarative sentences, one idea per bullet. No preamble, no restating the ask, no closing recap, no next steps nobody requested.
 

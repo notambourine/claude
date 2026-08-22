@@ -42,7 +42,7 @@ gh issue edit <child> --repo "$REPO" --parent <epic>
 
 An issue says what outcome someone wants, how far it reaches, and how a human confirms it landed.
 
-- **Hard budget: 200 words for a body, 150 for a comment.** Past that, write a second issue.
+- **Hard budget: 120 words for a body, 80 for a comment.** Past that, write a second issue.
 - **Write at the reader's altitude.** Default to user-facing behavior and business logic. Reach for
   the weeds (implementation steps, API specifics, file names) only where this issue's reader is
   already working in them, and only where they change a decision.
