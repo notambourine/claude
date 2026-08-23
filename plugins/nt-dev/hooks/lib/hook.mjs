@@ -6,7 +6,7 @@
    `gtimeout` on macOS, `timeout` on Linux, and nothing at all in Git Bash on Windows.
 */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
 
 /* --- answering the harness ------------------------------------------------ */
@@ -14,12 +14,6 @@ import { isAbsolute, join, resolve } from 'node:path';
 /* Every exit is a clean one. A hook that throws on a payload it did not understand blocks
    a tool call it never had an opinion about. */
 export function pass() {
-  process.exit(0);
-}
-
-/* Goes to the user's transcript, not into the model's context. */
-export function say(message) {
-  console.log(JSON.stringify({ systemMessage: message }));
   process.exit(0);
 }
 
@@ -87,18 +81,6 @@ export function rawPayload() {
   }
 }
 
-/* The Bash command this hook was fired for, plus where it will run, or null when there is
-   nothing here to have an opinion about. */
-export function bashPayload(payload = rawPayload()) {
-  const command = payload?.tool_input?.command;
-  if (typeof command !== 'string' || !command) return null;
-  return {
-    command,
-    sessionId: typeof payload.session_id === 'string' ? payload.session_id : '',
-    cwd: payload.cwd && existsSync(payload.cwd) ? payload.cwd : process.cwd(),
-  };
-}
-
 /* True when `gh` is the program being run, rather than a word inside another command.
    `myhigh --body-file x` is not ours. */
 export function isGh(command) {
@@ -107,28 +89,6 @@ export function isGh(command) {
 
 /* --- paths ---------------------------------------------------------------- */
 
-const FILE_FLAG = /--(body|notes)-file[=\s]+("[^"]*"|'[^']*'|[^\s]+)/g;
-
-/* Every --body-file / --notes-file in a command, split by whether this hook can read it.
-   A path the shell resolves, or a heredoc the same command is about to write, has no bytes
-   here yet: those come back under `unreachable`. */
-export function bodyFiles(command, cwd) {
-  const readable = [];
-  const unreachable = [];
-  for (const match of command.matchAll(FILE_FLAG)) {
-    const raw = match[2].replace(/^["']|["']$/g, '');
-    if (!raw || raw === '-') continue;
-    if (/[$`]/.test(raw)) {
-      unreachable.push(raw);
-      continue;
-    }
-    const path = resolvePath(raw, cwd);
-    if (existsSync(path) && statSync(path).isFile()) readable.push(path);
-    else unreachable.push(path);
-  }
-  return { readable, unreachable };
-}
-
 export function resolvePath(raw, cwd) {
   let path = raw;
   if (path.startsWith('~/')) path = join(process.env.HOME ?? process.env.USERPROFILE ?? '', path.slice(2));
@@ -136,12 +96,12 @@ export function resolvePath(raw, cwd) {
   return fromGitBash(path);
 }
 
-/* Windows only. The Bash tool runs Git Bash there, so `$(mktemp -d)/pr-body.md` in the
-   command this hook is reading comes back as an MSYS path - `/tmp/x/pr-body.md`. node on
+/* Windows only. The Bash tool runs Git Bash there, so a path a hook reads out of the
+   payload comes back as an MSYS path - `/tmp/x/pr-body.md`. node on
    win32 reads a leading slash as the current drive root and looks in `C:\tmp`, where the
    file is not. cygpath ships with Git Bash and is the only thing that knows where that
    root is mounted. */
-export function fromGitBash(path) {
+function fromGitBash(path) {
   if (process.platform !== 'win32' || !path.startsWith('/') || existsSync(path)) return path;
   const run = spawnSync('cygpath', ['-w', path], { encoding: 'utf8', timeout: 5_000 });
   return (run.status === 0 && run.stdout.trim()) || path;

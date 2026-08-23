@@ -28,7 +28,7 @@ plugin added since your last run.
 | Plugin | Commands | What it does |
 | --- | --- | --- |
 | `nt-brand` | `/nt-brand:system` | Colors, type, spacing, component CSS, a Marpit deck theme, and the voice rules, plus the audit that checks work against them. Native CSS with no build step, so it drops into a page, a Worker, or a React app. |
-| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:md-format` `/nt-dev:recall` `/nt-dev:issue` `/nt-dev:eod-update` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, wraps and tidies markdown at a width you pick, reads a prior session in this repo back into context, writes a GitHub issue to the house standard, writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Also ships the `Brief` and `Attentive` output styles and the three hooks, all below. |
+| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:recall` `/nt-dev:issue` `/nt-dev:eod-update` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, reads a prior session in this repo back into context, writes a GitHub issue to the house standard, writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Also ships the `Brief` and `Attentive` output styles and the two hooks, all below. |
 | `nt-pm` | `/nt-pm:shipped` `/nt-pm:weekly-recap` | Plain-English status updates for a non-technical audience. `shipped` writes a "Deploy Updates" summary of what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, from the reflog), grouped by category. `weekly-recap` writes a week-level summary of merged, in-review, and in-progress work across the whole team. Never posts, never deploys. |
 | `nt-voice` | `/nt-voice:human-voice` | The prose voice pass, behind one command. Two vendored skills do the work and disagree on method - surgical phrasing edits versus a full rewrite - so this triages the ask, picks one, says which, and hands off. Ask for it any way you like. Needs `nt-vendor`. |
 | `nt-vendor` | `/nt-vendor:humanizer` `/nt-vendor:anti-slop` `/nt-vendor:codebase-design` and three more | Skills mirrored whole from other people's repos, kept under a prefix that says so. The two prose skills are reached through `/nt-voice:human-voice`. |
@@ -79,28 +79,12 @@ write-up of ideas from Alex Greenshtein's
 copied, so this stays MIT while the original is AGPL-3.0. If you want the
 original rather than our merge, install it from that repo.
 
-## The three hooks
+## The two hooks
 
 A skill fires only when something in the prompt trips its description. Plenty of
 PRs and issues get opened by a sentence that trips nothing, and what lands is
-whatever the model invented. `nt-dev` ships three hooks for that gap. Each takes
+whatever the model invented. `nt-dev` ships two hooks for that gap. Each takes
 an off switch and stays silent when there is nothing to say.
-
-**The PR body hook.** GitHub renders a single newline as `<br>`, so a PR body
-wrapped at 80 columns lands as a ragged strip in a box twice as wide. Every model
-carries the 80-column habit in from source code, and telling it not to has not
-held. So when a `gh` command names a `--body-file` or `--notes-file`, the hook runs
-`md-format --nowrap` over that file between the model writing it and `gh` reading
-it: one physical line per paragraph, bullet, and checkbox, fenced code and tables
-left alone. The one shape it cannot reach is a path only the shell knows,
-`--body-file "$BODY"`. It denies that and says how to fix it, unless the same
-command runs the formatter itself.
-
-| `NT_DEV_PR_FORMAT` | What the hook does |
-| --- | --- |
-| unset | Unwraps every body file it can read. |
-| `strict` | Also refuses an inline `--body` or a `--fill` on `gh pr create` and `gh pr edit`, so a PR body has to go through `/nt-dev:pr` even when nothing triggered it. |
-| `off` | Nothing. |
 
 **The skill-nudge hook.** "File this as a ticket" trips `/nt-dev:issue`; "also
 open an issue for the flaky test" often does not, and the issue that lands has no

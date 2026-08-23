@@ -107,7 +107,7 @@ describe('what it leaves alone', () => {
     ['gh pr edit', { command: 'gh pr edit 7 --body-file pr-body.md' }],
     ['gh issue list', { command: 'gh issue list --limit 5' }],
     ['a tool that is not gh', { command: 'some-other-cli pr create --title x' }],
-    ['another skill', { skill: 'nt-dev:md-format' }],
+    ['another skill', { skill: 'nt-dev:recall' }],
     ['an unrelated markdown file', { file_path: '/repo/docs/prisma.md' }],
     ['a source file', { file_path: '/repo/src/pr.ts' }],
   ]) {
