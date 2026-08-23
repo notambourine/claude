@@ -1,6 +1,6 @@
 <!-- Strip these comments as you fill the sections. The reviewer has the diff, so write only what it cannot show. Read it before writing: a body built from the branch name or the commit subjects describes the change instead of explaining it. Visual pays at a steep rate: a mermaid block is worth ten paragraphs, a browser screenshot a hundred, a before/after pair or a recording a thousand. Spend the effort there and let the prose shrink to match.
 
-Budget the whole body at roughly 250 words. Past that you are writing the diff back. Cut prose first, never a screenshot or a `_none_`.
+Budget the whole body at 150 words. Past that you are writing the diff back. Cut prose first, never a screenshot or a `_none_`.
 
 One physical line per paragraph, bullet, and checkbox, however long it runs. GitHub renders a lone newline as a break, so wrapping at 80 columns ships a ragged strip; indenting a continuation four spaces ships a code block.
 
