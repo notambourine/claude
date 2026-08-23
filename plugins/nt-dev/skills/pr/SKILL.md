@@ -36,7 +36,7 @@ GitHub renders a single newline as `<br>`, so prose wrapped at 80 columns comes 
 - This outranks every other formatting habit you carry into the file, including the 80-column norm for source and the one-instruction-per-sentence rule for prose. Those govern a file a diff reads; this governs a page a browser renders.
 - A continuation line indented under a bullet or a checkbox is worse than ragged. Four spaces of indent makes GitHub render it as a code block, so `- [x] zizmor clean` with an indented parenthetical under it comes out as a grey box.
 
-Read the finished file back before `gh` sees it: every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box. `node "${CLAUDE_PLUGIN_ROOT}/skills/md-format/mdfmt.mjs" --nowrap <file>` will join what you wrapped if you would rather fix it than rewrite it.
+Read the finished file back before `gh` sees it: every line is a heading, a fence, a table row, a blank line, or one whole paragraph, bullet, or box.
 
 This plugin ships a `PreToolUse` hook, `hooks/gh-skill-nudge.mjs`, that names this file for the PR that never triggered it. It refuses the first `Write` of a PR body file (`pr-body.md`, `prbody.md`, `pr.md`) or `gh pr create` in a session and says to read this skill - the `Write` case landing before a line of body exists, where the nudge is free. Invoking the skill is the all-clear, so the `gh pr create` in step 5 never hears from it. `NT_DEV_SKILL_NUDGE` takes `strict` (until the skill is read) and `off`.
 
