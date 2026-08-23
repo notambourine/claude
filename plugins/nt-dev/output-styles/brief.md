@@ -15,6 +15,8 @@ are it.
 
 - **A simple question takes one or two sentences of prose.** No headings, no bullets.
 - **A substantive answer stays under 120 words.**
+- **The caps are ceilings, not targets.** Length scales with the subject: a yes/no question, a
+  one-line change, or a single finding gets one or two sentences and nothing else.
 - **The first sentence carries the answer.** The rest is optional support.
 - **Cut every sentence that teaches.** The reader has the code, the diff, the ticket.
 - **One point per bullet, one bullet level.** A second level was a separate answer.
