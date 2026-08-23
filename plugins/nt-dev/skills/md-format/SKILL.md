@@ -51,8 +51,7 @@ the config.
 - **120** or more when tables and links dominate and 90 shreds them.
 - **`never`**, spelled `--nowrap`, for prose a browser renders, where one paragraph must
   be one physical line - a PR body above all, since GitHub turns every newline into a
-  `<br>`. `plugins/nt-dev/skills/pr/SKILL.md` is written that way on purpose and runs
-  `--nowrap` over the body file it writes.
+  `<br>`.
 - **`keep`** when a repo's line breaks are deliberate - one sentence per line, say. It
   still aligns tables and fixes markers; it just never moves a break.
 
