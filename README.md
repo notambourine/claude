@@ -9,19 +9,23 @@ Add the marketplace once, then turn plugins on per machine or per repo.
 
 ```bash
 claude plugin marketplace add notambourine/claude
-claude plugin install nt-brand@notambourine --scope user
-```
-
-For the whole set, read the names off the marketplace instead of typing them out:
-
-```bash
 claude plugin list --available --json |
   jq -r '.available[] | select(.marketplaceName == "notambourine") | .pluginId' |
   while read -r plugin; do claude plugin install "$plugin" --scope user; done
-```
 
-`--available` skips anything you already have, so the same command picks up a
-plugin added since your last run.
+# --available skips anything you already have, so rerun this to pick up a plugin added since.
+# For one plugin instead of the whole set: claude plugin install nt-brand@notambourine --scope user
+
+# Third-party marketplaces ship with auto-update off, so this stays pinned to today's commit.
+claude plugin marketplace update notambourine                # pull updates by hand
+# ...or once per machine: /plugin -> Marketplaces -> notambourine -> Enable auto-update
+
+# nt-dev's two hooks read an env var, set under `env` in .claude/settings.json:
+#   NT_DEV_SKILL_NUDGE=strict   nudge every time until the skill is read (default: once, then advise)
+#   NT_DEV_SKILL_NUDGE=off      silence the skill-nudge hook
+#   NT_DEV_DASH_GUARD=strict    refuse a write that raises the dash count (default: land it, name the lines)
+#   NT_DEV_DASH_GUARD=off       silence the dash-guard hook
+```
 
 ## What you get
 
