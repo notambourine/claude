@@ -10,7 +10,8 @@ paths:
 - Never hand-edit `vendor/pristine/`, `vendor/NOTICE.md`, or a manifest `sha`/`files`.
   They are the merge base that keeps a local edit from being overwritten on the next pull.
 - Add a skill by appending name/repo/ref/path/license to `vendor/skills.json`, then run
-  `node scripts/vendor-skills.mjs pull`.
+  `node scripts/vendor-skills.mjs pull <name>`. Name the skill: a bare `pull` also
+  updates every other pin, putting unread prose diffs in the same PR.
 - Vendor a gist with `gist`/`owner`/`entry` in place of `repo`/`ref`/`path`. `entry` names
   the upstream file that becomes `SKILL.md`.
 - Write frontmatter into a vendored source that has none, such as a gist holding a bare

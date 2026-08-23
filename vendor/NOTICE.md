@@ -14,6 +14,7 @@ in it as someone else's work rather than this practice's.
 | `humanizer` | [blader/humanizer](https://github.com/blader/humanizer) | `.` | `523374d` | 5 | MIT |
 | `install-anti-slop` | [dmmulroy/anti-slop](https://github.com/dmmulroy/anti-slop) | `skills/install-anti-slop` | `446268e` | 21 | MIT |
 | `audit-codebase` | [aarondfrancis/8735edb](https://gist.github.com/aarondfrancis/8735edbe48532f97ee5ea818db4dbd47) | `audit-your-codebase.md` | `959a2a9` | 1 | unstated |
+| `eli5` | [anthropics/claude-plugins-community](https://github.com/anthropics/claude-plugins-community) | `eli5/skills/eli5` | `794af9e` | 1 | Apache-2.0 |
 
 ## Notices
 
@@ -46,3 +47,9 @@ Full license text: `vendor/licenses/dmmulroy-anti-slop.txt`
 Copyright (c) aarondfrancis
 
 No license file is published with this source. Stated license: `unstated`. Source: https://gist.github.com/aarondfrancis/8735edbe48532f97ee5ea818db4dbd47
+
+### anthropics/claude-plugins-community
+
+Copyright (c) Thariq Shihipar
+
+Full license text: `vendor/licenses/anthropics-claude-plugins-community.txt`
