@@ -177,6 +177,11 @@ node scripts/vendor-skills.mjs pull    # network. three-way merge, keeps local e
 node scripts/vendor-skills.mjs refs    # offline. who calls each vendored skill
 ```
 
+`check`, `verify`, and `pull` take skill names: `pull eli5` vendors or updates that one
+and leaves the other pins alone. Use it. A bare `pull` while four other skills have
+drifted produces one PR carrying five prose diffs, and the per-skill audit is then the
+thing that gets skipped.
+
 A source can be a repo directory or a gist. A gist holding a bare prompt becomes a
 skill through the manifest's `entry` field, which names the upstream file that maps
 to `SKILL.md`, plus frontmatter written in locally. `verify` reports that skill as

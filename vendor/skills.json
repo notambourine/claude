@@ -1,5 +1,5 @@
 {
-  "$comment": "Third-party skill directories vendored into .claude/skills/. `path` is a directory, copied whole. `sha`, `files`, and `copyright` are written by `npm run vendor:skills pull`. Do not hand-edit them. To add a skill, append name/repo/ref/path/license and run pull.",
+  "$comment": "Third-party skill directories vendored into plugins/nt-vendor/skills/. `path` is a directory, copied whole. `sha` and `files` are written by `node scripts/vendor-skills.mjs pull`; do not hand-edit them. To add a skill, append name/repo/ref/path/license and run `pull <name>` - naming it keeps other skills' upstream drift out of the same PR. `copyright` is written too, but only when absent: set it by hand for a license that names no holder, such as Apache-2.0.",
   "$exclude": "Dropped from every copy: other-harness config, and anything that could be mistaken for our own repo wiring. Everything else comes across, because these skills link to their siblings.",
   "skills": [
     {
@@ -119,6 +119,22 @@
         "SKILL.md": "sha256-ASB5rfu/q0/BrVz7GI0J+qBfDh1O9F2KTSyuHiece/Q="
       },
       "copyright": null
+    },
+    {
+      "name": "eli5",
+      "repo": "anthropics/claude-plugins-community",
+      "ref": "main",
+      "path": "eli5/skills/eli5",
+      "exclude": [
+        "agents/**"
+      ],
+      "license": "Apache-2.0",
+      "$note": "The repo LICENSE is Apache-2.0; the eli5 plugin.json declares MIT and names Thariq Shihipar. Both are permissive, and the stored license text is the one the repo publishes. Vendored from the marketplace repo rather than installed as a plugin, so the prose is pinned and reviewed here.",
+      "sha": "794af9e63d07fad17087dcab61f21f44cb48effd",
+      "files": {
+        "SKILL.md": "sha256-O7lc0ThSBRxaGGLouU2h3nz7p0FdQYqwyk12JSfRuaU="
+      },
+      "copyright": "Copyright (c) Thariq Shihipar"
     }
   ]
 }

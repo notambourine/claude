@@ -18,6 +18,10 @@
      refs       offline. Which first-party files name each vendored skill.
      attribute  offline. Regenerate vendor/NOTICE.md from the manifest.
 
+   check, verify, and pull take skill names to work on a subset. Vendoring one skill
+   while four others have drifted upstream otherwise means one PR carrying five prose
+   diffs, and the audit that reads each one is the thing that would get skipped.
+
    check and pull print the refs index for every skill they report as moved, so the
    update PR names its own audit surface instead of leaving it to be discovered.
 */
@@ -77,6 +81,8 @@ const isExcluded = (path, excludes = []) => excludes.some((g) => globToRe(g).tes
 const ghHeaders = () => {
   const headers = { accept: 'application/vnd.github+json', 'user-agent': 'notambourine-vendor-skills' };
   // Public repos only, so the token just lifts the 60/hour anonymous rate limit.
+  // guarddog reads this env read as exfil risk: ghHeaders is passed only to
+  // api.github.com fetches, so the token reaches nothing else. Benign.
   if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   return headers;
 };
@@ -168,6 +174,20 @@ function mergeThreeWay(ours, base, theirs) {
 
 const readManifest = async () => JSON.parse(await readFile(MANIFEST, 'utf8'));
 const writeManifest = async (m) => writeFile(MANIFEST, `${JSON.stringify(m, null, 2)}\n`);
+
+/* Narrows what a mode walks, never what writeManifest writes back: pull mutates the
+   entries it visited and leaves the rest of the manifest object untouched. */
+const selection = process.argv.slice(3);
+function selected(skills) {
+  if (!selection.length) return skills;
+  const unknown = selection.filter((name) => !skills.some((s) => s.name === name));
+  if (unknown.length) {
+    console.error(`not in vendor/skills.json: ${unknown.join(', ')}`);
+    process.exit(2);
+  }
+  return skills.filter((s) => selection.includes(s.name));
+}
+
 async function writeFileIn(path, body) {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, body);
@@ -262,7 +282,7 @@ async function check() {
   const { skills } = await readManifest();
   const index = await referrers();
   let drifted = 0;
-  for (const s of skills) {
+  for (const s of selected(skills)) {
     if (!s.sha) {
       console.log(`? ${s.name}  never pulled: run \`node scripts/vendor-skills.mjs pull\``);
       drifted += 1;
@@ -297,7 +317,7 @@ async function check() {
 async function verify() {
   const { skills } = await readManifest();
   let bad = 0;
-  for (const s of skills) {
+  for (const s of selected(skills)) {
     if (!s.sha || !s.files) {
       console.log(`! ${s.name}  manifest has no pin`);
       bad += 1;
@@ -330,7 +350,7 @@ async function pull() {
   const manifest = await readManifest();
   const index = await referrers();
   let conflicted = 0;
-  for (const s of manifest.skills) {
+  for (const s of selected(manifest.skills)) {
     const sha = await upstreamSha(s);
     const theirs = await fetchTree(s, sha);
     const base = await readTree(pristineDir(s.name));
@@ -402,7 +422,13 @@ async function fetchCopyright(s) {
     try {
       const text = await fetchText(`https://raw.githubusercontent.com/${s.repo}/${s.ref}/${name}`);
       await writeFileIn(licensePath(s.repo), text);
-      return text.split('\n').find((line) => /copyright/i.test(line))?.trim() ?? null;
+      /* A year or (c), because Apache-2.0 names no holder and its prose says "copyright
+         owner" and "copyright notice" in running sentences. Matching on the word alone
+         returns one of those as the attribution; matching on the notice form returns
+         nothing, and the caller sets `copyright` in the manifest by hand. */
+      const notice = text.split('\n').find((line) => /^\s*copyright\b.*(\(c\)|©|\d{4})/i.test(line))?.trim();
+      if (!notice) console.log(`  no copyright line in ${s.repo} LICENSE: record attribution by hand`);
+      return notice ?? null;
     } catch {
       /* try the next conventional filename */
     }
@@ -455,7 +481,7 @@ async function attribute(preloaded) {
 const MODES = { check, verify, pull, refs, attribute };
 const mode = process.argv[2];
 if (!MODES[mode]) {
-  console.error(`usage: vendor-skills <${Object.keys(MODES).join('|')}>`);
+  console.error(`usage: vendor-skills <${Object.keys(MODES).join('|')}> [skill-name...]`);
   process.exit(2);
 }
 await MODES[mode]();
