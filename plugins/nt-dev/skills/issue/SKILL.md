@@ -22,7 +22,7 @@ If `.github/ISSUE_TEMPLATE/` contains an applicable form or template, follow its
 
 ## Title and hierarchy
 
-Name the outcome, not the activity: `Serve every sitemap from the app and retire the standalone EC2 box`, not `Sitemap work`. Improve a vague title whenever editing its issue.
+Name the outcome, not the activity and not the mechanism: `Every sitemap stays current with no separate box to maintain`, not `Sitemap work` and not `Move sitemap generation into the app`. Improve a vague title whenever editing its issue.
 
 Preserve the repository's numbering convention for epics and children. A title prefix does not establish hierarchy; link the child:
 
@@ -57,18 +57,20 @@ Give merchants a searchable, read-only view of each product's effective customiz
 
 Write at the issue reader's altitude. Prefer user-visible behavior and business rules. Include implementation detail only when it changes the work or a decision. Do not add a delivery plan, implementation checklist, tutorial, or closing recap.
 
+State the problem, not the fix. Give the assignee the outcome, the constraints, and the context they would otherwise rediscover, then leave the approach to them; an exploration or a large ticket is theirs to solve. Name a specific file, edit, or design only when that solution is already decided and certain, and say that it is.
+
 ### Design work
 
 Use four bold leads:
 
 - `**Goal:**` the result in one sentence.
 - `**Context:**` the design reference; include `Replaces: <live URL>` and `Figma: <node URL>` when applicable.
-- `**Dev Notes:**` the verified component, token, or pattern to reuse, cited as `path/to/File.tsx`. Never leave this empty.
+- `**Dev Notes:**` the verified component, token, or pattern that already exists, cited as `path/to/File.tsx`. Context to build on, never a prescribed implementation. Never leave this empty.
 - `**Done when:**` the observable route, theme, and design result.
 
 ### Engineering work
 
-Lead with measured reality, the constraint, then the target state. Date measurements. Cite `file.ts:155` only behind claims the implementer would otherwise have to rediscover. Use at most one table or ASCII diagram. Name prerequisites and open questions explicitly.
+Lead with measured reality, the constraint, then the target state: the behavior the system should have, not the diff that gets it there. Date measurements. Cite `file.ts:155` only behind claims the implementer would otherwise have to rediscover. Use at most one table or ASCII diagram. Name prerequisites and open questions explicitly.
 
 Do not include a slice plan, work checklist, or traps section. Use child issues for planned slices and a concise code comment for a point-of-use trap.
 
