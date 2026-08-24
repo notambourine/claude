@@ -117,6 +117,9 @@ jobs:
         with:
           node-version: 24
 
+      # Deliberately not behind sfw. The validate job above installs this same lockfile
+      # through the firewall on every PR, so the fetch-time gate has already seen this
+      # package set; a second wrap scans nothing new and Socket ships no Windows binary.
       - name: Install dependencies
         run: npm ci
 
