@@ -29,59 +29,63 @@ claude plugin marketplace update notambourine                # pull updates by h
 
 ## What you get
 
-| Plugin | Commands | What it does |
-| --- | --- | --- |
-| `nt-brand` | `/nt-brand:system` | Colors, type, spacing, component CSS, a Marpit deck theme, and the voice rules, plus the audit that checks work against them. Native CSS with no build step, so it drops into a page, a Worker, or a React app. |
-| `nt-dev` | `/nt-dev:pr` `/nt-dev:cleanup` `/nt-dev:recall` `/nt-dev:issue` `/nt-dev:eod-update` | Fills a PR body from the diff and opens it, audits a repo for dead refs and stale docs, reads a prior session in this repo back into context, writes a GitHub issue to the house standard, writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Also ships the `Brief` and `Attentive` output styles and the two hooks, all below. |
-| `nt-pm` | `/nt-pm:shipped` `/nt-pm:weekly-recap` | Plain-English status updates for a non-technical audience. `shipped` writes a "Deploy Updates" summary of what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, from the reflog), grouped by category. `weekly-recap` writes a week-level summary of merged, in-review, and in-progress work across the whole team. Never posts, never deploys. |
-| `nt-voice` | `/nt-voice:human-voice` | The prose voice pass, behind one command. Two vendored skills do the work and disagree on method - surgical phrasing edits versus a full rewrite - so this triages the ask, picks one, says which, and hands off. Ask for it any way you like. Needs `nt-vendor`. |
-| `nt-vendor` | `/nt-vendor:humanizer` `/nt-vendor:anti-slop` `/nt-vendor:codebase-design` `/nt-vendor:eli5` and three more | Skills mirrored whole from other people's repos, kept under a prefix that says so. The two prose skills are reached through `/nt-voice:human-voice`. |
-| `nt-share` | `/nt-share:share` | Turns a file, folder, or screenshot into one branded unguessable link. Browsers get a rendered page, `curl` and Slack unfurls get raw bytes from the same URL. Needs a NoTambourine-issued token. |
-| `wormhook` | runs as a hook | Blocks npm and PyPI supply-chain malware, and the rogue hooks and MCP entries that malware writes to persist, before any of it executes. Local and zero-network. |
-| `qrspi` | `/qrspi:query` through `/qrspi:implement` | Feature work as five tracked stages on a GitHub Project board: query, research, spec, plan, implement. |
+Eight plugins. Commands use two-part plugin namespaces:
+`/nt-brand:system`.
 
-Commands are namespaced by plugin, always two segments: `/nt-brand:system`.
+### `nt-brand`
 
-## The two output styles
+- `/nt-brand:system` - Provides colors, type, spacing, component CSS, a Marpit deck theme, voice rules, and an audit against them.
 
-`nt-dev` ships two. Installing the plugin only puts them in the picker. Pick one
-under `/config` → Output style, or name it in settings:
+Native CSS works in a page, Worker, or React app without a build step.
 
-```json
-{ "outputStyle": "Brief" }
-```
+### `nt-dev`
 
-### Brief
+- `/nt-dev:pr` - Builds a PR body from the diff and repo template, then opens a draft PR.
+- `/nt-dev:issue` - Writes a standard GitHub issue with a title, structured body, milestone, labels, project fields, and epic parent.
+- `/nt-dev:cleanup` - Audits the repo for dead refs, stale docs, duplication, orphans, and broken `.claude/` config without committing.
+- `/nt-dev:recall` - Restores a prior session in this repo to context.
+- `/nt-dev:eod-update` - Drafts a copy-paste end-of-day standup update from today's GitHub activity without posting.
 
-Outcome first, then stop. Short declarative sentences at the reader's altitude,
-no preamble and no closing recap.
+Also includes the two hooks below.
 
-It exists because the built-in `Concise` governs the chat reply and nothing else.
-A session set to `Concise` still writes an eight-hundred-word issue comment, because
-the skill writing that comment asked for detail and no cap contradicted it. `Brief`
-claims every output - issue body, PR description, commit message, doc, Slack update -
-and carries hard word caps plus one altitude rule: user-facing behavior by default,
-file names and API specifics only for a reader already in the code. It also names the
-five things that keep their full length, so the cap never eats a failing test's output
-or a warning.
+### `nt-pm`
 
-### Attentive
+Writes plain-English status for non-technical readers without posting or deploying.
 
-Works autonomously, reports like a colleague. It merges two halves that usually
-ship apart. From the built-in `Proactive` style it takes the license to act: start
-the work, assume rather than interrupt, and stop only at a step that destroys data
-or sends your information outward. On top of that it puts a reporting contract,
-because a Claude that works ahead of you is *reporting*. It leads with what changed,
-never lets "done" outrun the evidence, and says what it skipped and why.
+- `/nt-pm:shipped` - Summarizes what is about to ship or just shipped as "Deploy Updates" grouped by category.
+- `/nt-pm:weekly-recap` - Summarizes the team's merged, in-review, and in-progress work for the week.
 
-Pick `Attentive` when you want Claude working unattended, and `Brief` when the
-problem is length rather than autonomy.
+### `nt-voice`
 
-Credit where it is due: the attention-protection half is our own clean-room
-write-up of ideas from Alex Greenshtein's
-[attention-span](https://github.com/alexgreensh/attention-span). No text was
-copied, so this stays MIT while the original is AGPL-3.0. If you want the
-original rather than our merge, install it from that repo.
+- `/nt-voice:human-voice` - Assesses the prose, chooses and states surgical edits or a full rewrite, then hands off.
+
+Requires `nt-vendor` for the two prose skills.
+
+### `nt-vendor`
+
+Mirrors complete skills from other repositories under a clear vendor prefix, with both prose skills available through `/nt-voice:human-voice`.
+
+- `/nt-vendor:anti-slop` - Removes AI writing tells with minimal edits while preserving facts, numbers, and structure.
+- `/nt-vendor:humanizer` - Freely rewrites machine-written prose while preserving every claim.
+- `/nt-vendor:codebase-design` - Provides a vocabulary for deep modules, seam placement, and deepening opportunities.
+- `/nt-vendor:audit-codebase` - Audits the full codebase for simplifications without editing, committing, or pushing.
+- `/nt-vendor:improve-codebase-architecture` - Finds deepening opportunities, reports them in HTML, then implements your choice.
+- `/nt-vendor:install-anti-slop` - Installs and configures the anti-slop Oxlint plugin in a TypeScript or JavaScript repo.
+- `/nt-vendor:eli5` - Explains a topic with a simple picture.
+
+### `nt-share`
+
+- `/nt-share:share` - Publishes a file, folder, or screenshot at one branded, unguessable URL that renders in browsers and serves raw bytes to `curl` and Slack unfurls.
+
+Requires a NoTambourine-issued token.
+
+### `wormhook`
+
+This local, zero-network hook blocks npm and PyPI supply-chain malware, including rogue hooks and MCP entries used for persistence, before execution.
+
+### `qrspi`
+
+- `/qrspi:query` through `/qrspi:implement` - Tracks feature work on a GitHub Project board through five stages: query, research, spec, plan, implement.
 
 ## The two hooks
 
@@ -162,7 +166,7 @@ Per repo, committed so the whole team gets the same set, in
 
 A skill costs one line of context until something triggers it, so a plugin you
 leave on is close to free. A hook is the thing to weigh: it runs whether or not
-you asked, which is why `wormhook` ships alone and why each of `nt-dev`'s three
+you asked, which is why `wormhook` ships alone and why each of `nt-dev`'s two
 hooks reads one narrow payload and takes an `off` switch.
 
 ## Working on these plugins

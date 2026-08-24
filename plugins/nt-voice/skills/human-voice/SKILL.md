@@ -1,83 +1,42 @@
 ---
 name: human-voice
-description: The prose voice pass - strip AI writing tells while keeping the author's voice. Trigger on any way of asking for one: "sounds like AI", "make this human", "humanize this", "slop", "anti-slop", "AI tell", "editorial pass", "de-slop this", "does this read like a bot", "review my writing", or a draft handed over for a voice read. Covers blog posts, essays, white papers, marketing copy, emails, docs, reports, PR bodies, and commit messages. Start here rather than at nt-vendor:anti-slop or nt-vendor:humanizer; this skill picks between them.
+description: Humanize prose by choosing a surgical voice edit or a structural rewrite. Use for AI-sounding drafts, anti-slop passes, editorial reviews, and requests to preserve an author's voice.
 allowed-tools: Skill, Read, Edit, Grep
 argument-hint: "[<file> | pasted text] [--surgical | --rewrite]"
 ---
 
-# human-voice - one door, two methods
+# Human voice
 
-Two vendored skills do this work and they disagree on method. Naming either one directly
-picks a method before reading the text, which is the wrong order. Triage first.
+Choose the method after reading the request and text. Do not load both methods at once; they make incompatible assumptions about how much may change.
 
-## Pick the method
-
-Read the request and the text, then choose one. Do not load both - their instructions
-contradict each other, and an agent holding both defaults to the more destructive one.
-
-| Choose | When | Then invoke |
+| Method | Use when | Invoke |
 | --- | --- | --- |
-| **Surgical** | The author wrote it and still owns it. Published or near-published prose. A review of someone else's draft. Anything where structure and argument are settled and only phrasing is in play. Also: you are unsure. | `nt-vendor:anti-slop` |
-| **Rewrite** | The text is machine-drafted and reads like it. Structure is not sacred. The ask is "fix this," not "review this." Encyclopedic or reference prose needing a neutral-voice pass. | `nt-vendor:humanizer` |
+| Surgical | The author owns the draft, its structure is settled, the request is a review, or the right touch is uncertain. | `nt-vendor:anti-slop` |
+| Rewrite | The draft is machine-written, its structure is disposable, or structural repetition is the problem. | `nt-vendor:humanizer` |
 
-Honor an explicit `--surgical` or `--rewrite`. Absent one, surgical is the default: it
-edits phrasing only, so a wrong call costs a light touch instead of a lost draft.
+Honor `--surgical` and `--rewrite`. Without a flag, choose surgical.
 
-Signals that override the default toward rewrite:
+Choose rewrite when the user asks to redo the text, calls it AI slop, did not write it, or the draft relies on formulaic section shapes, repeated three-part lists, and summary endings that phrasing edits cannot repair.
 
-- The user says "rewrite", "redo", "this is AI slop", or pastes text they did not write.
-- The draft has the shape tells, not just the word tells - a "Challenges and Future
-  Prospects" section, three-item lists throughout, a summary sentence closing every
-  paragraph. Phrasing edits cannot fix structure.
+Choose surgical when the user asks for a light pass, wants the structure or voice preserved, hands over someone else's draft for review, or gives you a fact-dense artifact such as a PR body, commit message, or technical document.
 
-Signals that pin it to surgical even when the text looks bad:
+State the choice in one line, then invoke the selected skill. For example:
 
-- "light pass", "just the tells", "don't change my structure", "keep my voice".
-- It is someone else's draft and you are reporting, not editing.
-- It is a commit message, a PR body, or a doc where the facts carry the value.
+> Surgical pass (`nt-vendor:anti-slop`) - your structure is settled, so only the phrasing should move.
 
-## Then hand off
+If `nt-vendor` is unavailable, say that it must be installed with `claude plugin install nt-vendor`.
 
-Invoke the chosen skill with the Skill tool and follow it. It owns the method; this file
-only routes. Say which one you picked and why in one line, so a wrong call is visible and
-cheap to reverse:
+## Boundaries
 
-> Surgical pass (`nt-vendor:anti-slop`) - your draft, structure settled, phrasing only.
+`nt-vendor:anti-slop` identifies candidate tells, separates genuine slop from the author's voice, and applies minimal phrasing changes. It must preserve facts, numbers, and structure.
 
-If the vendored skill is not installed, `nt-voice` is installed without `nt-vendor`. Say
-so and name the fix: `claude plugin install nt-vendor`.
+`nt-vendor:humanizer` may reshape machine-written prose while preserving every claim. Use its embedded mode when humanizing text inside a larger workflow.
 
-## What each one does, so the pick is informed
+For a machine draft that must sound like its author, finish the rewrite first, then run the surgical pass on the result. Never load the two skills together.
 
-**`nt-vendor:anti-slop`** (upstream `elithrar/dotfiles`) - collect candidates, validate
-each as slop-or-voice, apply only the survivors as minimal phrasing changes. Facts,
-numbers, and structure are untouchable. Carries a tell catalog plus
-`references/tells.md` for the extended lexicon. Its own guardrail: "One tell fixed
-cleanly beats three fixed clumsily."
+The user's requirements outrank either vendored method:
 
-**`nt-vendor:humanizer`** (upstream `blader/humanizer`) - a draft, then a "what still
-reads as AI" audit, then a final rewrite. Every claim survives but the shape does not:
-it compresses dull stretches and merges or splits paragraphs. 33 numbered patterns from
-Wikipedia's "Signs of AI writing". Three invocation modes - pasted text, file (rewrites
-in place), and embedded (returns prose only, for a caller mid-task).
-
-Reach for `humanizer`'s embedded mode when another skill needs de-slopped prose as one
-step of a larger job. Route through this file anyway; the triage still applies.
-
-## Both, in sequence
-
-Legitimate when a machine draft has to ship as the author's own: run
-`nt-vendor:humanizer` to fix the shape, then `nt-vendor:anti-slop` on its output to catch
-the tells the rewrite introduced. Never load them at once - finish one, then start the
-other on the result.
-
-## House rules that outrank both
-
-The user's own preferences win where they conflict with upstream prose:
-
-- ASCII hyphens only. Neither vendored skill may leave a unicode dash behind; `/dash-fix`
-  repairs what slips through, and a load-bearing one is marked `dash-ok`.
-- One term per concept, reused verbatim. Upstream's "elegant variation" section says the
-  same thing - it is not a license to vary a term that is doing work.
-- Quote identifiers, commands, and paths exactly. A voice pass never touches them.
-- Cut every word you can. Where upstream would add a clause for rhythm, prefer the cut.
+- Use ASCII hyphens unless the user requires another mark.
+- Use one stable term for each concept.
+- Preserve identifiers, commands, and paths exactly.
+- Prefer deletion over added rhythm or filler.
