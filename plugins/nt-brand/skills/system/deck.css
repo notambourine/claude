@@ -55,9 +55,36 @@ section h1 { font-size: 2.1em; }
 section h2 { font-size: 1.5em; }
 section h3 { font-size: 1.15em; }
 section h4 { font-size: 1em; }
-section h1 em, section h2 em { color: var(--accent, #E75A7C); font-style: italic; }
+/* `--accent-text`, not `--accent`: this is the accent as prose, and it is the
+   token that flips to the text-grade deep pink under `.theme-light`. */
+section h1 em, section h2 em { color: var(--accent-text, #E75A7C); font-style: italic; }
 
-section p { margin: 0; text-wrap: pretty; }
+/* The eyebrow, first line of the deck grammar. It lived in every deck's own
+   `<style>` block before this rule existed, which is how a hand-picked hex got
+   into artifacts nothing can re-render. ALL CAPS is applied here rather than
+   typed, so the source stays sentence case and the one ALL-CAPS job in the
+   brand cannot be spelled wrong. Doubles as the grammar's later sublabel: one
+   class, one concept. */
+section .eyebrow {
+  font-family: var(--font-accent, ui-monospace, 'SF Mono', Monaco, monospace);
+  font-weight: var(--fw-semibold, 600);
+  font-size: 0.6em;
+  line-height: var(--lh-tight, 1.3);
+  letter-spacing: var(--ls-allcaps, 0.08em);
+  text-transform: uppercase;
+  color: var(--accent-text, #E75A7C);
+  margin: 0;
+}
+
+/* `font-size` and `line-height` are named here because elements.css sizes a
+   bare `p` for a document - 16px, 1.7 - and a slide is not a document: what
+   `section` sets is what its content has to inherit. Without this a paragraph
+   rendered at 16px inside a 26px slide, and a list changed size depending on
+   whether the author left a blank line between bullets, because a loose list
+   wraps each item in a `p` and a tight one does not. A deck is the only surface
+   where the base layer and this theme both apply, so the fix belongs here
+   rather than in a weaker elements.css. */
+section p { margin: 0; text-wrap: pretty; font-size: inherit; line-height: inherit; }
 section a { color: var(--accent, #E75A7C); text-decoration: none; }
 section strong { color: var(--fg1, #F5F5F7); font-weight: 600; }
 section em { font-style: italic; }
@@ -113,7 +140,65 @@ section th, section td {
 section th { color: var(--fg1, #F5F5F7); font-weight: 600; }
 
 section img { max-height: 60%; border-radius: var(--r-sm, 10px); }
-section hr { border: 0; border-top: 1px solid var(--line, #2A2A2E); width: 100%; }
+/* `margin: 0` for the same reason as the paragraph: elements.css gives a rule
+   32px of air for a document, and the section's own `gap` already spaces it. */
+section hr { border: 0; border-top: 1px solid var(--line, #2A2A2E); width: 100%; margin: 0; }
+
+/* ---------------------------------------------------------
+   Slide variants. `lead` is the cover and there is one of
+   those, so every other shape a deck needs is its own class.
+   Without them an author reaches for inline CSS, which is how
+   a deck ends up carrying brand values nothing can correct.
+   --------------------------------------------------------- */
+
+/* `<!-- _class: divider -->` - a turn in the story. One line, centered, pink.
+   Not `lead`: a cover and a section break are different slides. */
+section.divider {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+section.divider h1, section.divider h2, section.divider h3 {
+  color: var(--accent-text, #E75A7C);
+}
+
+/* `<!-- _class: quote -->` - the whole slide is the quotation, so the left rule
+   that marks a quote inside prose would be marking nothing. */
+section.quote { align-items: center; text-align: center; }
+section.quote blockquote {
+  border-left: 0;
+  padding-left: 0;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 1.5em;
+  line-height: 1.3;
+  color: var(--fg1, #F5F5F7);
+  text-wrap: balance;
+}
+
+/* `<!-- _class: split -->` - the list runs in two columns, so a slide can carry
+   eight short bullets instead of clipping at five.
+
+   On the list, not the section: markdown gives a run of bullets as ONE `<ul>`
+   however it is spaced (a blank line makes a loose list, not a second list), so
+   a two-column grid on the section has nothing to put in its second column.
+   Multi-column on the list itself needs no wrapper div and no blank-line
+   trickery, and it leaves the section's vertical centering alone. */
+section.split ul, section.split ol {
+  columns: 2;
+  column-gap: 1.6em;
+}
+section.split li { break-inside: avoid; }
+
+/* ---------------------------------------------------------
+   Corner furniture: pagination, the running mark, and the two
+   Marpit directives. All absolute, so none of it is a flex or
+   grid item and none of it can move the content box. Marpit's
+   scaffold already puts `position: relative` on the section,
+   which is what they resolve against.
+
+   An `![bg]` slide sets these `display: none !important` on
+   its own, so a full-bleed background stays full bleed.
+   --------------------------------------------------------- */
 
 /* `<!-- paginate: true -->` opts a deck in; Marpit fills the attribute. */
 section::after {
@@ -122,3 +207,52 @@ section::after {
   font-size: 16px;
   padding: 40px 48px;
 }
+/* A cover carries no page number. Every deck used to print "1" on its title
+   slide, which is the tell of a theme that never styled its own cover. */
+section.lead::after { display: none; }
+
+/* The running mark, and the reason this rule exists: a deck leaves the building
+   as a PDF attachment with no share link around it, and the theme owns no
+   element inside a slide to hang a lockup on. So it is a background image, off
+   a data URI in logo-vars.css - a `url()` with an origin cannot survive either
+   the PDF or an offline snapshot. Load tokens.css and it resolves; without it
+   the box is empty and nothing shifts. */
+section::before {
+  content: '';
+  position: absolute;
+  left: 48px;
+  bottom: 40px;
+  width: 92px;
+  height: 27px;
+  background: var(--nt-lockup-url) left center / contain no-repeat;
+  opacity: 0.55;
+}
+/* The cover states the name properly: bigger, centered, at full strength. */
+section.lead::before {
+  top: 72px;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 154px;
+  height: 45px;
+  background-position: center;
+  opacity: 1;
+}
+
+/* `<!-- header: ... -->` and `<!-- footer: ... -->`, the two Marpit globals a
+   deck uses to name a client or a date on every slide. The footer clears the
+   running mark on the left and the page number on the right. */
+section > header, section > footer {
+  position: absolute;
+  font-family: var(--font-accent, ui-monospace, monospace);
+  font-size: 15px;
+  font-weight: var(--fw-semibold, 600);
+  letter-spacing: var(--ls-allcaps, 0.08em);
+  text-transform: uppercase;
+  color: var(--fg-mute, #5A5A62);
+  margin: 0;
+}
+section > header { top: 40px; left: 48px; right: 48px; }
+section > footer { bottom: 40px; left: 160px; right: 96px; }
+/* The cover has the big lockup where a header would sit. */
+section.lead > header { display: none; }
