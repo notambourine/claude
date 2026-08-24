@@ -34,21 +34,17 @@ Eight plugins. Commands use two-part plugin namespaces:
 
 ### `nt-brand`
 
-| Command | What it does |
-| --- | --- |
-| `/nt-brand:system` | Provides colors, type, spacing, component CSS, a Marpit deck theme, voice rules, and an audit against them. |
+- `/nt-brand:system` - Provides colors, type, spacing, component CSS, a Marpit deck theme, voice rules, and an audit against them.
 
 Native CSS works in a page, Worker, or React app without a build step.
 
 ### `nt-dev`
 
-| Command | What it does |
-| --- | --- |
-| `/nt-dev:pr` | Builds a PR body from the diff and repo template, then opens a draft PR. |
-| `/nt-dev:issue` | Writes a standard GitHub issue with a title, structured body, milestone, labels, project fields, and epic parent. |
-| `/nt-dev:cleanup` | Audits the repo for dead refs, stale docs, duplication, orphans, and broken `.claude/` config without committing. |
-| `/nt-dev:recall` | Restores a prior session in this repo to context. |
-| `/nt-dev:eod-update` | Drafts a copy-paste end-of-day standup update from today's GitHub activity without posting. |
+- `/nt-dev:pr` - Builds a PR body from the diff and repo template, then opens a draft PR.
+- `/nt-dev:issue` - Writes a standard GitHub issue with a title, structured body, milestone, labels, project fields, and epic parent.
+- `/nt-dev:cleanup` - Audits the repo for dead refs, stale docs, duplication, orphans, and broken `.claude/` config without committing.
+- `/nt-dev:recall` - Restores a prior session in this repo to context.
+- `/nt-dev:eod-update` - Drafts a copy-paste end-of-day standup update from today's GitHub activity without posting.
 
 Also includes the two hooks below.
 
@@ -56,16 +52,12 @@ Also includes the two hooks below.
 
 Writes plain-English status for non-technical readers without posting or deploying.
 
-| Command | What it does |
-| --- | --- |
-| `/nt-pm:shipped` | Summarizes what is about to ship or just shipped as "Deploy Updates" grouped by category. |
-| `/nt-pm:weekly-recap` | Summarizes the team's merged, in-review, and in-progress work for the week. |
+- `/nt-pm:shipped` - Summarizes what is about to ship or just shipped as "Deploy Updates" grouped by category.
+- `/nt-pm:weekly-recap` - Summarizes the team's merged, in-review, and in-progress work for the week.
 
 ### `nt-voice`
 
-| Command | What it does |
-| --- | --- |
-| `/nt-voice:human-voice` | Assesses the prose, chooses and states surgical edits or a full rewrite, then hands off. |
+- `/nt-voice:human-voice` - Assesses the prose, chooses and states surgical edits or a full rewrite, then hands off.
 
 Requires `nt-vendor` for the two prose skills.
 
@@ -73,21 +65,17 @@ Requires `nt-vendor` for the two prose skills.
 
 Mirrors complete skills from other repositories under a clear vendor prefix, with both prose skills available through `/nt-voice:human-voice`.
 
-| Command | What it does |
-| --- | --- |
-| `/nt-vendor:anti-slop` | Removes AI writing tells with minimal edits while preserving facts, numbers, and structure. |
-| `/nt-vendor:humanizer` | Freely rewrites machine-written prose while preserving every claim. |
-| `/nt-vendor:codebase-design` | Provides a vocabulary for deep modules, seam placement, and deepening opportunities. |
-| `/nt-vendor:audit-codebase` | Audits the full codebase for simplifications without editing, committing, or pushing. |
-| `/nt-vendor:improve-codebase-architecture` | Finds deepening opportunities, reports them in HTML, then implements your choice. |
-| `/nt-vendor:install-anti-slop` | Installs and configures the anti-slop Oxlint plugin in a TypeScript or JavaScript repo. |
-| `/nt-vendor:eli5` | Explains a topic with a simple picture. |
+- `/nt-vendor:anti-slop` - Removes AI writing tells with minimal edits while preserving facts, numbers, and structure.
+- `/nt-vendor:humanizer` - Freely rewrites machine-written prose while preserving every claim.
+- `/nt-vendor:codebase-design` - Provides a vocabulary for deep modules, seam placement, and deepening opportunities.
+- `/nt-vendor:audit-codebase` - Audits the full codebase for simplifications without editing, committing, or pushing.
+- `/nt-vendor:improve-codebase-architecture` - Finds deepening opportunities, reports them in HTML, then implements your choice.
+- `/nt-vendor:install-anti-slop` - Installs and configures the anti-slop Oxlint plugin in a TypeScript or JavaScript repo.
+- `/nt-vendor:eli5` - Explains a topic with a simple picture.
 
 ### `nt-share`
 
-| Command | What it does |
-| --- | --- |
-| `/nt-share:share` | Publishes a file, folder, or screenshot at one branded, unguessable URL that renders in browsers and serves raw bytes to `curl` and Slack unfurls. |
+- `/nt-share:share` - Publishes a file, folder, or screenshot at one branded, unguessable URL that renders in browsers and serves raw bytes to `curl` and Slack unfurls.
 
 Requires a NoTambourine-issued token.
 
@@ -97,9 +85,7 @@ This local, zero-network hook blocks npm and PyPI supply-chain malware, includin
 
 ### `qrspi`
 
-| Command | What it does |
-| --- | --- |
-| `/qrspi:query` through `/qrspi:implement` | Tracks feature work on a GitHub Project board through five stages: query, research, spec, plan, implement. |
+- `/qrspi:query` through `/qrspi:implement` - Tracks feature work on a GitHub Project board through five stages: query, research, spec, plan, implement.
 
 ## The two hooks
 
