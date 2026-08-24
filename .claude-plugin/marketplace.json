@@ -15,7 +15,7 @@
     {
       "name": "nt-dev",
       "source": "./plugins/nt-dev",
-      "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context, /nt-dev:issue writes a GitHub issue to the house standard, /nt-dev:eod-update writes a copy-paste end-of-day standup update from today's GitHub activity (never posts), and two output styles: Brief caps the length of every output and holds one altitude, Attentive trades asking for acting and then reports what changed. Two hooks back the skills up: one points a bare gh call at the skill holding the house standard, and one names every line where a write raises the unicode-dash count, so the dash gate never fails the PR."
+      "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context, /nt-dev:issue writes a GitHub issue to the house standard, /nt-dev:eod-update writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Two hooks back the skills up: one points a bare gh call at the skill holding the house standard, and one names every line where a write raises the unicode-dash count, so the dash gate never fails the PR."
     },
     {
       "name": "nt-pm",
