@@ -19,6 +19,13 @@ updates:
       timezone: America/Chicago
     open-pull-requests-limit: 1
     versioning-strategy: increase
+    groups:
+      # Security updates only. Version updates stay ungrouped: one direct dep, and
+      # a grouped PR would hide which of brand-kit's transitives moved.
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
