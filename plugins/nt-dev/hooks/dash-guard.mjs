@@ -104,14 +104,10 @@ const message = `${headline}
 
 ${listed.join('\n')}
 
-Rewrite the punctuation in this same turn, before it reaches a commit. The dash gate fails
-the pull request on any unicode dash a diff adds, and it only reports once the commit exists.
-Type what the sentence wants: a colon to introduce, a comma pair or parens for an aside, a
-semicolon or two sentences for two clauses, an ASCII hyphen for a range or a compound. Keep
-the character only where it is load-bearing, such as a real minus sign, a quoted source, or a
-pattern that matches it, and append \`${marker}\` to that same line. Under \`env\` in
-.claude/settings.json, NT_DEV_DASH_GUARD=strict refuses the write instead of naming it, and
-=off says nothing at all.`;
+Rewrite now, before commit. Replace each unicode dash with a colon, comma pair or parens,
+semicolon or split sentences, or an ASCII hyphen for ranges and compounds. Keep a genuinely
+load-bearing dash and append \`${marker}\` to that line. Under \`env\` in .claude/settings.json,
+NT_DEV_DASH_GUARD=strict refuses the write, =off silences this hook.`;
 
 if (strict) deny(message);
 feedback(message, headline);
