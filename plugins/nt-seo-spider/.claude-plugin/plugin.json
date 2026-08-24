@@ -1,0 +1,17 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "nt-seo-spider",
+  "description": "Screaming Frog SEO Spider as an MCP server: crawl control, reports, bulk exports, and URL inspection over the app's local endpoint. Ships 29 tools, so it stays off at user scope and gets turned on only in the client repos that do SEO work. Needs SEO Spider 24+ with its MCP server running.",
+  "author": {
+    "name": "NoTambourine LLC",
+    "url": "https://notambourine.com"
+  },
+  "repository": "https://github.com/notambourine/claude",
+  "license": "MIT",
+  "mcpServers": {
+    "seo-spider": {
+      "type": "http",
+      "url": "http://127.0.0.1:11435/mcp"
+    }
+  }
+}

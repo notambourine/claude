@@ -29,7 +29,7 @@ claude plugin marketplace update notambourine                # pull updates by h
 
 ## What you get
 
-Eight plugins. Commands use two-part plugin namespaces:
+Nine plugins. Commands use two-part plugin namespaces:
 `/nt-brand:system`.
 
 ### `nt-brand`
@@ -54,6 +54,18 @@ Writes plain-English status for non-technical readers without posting or deployi
 
 - `/nt-pm:shipped` - Summarizes what is about to ship or just shipped as "Deploy Updates" grouped by category.
 - `/nt-pm:weekly-recap` - Summarizes the team's merged, in-review, and in-progress work for the week.
+
+### `nt-seo-spider`
+
+Ships no commands. It points Claude at the Screaming Frog SEO Spider MCP server on `http://127.0.0.1:11435/mcp`, for crawl control, reports, bulk exports, and URL inspection.
+
+Two switches, and both have to be on. In the app: Settings, MCP Server, Start (or tick auto-start; the CLI equivalent is `--mcp-streamable-http-server`). In the repo:
+
+```bash
+claude plugin enable nt-seo-spider@notambourine -s local
+```
+
+`-s local` writes `.claude/settings.local.json`, which is gitignored, so a client's team never inherits it. Leave the plugin off at user scope: it ships 29 tools, and the SEO work is three repos out of the fleet. Needs SEO Spider 24+, and a licence for anything past 500 URLs.
 
 ### `nt-voice`
 
