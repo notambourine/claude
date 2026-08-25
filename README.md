@@ -207,9 +207,14 @@ Matching is loose over the raw text, so a commit message quoting a refused verb 
 too: that is the intended trade, and the escape hatch is running the command yourself in
 the prompt with a leading `!`.
 
-Two things it does not do. It has no opinion on `git push`, which belongs to whichever
-repo knows its own remotes. And it guards the `theme`, `store`, and `app` topics only, so
-`shopify hydrogen deploy` reaches Oxygen unchallenged.
+The `app`, `store`, and `hydrogen` topics get the same allowlist. `shopify app deploy` and
+`shopify hydrogen deploy` are refused, `--preview` included: a Hydrogen preview still lands
+on Oxygen, and an app version ships functions that run in live checkouts. `env push` and
+`customer-account-push` fall with them. Local work (`dev`, `build`, `preview`, `check`,
+`codegen`, `link`, `env pull`) passes.
+
+One thing it does not do: it has no opinion on `git push`, which belongs to whichever repo
+knows its own remotes.
 
 | `NT_SHOPIFY_GUARD` | What the hook does |
 | --- | --- |

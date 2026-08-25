@@ -35,7 +35,7 @@
     {
       "name": "nt-shopify",
       "source": "./plugins/nt-shopify",
-      "description": "Refuses Shopify CLI and Shopify MCP calls that write to a live storefront. Development themes are the only writable surface, and unknown verbs fail closed."
+      "description": "Refuses Shopify CLI and Shopify MCP calls that write to a live storefront. Development themes are the only writable surface, Hydrogen and app deploys are refused, and unknown verbs fail closed."
     },
     {
       "name": "nt-vendor",
