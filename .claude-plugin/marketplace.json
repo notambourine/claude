@@ -10,32 +10,32 @@
     {
       "name": "nt-brand",
       "source": "./plugins/nt-brand",
-      "description": "NoTambourine brand source of truth. /nt-brand:system ships the tokens, components, fonts, and voice, plus the audit that checks copy against them."
+      "description": "Defines NoTambourine's brand system, including tokens, components, fonts, voice, and copy auditing."
     },
     {
       "name": "nt-dev",
       "source": "./plugins/nt-dev",
-      "description": "Everyday development workflow: /nt-dev:pr writes a PR body against the template, /nt-dev:cleanup audits a repo for drift, /nt-dev:recall reads a prior session back into context, /nt-dev:issue writes a GitHub issue to the house standard, /nt-dev:eod-update writes a copy-paste end-of-day standup update from today's GitHub activity (never posts). Two hooks back the skills up: one points a bare gh call at the skill holding the house standard, and one names every line where a write raises the unicode-dash count, so the dash gate never fails the PR."
+      "description": "Standardizes everyday development work and house conventions. Never posts end-of-day updates; hooks guide GitHub usage and identify Unicode dash violations."
     },
     {
       "name": "nt-pm",
       "source": "./plugins/nt-pm",
-      "description": "Plain-English status updates for a non-technical audience: /nt-pm:shipped summarizes what is about to ship (promotion or current branch vs the default branch) or what just shipped (the last push to the default branch, read from the reflog), grouped by category; /nt-pm:weekly-recap summarizes the week's merged, in-review, and in-progress work across the whole team. Never posts, never deploys."
+      "description": "Creates plain-English status updates for non-technical audiences from repository and team activity. Never posts or deploys."
     },
     {
       "name": "nt-voice",
       "source": "./plugins/nt-voice",
-      "description": "One door to the prose voice pass. /nt-voice:human-voice claims every way of asking - \"sounds like AI\", \"slop\", \"humanize this\", \"editorial pass\" - then picks surgical or rewrite and hands off to the vendored skill that does that job. Needs nt-vendor."
+      "description": "Applies the appropriate prose voice pass for humanization and editorial requests. Requires nt-vendor."
     },
     {
       "name": "nt-seo-spider",
       "source": "./plugins/nt-seo-spider",
-      "description": "Screaming Frog SEO Spider as an MCP server: crawl control, reports, bulk exports, and URL inspection over the app's local endpoint. Ships 29 tools, so it stays off at user scope and gets turned on only in the client repos that do SEO work. Needs SEO Spider 24+ with its MCP server running."
+      "description": "Connects to Screaming Frog SEO Spider for crawl analysis. Requires SEO Spider 24+ with MCP running; disabled by default because it provides 29 tools."
     },
     {
       "name": "nt-vendor",
       "source": "./plugins/nt-vendor",
-      "description": "Third-party skills mirrored whole from their upstream repos, kept here so our own skills can call them by name. The nt-vendor prefix marks every skill in it as someone else's work."
+      "description": "Mirrors third-party skills from upstream repositories so other plugins can use them. The nt-vendor prefix identifies external work."
     },
     {
       "name": "wormhook",

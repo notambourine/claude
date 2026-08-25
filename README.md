@@ -45,6 +45,7 @@ Native CSS works in a page, Worker, or React app without a build step.
 - `/nt-dev:cleanup` - Audits the repo for dead refs, stale docs, duplication, orphans, and broken `.claude/` config without committing.
 - `/nt-dev:recall` - Restores a prior session in this repo to context.
 - `/nt-dev:eod-update` - Drafts a copy-paste end-of-day standup update from today's GitHub activity without posting.
+- `/nt-dev:commit` - Writes a `scope: description` commit message, no Conventional Commits type.
 
 Also includes the two hooks below.
 
