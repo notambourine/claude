@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
   "name": "nt-vendor",
-  "description": "Third-party skills mirrored whole from their upstream repos, kept here so our own skills can call them by name. The nt-vendor prefix marks every skill in it as someone else's work.",
+  "description": "Mirrors third-party skills from upstream repositories so other plugins can use them. The nt-vendor prefix identifies external work.",
   "author": {
     "name": "NoTambourine LLC",
     "url": "https://notambourine.com"
