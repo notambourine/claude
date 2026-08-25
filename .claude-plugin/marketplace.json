@@ -33,6 +33,11 @@
       "description": "Connects to Screaming Frog SEO Spider for crawl analysis. Requires SEO Spider 24+ with MCP running; disabled by default because it provides 29 tools."
     },
     {
+      "name": "nt-shopify",
+      "source": "./plugins/nt-shopify",
+      "description": "Refuses Shopify CLI and Shopify MCP calls that write to a live storefront. Development themes are the only writable surface, Hydrogen and app deploys are refused, and unknown verbs fail closed."
+    },
+    {
       "name": "nt-vendor",
       "source": "./plugins/nt-vendor",
       "description": "Mirrors third-party skills from upstream repositories so other plugins can use them. The nt-vendor prefix identifies external work."

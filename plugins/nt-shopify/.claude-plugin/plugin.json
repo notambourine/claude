@@ -1,0 +1,11 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "nt-shopify",
+  "description": "Refuses Shopify CLI and Shopify MCP calls that write to a live storefront. Development themes are the only writable surface, Hydrogen and app deploys are refused, and unknown verbs fail closed.",
+  "author": {
+    "name": "NoTambourine LLC",
+    "url": "https://notambourine.com"
+  },
+  "repository": "https://github.com/notambourine/claude",
+  "license": "MIT"
+}
