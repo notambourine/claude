@@ -2,14 +2,14 @@
 name: pr
 description: Draft or revise a pull request from the actual diff, follow the repository's template, and create a draft PR by default. Use for PR bodies, `gh pr create`, and `gh pr edit`.
 allowed-tools: Bash, Read, Write, Glob
-argument-hint: "[--ready] [pr-number-to-edit]"
+argument-hint: "[pr-number-to-edit]"
 ---
 
 <!-- dprint-ignore-file -->
 
 # Pull request
 
-Read the diff, fill the applicable template, and open a draft PR unless the user passes `--ready`.
+Read the diff, fill the applicable template, and open a draft PR.
 
 ## Resolve the template
 
