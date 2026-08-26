@@ -39,12 +39,14 @@ if (!payload) pass();
 /* --- what passes ---------------------------------------------------------- */
 
 /* Reads pass by name. Anything else is a write until someone reads it and says otherwise,
-   which is what keeps a tool added upstream next month from arriving pre-approved. */
-const MCP_READ = /^(?:get|list|search|find|read|fetch)[-_]/;
+   which is what keeps a tool added upstream next month from arriving pre-approved.
+   `learn`/`introspect`/`validate` are the docs server's verbs (`@shopify/dev-mcp` ships
+   `learn_shopify_api`, `introspect_graphql_schema`, `validate_theme`): it holds no store
+   credential, and its tool names carry `shopify` only because of the vendor. */
+const MCP_READ = /^(?:get|list|search|find|read|fetch|learn|introspect|validate)[-_]/;
 const MCP_READS = new Set([
   'graphql_query',
   'graphql_schema',
-  'validate_graphql_codeblocks',
   'run-analytics-query',
   'switch-shop',
 ]);
