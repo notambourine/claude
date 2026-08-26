@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Write git commit messages as `scope: description`. Use the changed subsystem as the scope and state what the change does. Apply when committing, amending, or rewording instead of using Conventional Commits types.
+description: "Write and create focused git commits using the repository's `scope: description` convention. Use when committing, amending, or rewording instead of Conventional Commits types."
 allowed-tools:
   - Bash(git status:*)
   - Bash(git diff:*)
@@ -9,46 +9,16 @@ allowed-tools:
   - Bash(git commit:*)
 ---
 
-# Commit message
+# Commit
 
-Write:
+Create a focused commit with this subject:
 
 `scope: description`
 
-Treat the scope as the sentence subject.
+Use the changed subsystem as the scope and the repository's vocabulary. Follow established nested scopes where useful, such as `nt-dev/pr`. For two areas, use `a,b`; split work spanning more areas.
 
-## Scope
+State what the change does in lowercase imperative language. Keep the subject under 72 characters. Do not add a Conventional Commits type.
 
-Name the changed part using the project's vocabulary: package path, plugin, service,
-directory, or subsystem. Read `git log --oneline -30` and reuse established prefixes.
+Add a body only when the change itself cannot explain why the approach wins or what trap it avoids. Close issues there when applicable.
 
-- One area: `nt-dev: ...`
-- Nested where the project nests: `nt-dev/pr: ...`, `net/http/cookiejar: ...`
-- Two areas: `a,b: ...`. Split commits spanning three or more areas.
-
-## Description
-
-State what the change does. Use lowercase imperative language and keep the entire line
-under 72 characters.
-
-Omit Conventional Commits types. `fix`, `feat`, `chore`, and `refactor` duplicate
-information carried by the description and often overlap.
-
-```text
-nt-dev: stop the dash guard from firing on vendored skills
-scripts: read the timestamp out of the file instead of stat
-brand-kit: 1.1.0 -> 1.2.0
-```
-
-Do not write `fix(nt-dev): ...`, `chore: bump`, or `Update files`.
-
-## Body
-
-Add a body only when the diff cannot explain why. Wrap at 72 characters. Explain why the
-approach wins or what trap it avoids. Do not narrate files. Close issues with
-`Fixes #123`.
-
-## Before committing
-
-Stage only touched paths. Never use `git add -A`. Confirm the staged diff has one scope.
-Otherwise, commit it in pieces.
+Stage only the paths that belong to this commit. Never use `git add -A`. Check that the staged change has one coherent scope before committing.
