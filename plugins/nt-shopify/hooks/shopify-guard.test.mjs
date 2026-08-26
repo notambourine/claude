@@ -231,6 +231,20 @@ describe('the Shopify MCP tools', () => {
     it(`allows ${op}`, () => allowed(mcp(op)));
   }
 
+  /* The docs server holds no store credential, so every tool it ships is a read. */
+  for (const op of [
+    'learn_shopify_api',
+    'search_docs_chunks',
+    'fetch_full_docs',
+    'introspect_graphql_schema',
+    'validate_graphql_codeblocks',
+    'validate_theme',
+    'validate_theme_codeblocks',
+    'validate_component_codeblocks',
+  ]) {
+    it(`allows the docs server's ${op}`, () => allowed(run(`mcp__shopify-dev-mcp__${op}`, {})));
+  }
+
   it('leaves another vendor\'s MCP tools alone', () => {
     allowed(run('mcp__claude_ai_Asana__create_tasks', {}));
   });
