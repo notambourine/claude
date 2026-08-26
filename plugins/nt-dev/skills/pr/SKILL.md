@@ -9,7 +9,7 @@ argument-hint: "[--ready] [pr-number-to-edit]"
 
 # Pull request
 
-Read the diff, fill the applicable template, write the body to a file, and open a draft PR unless the user passes `--ready`.
+Read the diff, fill the applicable template, and open a draft PR unless the user passes `--ready`.
 
 ## Resolve the template
 
