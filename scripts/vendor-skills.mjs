@@ -38,7 +38,23 @@ const MANIFEST = join(root, 'vendor/skills.json');
 const NOTICE = join(root, 'vendor/NOTICE.md');
 const VENDOR_PLUGIN = 'nt-vendor';
 const pristineDir = (name) => join(root, 'vendor/pristine', name);
-const liveDir = (name) => join(root, 'plugins', VENDOR_PLUGIN, 'skills', name);
+
+/* Where the live copy lands. `dest` overrides the default for a source vendored as
+   material rather than as a skill of its own: prose a first-party skill reads, parked in
+   that skill's directory. Skill discovery only walks plugins/<plugin>/skills/<name>/, so a
+   tree one level deeper ships its bytes without claiming a listing entry. */
+const liveRel = (s) => s.dest ?? `plugins/${VENDOR_PLUGIN}/skills/${s.name}`;
+const liveDir = (s) => join(root, liveRel(s));
+
+/* The entry point's filename in the live copy. `as` renames it away from SKILL.md, which
+   is what keeps a nested tree from registering as a skill no matter how discovery walks. */
+const localEntry = (s) => s.as ?? ENTRY;
+
+/* How a first-party file names this source, which is what makes it findable as a referrer.
+   A skill is called by command name; material has no command name, so its reader names the
+   entry file by the relative path it reads, the last segment of `dest` over `as`. */
+const callName = (s) =>
+  s.dest ? `${s.dest.split('/').pop()}/${localEntry(s)}` : `${VENDOR_PLUGIN}:${s.name}`;
 const licensePath = (repo) => join(root, 'vendor/licenses', `${repo.replace('/', '-')}.txt`);
 
 /* A gist is a repo with a different API and no tree, path, or license file. These three
@@ -218,6 +234,16 @@ async function readTree(dir) {
 const digestTree = (files) =>
   Object.fromEntries(Object.entries(files).map(([path, text]) => [path, digestOf(text)]));
 
+/* A live tree read back off disk, keyed the way upstream keys it. Every comparison in this
+   script is against the manifest, which is keyed by the GitHub tree path, so the `as`
+   rename has to be undone before anything is diffed or merged. */
+function asUpstream(s, files) {
+  const entry = localEntry(s);
+  if (entry === ENTRY || files[entry] === undefined) return files;
+  const { [entry]: body, ...rest } = files;
+  return { ...rest, [ENTRY]: body };
+}
+
 /* Compares two digest maps and names what moved. */
 function diffTrees(pinned = {}, current = {}) {
   const added = Object.keys(current).filter((p) => !(p in pinned));
@@ -242,10 +268,18 @@ async function referrers() {
     cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
   });
   if (res.status !== 0) throw new Error(`git ls-files failed: ${res.stderr}`);
+  /* A `dest` puts vendored bytes under a first-party plugin, where the blanket nt-vendor
+     exclusion no longer reaches them. Upstream prose naming a sibling is not a referrer. */
+  const vendored = skills.map((s) => `${liveRel(s)}/`);
   const scanned = res.stdout
     .split('\0')
     .filter(Boolean)
-    .filter((p) => !p.startsWith(`plugins/${VENDOR_PLUGIN}/`) && !p.startsWith('vendor/'));
+    .filter(
+      (p) =>
+        !p.startsWith(`plugins/${VENDOR_PLUGIN}/`) &&
+        !p.startsWith('vendor/') &&
+        !vendored.some((dir) => p.startsWith(dir)),
+    );
   for (const path of scanned) {
     let text;
     try {
@@ -253,8 +287,8 @@ async function referrers() {
     } catch {
       continue; // binary or unreadable: it cannot name a skill
     }
-    for (const name of Object.keys(index)) {
-      if (text.includes(`${VENDOR_PLUGIN}:${name}`)) index[name].push(path);
+    for (const s of skills) {
+      if (text.includes(callName(s))) index[s.name].push(path);
     }
   }
   return index;
@@ -271,10 +305,11 @@ function printReferrers(name, index) {
 }
 
 async function refs() {
+  const { skills } = await readManifest();
   const index = await referrers();
-  for (const [name, files] of Object.entries(index)) {
-    console.log(`${files.length ? '*' : '-'} ${VENDOR_PLUGIN}:${name}`);
-    printReferrers(name, index);
+  for (const s of skills) {
+    console.log(`${index[s.name].length ? '*' : '-'} ${callName(s)}`);
+    printReferrers(s.name, index);
   }
 }
 
@@ -329,9 +364,9 @@ async function verify() {
       bad += 1;
       continue;
     }
-    const live = await readTree(liveDir(s.name));
+    const live = asUpstream(s, await readTree(liveDir(s)));
     if (!live[ENTRY]) {
-      console.log(`! ${s.name}  plugins/${VENDOR_PLUGIN}/skills/${s.name}/${ENTRY} missing`);
+      console.log(`! ${s.name}  ${liveRel(s)}/${localEntry(s)} missing`);
       bad += 1;
       continue;
     }
@@ -355,7 +390,7 @@ async function pull() {
     const theirs = await fetchTree(s, sha);
     const base = await readTree(pristineDir(s.name));
     const hadBase = Object.keys(base).length > 0;
-    const live = await readTree(liveDir(s.name));
+    const live = asUpstream(s, await readTree(liveDir(s)));
     if (live[ENTRY]) live[ENTRY] = stripMarker(live[ENTRY]);
 
     let conflicts = 0;
@@ -384,13 +419,16 @@ async function pull() {
     }
 
     await rm(pristineDir(s.name), { recursive: true, force: true });
-    await rm(liveDir(s.name), { recursive: true, force: true });
+    await rm(liveDir(s), { recursive: true, force: true });
     for (const [path, text] of Object.entries(theirs)) {
       await writeFileIn(join(pristineDir(s.name), path), text);
     }
     for (const [path, text] of Object.entries(merged)) {
-      const body = path === ENTRY ? withMarker(text, s, sha) : text;
-      await writeFileIn(join(liveDir(s.name), path), body);
+      const entry = path === ENTRY;
+      await writeFileIn(
+        join(liveDir(s), entry ? localEntry(s) : path),
+        entry ? withMarker(text, s, sha) : text,
+      );
     }
 
     const diff = diffTrees(s.files ?? {}, digestTree(theirs));

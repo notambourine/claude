@@ -1,10 +1,3 @@
----
-name: humanizer
-description: The REWRITE half of the voice pass - reshape machine-written paragraphs freely while keeping every claim, against Wikipedia's 33 signs of AI writing. /nt-voice:human-voice routes bare humanize requests here or to nt-vendor:anti-slop.
-license: MIT
-metadata:
-  version: "2.9.1"
----
 <!-- vendored: blader/humanizer@523374d . (MIT). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
 
 # Humanizer: Remove AI Writing Patterns

@@ -1,5 +1,6 @@
 {
   "$comment": "Third-party skill directories vendored into plugins/nt-vendor/skills/. `path` is a directory, copied whole. `sha` and `files` are written by `node scripts/vendor-skills.mjs pull`; do not hand-edit them. To add a skill, append name/repo/ref/path/license and run `pull <name>` - naming it keeps other skills' upstream drift out of the same PR. `copyright` is written too, but only when absent: set it by hand for a license that names no holder, such as Apache-2.0.",
+  "$dest": "A source vendored as material rather than as a skill of its own sets `dest` to the first-party skill directory that reads it, and `as` to the entry point's filename there. Skill discovery only walks plugins/<plugin>/skills/<name>/, and `as` moving the entry off SKILL.md means the tree cannot register however deep discovery goes. The prose ships without buying a listing entry, and one copy stays under `pull` and `verify`.",
   "$exclude": "Dropped from every copy: other-harness config, and anything that could be mistaken for our own repo wiring. Everything else comes across, because these skills link to their siblings.",
   "skills": [
     {
@@ -7,6 +8,8 @@
       "repo": "elithrar/dotfiles",
       "ref": "main",
       "path": ".agents/skills/anti-slop",
+      "dest": "plugins/nt-voice/skills/human-voice/surgical",
+      "as": "METHOD.md",
       "exclude": [
         "agents/**"
       ],
@@ -56,6 +59,8 @@
       "repo": "blader/humanizer",
       "ref": "main",
       "path": "",
+      "dest": "plugins/nt-voice/skills/human-voice/rewrite",
+      "as": "METHOD.md",
       "exclude": [
         ".github/**",
         ".claude-plugin/**",
