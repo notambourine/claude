@@ -1,6 +1,6 @@
 ---
 name: eod-update
-description: Draft a Slack-ready end-of-day update from today's repo activity plus the user's plan and blockers. Use for EOD, standup, and day-wrap requests; never posts it.
+description: Draft a Slack end-of-day update.
 allowed-tools:
   - Bash(gh pr list:*)
   - Bash(gh pr view:*)

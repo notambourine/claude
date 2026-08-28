@@ -44,6 +44,16 @@ export function feedback(reason, message) {
   process.exit(0);
 }
 
+/* SessionStart. Unlike a skill description, this prose is not ranked against the skill
+   listing budget, so it is the only place a plugin can put standing guidance that a
+   low-use sibling's description would be dropped from. */
+export function brief(additionalContext) {
+  console.log(
+    JSON.stringify({ hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext } }),
+  );
+  process.exit(0);
+}
+
 function emit(hookSpecificOutput, systemMessage) {
   const out = { hookSpecificOutput: { hookEventName: 'PreToolUse', ...hookSpecificOutput } };
   if (systemMessage) out.systemMessage = systemMessage;
