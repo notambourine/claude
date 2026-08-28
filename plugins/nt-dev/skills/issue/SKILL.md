@@ -1,6 +1,6 @@
 ---
 name: issue
-description: Create or revise a concise GitHub issue using the repository's template, conventions, hierarchy, and metadata. Use for filing tickets or editing issue scope and acceptance.
+description: Create or revise a concise GitHub issue in the repo's template and conventions. Use for filing tickets or editing issue scope and acceptance.
 allowed-tools: Bash, Read, Grep, Glob
 argument-hint: "[issue-number-to-edit]"
 ---

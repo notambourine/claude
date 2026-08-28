@@ -1,6 +1,6 @@
 ---
 name: weekly-recap
-description: Summarize a repository's recent shipped, in-review, and in-progress work for project managers and executives. Use for non-technical weekly development recaps; never post the result.
+description: Summarize a repo's shipped, in-review, and in-progress work for PMs and executives. Use for non-technical weekly recaps; never posts it.
 allowed-tools:
   - Bash(gh pr list:*)
   - Bash(git log:*)

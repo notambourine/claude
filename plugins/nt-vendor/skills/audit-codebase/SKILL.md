@@ -1,6 +1,7 @@
 ---
 name: audit-codebase
 description: Read-only whole-codebase audit for simplifications in data structures, state representation, control flow, algorithms, and ownership. Inventories every subsystem as a coverage contract, reviews each one in a bounded subagent, verifies each finding against the repo, then audits its own coverage. Never edits, runs tests, commits, or pushes. Use for "audit this codebase", "find simplifications", or a pre-refactor survey.
+disable-model-invocation: true
 ---
 <!-- vendored: aarondfrancis/8735edb@959a2a9 audit-your-codebase.md (unstated). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
 Audit this entire codebase for materially useful simplifications in its data structures, state representation, control flow, algorithms, and ownership.

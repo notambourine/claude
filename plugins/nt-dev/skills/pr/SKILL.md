@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Create or revise a concise pull request from the repository's template, with screenshots when they help review the change. Use for PR bodies, `gh pr create`, and `gh pr edit`.
+description: Create or revise a concise pull request from the repo's template. Use for PR bodies, `gh pr create`, and `gh pr edit`.
 allowed-tools: Bash, Read, Write, Glob
 argument-hint: "[pr-number-to-edit]"
 ---
