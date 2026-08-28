@@ -5,11 +5,8 @@
    block is a broken skill on every other machine - and nothing else in this repo catches
    it, because CI runs the skills' text through no shell.
 
-   Scope is what this practice writes. A vendored tree is a mirror of someone else's repo,
-   so its prose is theirs to fix; see .claude/rules/vendored-skills.md. The skip list comes
-   from vendor/skills.json rather than a path literal here, because `dest` lets a vendored
-   tree land under a first-party plugin and a second copy of that list would go stale
-   exactly once - on the pull that moved it.
+   Check only first-party prose. Read vendored paths from vendor/skills.json because `dest`
+   can place third-party material inside a first-party plugin.
 
    The Bash tool on Windows runs Git Bash, so POSIX syntax and the MSYS coreutils are
    there. What is missing is BSD flag spellings, the Homebrew binaries, and anything

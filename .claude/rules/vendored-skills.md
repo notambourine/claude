@@ -22,12 +22,12 @@ paths:
   siblings, so an entry point alone ships dead links.
 - Audit every referrer that `check` or `pull` names before you merge the update PR.
   Upstream owns that prose and can move the ground under a caller.
-- Vendor a source as material, not as a skill, when a first-party skill is the only thing
-  that should read it: set `dest` to that skill's directory and `as` to the entry point's
-  filename there. It ships no listing entry, and `pull` and `verify` still own the copy.
+- When only one first-party skill reads a source, vendor it as supporting material. Set
+  `dest` to the skill directory and `as` to the local entry-point name. It stays out of
+  skill listings while `pull` and `verify` manage the copy.
 - Name a vendored skill as `nt-vendor:<name>` wherever a first-party skill calls it.
-  The bare name is invisible to `node scripts/vendor-skills.mjs refs`. A source with a
-  `dest` has no skill name to call; the reading skill names the file by path instead.
+  The bare name is invisible to `node scripts/vendor-skills.mjs refs`. Supporting material
+  has no skill name, so its reader must refer to the entry point by path.
 - Upstream text calls its siblings by bare name, which does not resolve under the
   `nt-vendor:` prefix. Leave it alone in the mirror; wrap the call in a first-party
   skill when it has to work.

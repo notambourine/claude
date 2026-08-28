@@ -1,11 +1,4 @@
-/* Decision table for the session-brief SessionStart hook.
-
-   Run: npm test
-
-   The gate is the whole point, so the table is mostly about when nothing is emitted. A
-   brief that leaks into a non-repo session costs every turn of it and names six skills
-   that have nothing to act on.
-*/
+/* Cover the emitted routing context and every case where the repo gate suppresses it. */
 import { match, strictEqual } from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -17,8 +10,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const HOOK = join(HERE, 'session-brief.mjs');
 
-/* Bare mktemp, per .claude/rules/portable-shell.md. Outside any repo, which is the
-   condition being tested. */
+/* The temporary directory must remain outside a repo for the gate test. */
 const outside = mkdtempSync(join(tmpdir(), 'nt-dev-brief-'));
 after(() => rmSync(outside, { recursive: true, force: true }));
 
@@ -38,7 +30,7 @@ const briefOf = (r) => r?.hookSpecificOutput?.additionalContext;
 describe('session-brief', () => {
   it('names every skill in the set inside a repo', () => {
     const text = briefOf(run());
-    match(text, /^nt-dev house standards/);
+    match(text, /^Use nt-dev skills/);
     for (const name of ['commit', 'pr', 'issue', 'recall', 'cleanup', 'eod-update']) {
       match(text, new RegExp(`/nt-dev:${name}\\b`));
     }
@@ -48,11 +40,10 @@ describe('session-brief', () => {
     strictEqual(run().hookSpecificOutput.hookEventName, 'SessionStart');
   });
 
-  /* The convention is the reason the descriptions could shrink; losing it here would move
-     the standard nowhere. */
+  /* The brief must retain the convention removed from the shorter descriptions. */
   it('carries the commit convention the description no longer states', () => {
     match(briefOf(run()), /`scope: description`/);
-    match(briefOf(run()), /not Conventional Commits/);
+    match(briefOf(run()), /instead of Conventional Commits/);
   });
 
   it('emits nothing outside a repo', () => {

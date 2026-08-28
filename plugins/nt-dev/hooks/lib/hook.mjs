@@ -44,9 +44,8 @@ export function feedback(reason, message) {
   process.exit(0);
 }
 
-/* SessionStart. Unlike a skill description, this prose is not ranked against the skill
-   listing budget, so it is the only place a plugin can put standing guidance that a
-   low-use sibling's description would be dropped from. */
+/* SessionStart context does not consume the skill-listing budget, so infrequently used
+   skills can keep their routing guidance without bloated descriptions. */
 export function brief(additionalContext) {
   console.log(
     JSON.stringify({ hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext } }),

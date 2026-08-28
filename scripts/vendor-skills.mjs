@@ -39,20 +39,16 @@ const NOTICE = join(root, 'vendor/NOTICE.md');
 const VENDOR_PLUGIN = 'nt-vendor';
 const pristineDir = (name) => join(root, 'vendor/pristine', name);
 
-/* Where the live copy lands. `dest` overrides the default for a source vendored as
-   material rather than as a skill of its own: prose a first-party skill reads, parked in
-   that skill's directory. Skill discovery only walks plugins/<plugin>/skills/<name>/, so a
-   tree one level deeper ships its bytes without claiming a listing entry. */
+/* `dest` places supporting material inside the first-party skill that reads it. Nested
+   material ships with the plugin without claiming its own skill-listing entry. */
 const liveRel = (s) => s.dest ?? `plugins/${VENDOR_PLUGIN}/skills/${s.name}`;
 const liveDir = (s) => join(root, liveRel(s));
 
-/* The entry point's filename in the live copy. `as` renames it away from SKILL.md, which
-   is what keeps a nested tree from registering as a skill no matter how discovery walks. */
+/* Rename a supporting entry point so discovery cannot register it as a skill. */
 const localEntry = (s) => s.as ?? ENTRY;
 
-/* How a first-party file names this source, which is what makes it findable as a referrer.
-   A skill is called by command name; material has no command name, so its reader names the
-   entry file by the relative path it reads, the last segment of `dest` over `as`. */
+/* Skills have command names. Supporting material uses the relative entry-point path that
+   its first-party reader names. */
 const callName = (s) =>
   s.dest ? `${s.dest.split('/').pop()}/${localEntry(s)}` : `${VENDOR_PLUGIN}:${s.name}`;
 const licensePath = (repo) => join(root, 'vendor/licenses', `${repo.replace('/', '-')}.txt`);
@@ -234,9 +230,7 @@ async function readTree(dir) {
 const digestTree = (files) =>
   Object.fromEntries(Object.entries(files).map(([path, text]) => [path, digestOf(text)]));
 
-/* A live tree read back off disk, keyed the way upstream keys it. Every comparison in this
-   script is against the manifest, which is keyed by the GitHub tree path, so the `as`
-   rename has to be undone before anything is diffed or merged. */
+/* Restore the upstream entry-point name before comparing or merging trees. */
 function asUpstream(s, files) {
   const entry = localEntry(s);
   if (entry === ENTRY || files[entry] === undefined) return files;
@@ -268,8 +262,8 @@ async function referrers() {
     cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
   });
   if (res.status !== 0) throw new Error(`git ls-files failed: ${res.stderr}`);
-  /* A `dest` puts vendored bytes under a first-party plugin, where the blanket nt-vendor
-     exclusion no longer reaches them. Upstream prose naming a sibling is not a referrer. */
+  /* Exclude every vendored destination so upstream references are not counted as
+     first-party referrers. */
   const vendored = skills.map((s) => `${liveRel(s)}/`);
   const scanned = res.stdout
     .split('\0')

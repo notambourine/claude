@@ -7,7 +7,7 @@ argument-hint: "[<file> | pasted text] [--surgical | --rewrite]"
 
 # Human voice
 
-Both methods ship in this directory. Read exactly one. They make incompatible assumptions about how much may change, and a pass carrying both applies neither.
+Read exactly one method from this directory. Each allows a different amount of change, so loading both weakens the pass.
 
 | Method | Use when | Read |
 | --- | --- | --- |
@@ -20,17 +20,17 @@ Choose rewrite when the user asks to redo the text, calls it AI slop, did not wr
 
 Choose surgical when the user asks for a light pass, wants the structure or voice preserved, hands over someone else's draft for review, or gives you a fact-dense artifact such as a PR body, commit message, or technical document.
 
-State the choice in one line, then read that file. For example:
+State the choice in one line, then read the method. For example:
 
 > Surgical pass - your structure is settled, so only the phrasing should move.
 
 ## Boundaries
 
-`surgical/METHOD.md` identifies candidate tells, separates genuine slop from the author's voice, and applies minimal phrasing changes. It must preserve facts, numbers, and structure.
+`surgical/METHOD.md` finds AI writing tells and removes them with minimal phrasing changes. It preserves facts, numbers, structure, and the author's real voice.
 
-`rewrite/METHOD.md` may reshape machine-written prose while preserving every claim. Use its embedded mode when humanizing text inside a larger workflow.
+`rewrite/METHOD.md` can reshape machine-written prose but must preserve every claim. Use its embedded mode inside a larger workflow.
 
-For a machine draft that must sound like its author, finish the rewrite first, then run the surgical pass on the result. Never read both files in one pass.
+When a machine draft must sound like its author, rewrite it first and run a separate surgical pass on the result. Never read both methods in one pass.
 
 The user's requirements outrank either method:
 
@@ -41,4 +41,4 @@ The user's requirements outrank either method:
 
 ## Provenance
 
-Both method files are third-party prose vendored into this skill, with their licenses and notices in `vendor/` at the repository root. Fix a defect upstream rather than here; a local edit survives the next pull but never reaches the people who wrote it.
+Both methods are vendored third-party prose. Their licenses and notices live in the repository's `vendor/` directory. Fix defects upstream so the original authors receive the change.

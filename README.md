@@ -82,13 +82,13 @@ claude plugin enable nt-shopify@notambourine -s local
 
 ### `nt-voice`
 
-- `/nt-voice:human-voice` - Assesses the prose, chooses and states surgical edits or a full rewrite, then reads that method.
+- `/nt-voice:human-voice` - Chooses a surgical edit or full rewrite, states the choice, and applies that method.
 
-Self-contained. Both methods are vendored into the skill's own directory: `surgical/` removes AI writing tells while preserving facts, numbers, and structure, and `rewrite/` reshapes machine-written prose while preserving every claim. Neither is a skill of its own, so neither can be invoked or listed separately.
+The skill carries both methods. `surgical/` removes AI writing tells without changing facts, numbers, or structure. `rewrite/` can reshape the prose but must preserve every claim. The methods are not separate skills and do not appear in listings.
 
 ### `nt-vendor`
 
-Mirrors complete skills from other repositories under a clear vendor prefix.
+Mirrors complete third-party skills under the `nt-vendor` prefix.
 
 - `/nt-vendor:codebase-design` - Provides a vocabulary for deep modules, seam placement, and deepening opportunities.
 - `/nt-vendor:audit-codebase` - Audits the full codebase for simplifications without editing, committing, or pushing.

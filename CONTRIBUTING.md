@@ -170,10 +170,10 @@ license, and `vendor/NOTICE.md` names the copyright holder. The prefix is the
 point: when a first-party skill says `nt-vendor:codebase-design`, the reader knows
 the vocabulary it borrows did not come from this practice.
 
-A source read by exactly one first-party skill is vendored into that skill's own
-directory instead, via `dest` and `as` in the manifest. `/nt-voice:human-voice`
-carries both prose methods that way. The prefix cannot mark those, so the reading
-skill says where they came from and `vendor/NOTICE.md` still holds the notice.
+When exactly one first-party skill reads a source, the manifest can place it inside
+that skill with `dest` and `as`. `/nt-voice:human-voice` carries both prose methods
+this way. Because these sources have no vendor prefix, the skill identifies their
+origin and `vendor/NOTICE.md` records their notices.
 
 ```bash
 node scripts/vendor-skills.mjs check   # network. upstream moved? weekly in CI
