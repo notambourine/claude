@@ -5,8 +5,8 @@
    block is a broken skill on every other machine - and nothing else in this repo catches
    it, because CI runs the skills' text through no shell.
 
-   Scope is what this practice writes. plugins/nt-vendor/skills/ is a mirror of someone
-   else's repo, so its prose is theirs to fix; see .claude/rules/vendored-skills.md.
+   Check only first-party prose. Read vendored paths from vendor/skills.json because `dest`
+   can place third-party material inside a first-party plugin.
 
    The Bash tool on Windows runs Git Bash, so POSIX syntax and the MSYS coreutils are
    there. What is missing is BSD flag spellings, the Homebrew binaries, and anything
@@ -20,8 +20,11 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const SCANNED = /^(plugins\/.+\.(md|mjs)|scripts\/.+\.mjs)$/;
-const SKIPPED = /^plugins\/nt-vendor\/skills\//;
 const SELF = 'scripts/check-portable.mjs';
+
+const { skills } = JSON.parse(await readFile(join(root, 'vendor/skills.json'), 'utf8'));
+const vendored = skills.map((s) => `${s.dest ?? `plugins/nt-vendor/skills/${s.name}`}/`);
+const isVendored = (path) => vendored.some((dir) => path.startsWith(dir));
 
 /* A line that names the platform it belongs to is documentation, not an instruction to run
    blind. That is the fix this check asks for, so it must not also fail it. */
@@ -41,7 +44,7 @@ const RULES = [
 
 const files = spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' })
   .stdout.split('\n')
-  .filter((p) => SCANNED.test(p) && !SKIPPED.test(p) && p !== SELF);
+  .filter((p) => SCANNED.test(p) && !isVendored(p) && p !== SELF);
 
 let hits = 0;
 for (const path of files) {

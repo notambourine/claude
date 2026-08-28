@@ -1,6 +1,6 @@
 ---
 name: cleanup
-description: Audit checked-in repository context and Claude configuration for dead references, stale claims, duplication, or misplaced memory. Report ranked findings and apply surgical fixes unless `--dry-run`; never commit.
+description: Audit checked-in repo context and Claude config.
 effort: high
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Agent, AskUserQuestion
 argument-hint: "[--dry-run] [path-or-glob]"

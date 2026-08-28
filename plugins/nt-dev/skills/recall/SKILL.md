@@ -1,6 +1,6 @@
 ---
 name: recall
-description: Recover relevant context from prior Claude Code conversations for the current repository. Use when the user refers to missing earlier work, decisions, or an unfinished session.
+description: Recover context from prior sessions in this repo.
 allowed-tools:
   - Bash
   - Read

@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Write and create focused git commits using the repository's `scope: description` convention. Use when committing, amending, or rewording instead of Conventional Commits types."
+description: Write and create focused git commits.
 allowed-tools:
   - Bash(git status:*)
   - Bash(git diff:*)

@@ -1,6 +1,7 @@
 ---
 name: shipped
 description: Draft plain-English Slack deploy notes for work about to ship or the last observed production push. Use for deploy previews and retrospective release summaries; never deploy or post the result.
+disable-model-invocation: true
 allowed-tools:
   - Bash(git fetch:*)
   - Bash(git reflog:*)

@@ -1,18 +1,3 @@
----
-name: humanizer
-description: |
-  The REWRITE half of the prose voice pass - draft, audit, final rewrite, keeping
-  every claim but reshaping paragraphs freely. 33 patterns from Wikipedia's "Signs
-  of AI writing": inflated symbolism, promotional language, superficial -ing
-  analyses, vague attributions, em dash overuse, rule of three, AI vocabulary,
-  passive voice, negative parallelisms, filler. Do not load this from a bare "make
-  this sound human"; /nt-voice:human-voice triages that ask and routes here or to
-  nt-vendor:anti-slop. Load directly only when the caller has already chosen
-  rewrite, needs embedded mode mid-task, or names this skill.
-license: MIT
-metadata:
-  version: "2.9.1"
----
 <!-- vendored: blader/humanizer@523374d . (MIT). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
 
 # Humanizer: Remove AI Writing Patterns

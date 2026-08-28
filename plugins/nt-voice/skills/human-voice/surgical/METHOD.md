@@ -1,7 +1,3 @@
----
-name: anti-slop
-description: The SURGICAL half of the prose voice pass - remove AI writing tells as minimal phrasing edits, never touching facts, numbers, or structure. Do not load this from a bare "make this sound human"; /nt-voice:human-voice triages that ask and routes here or to nt-vendor:humanizer. Load directly only when the caller has already chosen surgical, or names this skill.
----
 <!-- vendored: elithrar/dotfiles@5e7254b .agents/skills/anti-slop (MIT). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
 
 ## Anti-Slop: Writing and Reviewing Human-Sounding Prose

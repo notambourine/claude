@@ -44,6 +44,15 @@ export function feedback(reason, message) {
   process.exit(0);
 }
 
+/* SessionStart context does not consume the skill-listing budget, so infrequently used
+   skills can keep their routing guidance without bloated descriptions. */
+export function brief(additionalContext) {
+  console.log(
+    JSON.stringify({ hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext } }),
+  );
+  process.exit(0);
+}
+
 function emit(hookSpecificOutput, systemMessage) {
   const out = { hookSpecificOutput: { hookEventName: 'PreToolUse', ...hookSpecificOutput } };
   if (systemMessage) out.systemMessage = systemMessage;

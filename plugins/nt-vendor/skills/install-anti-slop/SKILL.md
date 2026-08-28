@@ -1,6 +1,7 @@
 ---
 name: install-anti-slop
 description: Install and configure the anti-slop Oxlint plugin in a local TypeScript or JavaScript repository. Use whenever a user asks to add anti-slop lint rules, copy the anti-slop plugin, configure opinionated Oxlint rules, or migrate an existing local anti-slop setup.
+disable-model-invocation: true
 ---
 <!-- vendored: dmmulroy/anti-slop@446268e skills/install-anti-slop (MIT). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
 
