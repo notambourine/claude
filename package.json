@@ -7,7 +7,7 @@
   "scripts": {
     "brand": "node scripts/brand-kit.mjs verify",
     "brand:sync": "node scripts/brand-kit.mjs sync",
-    "test": "node --test \"plugins/**/*.test.mjs\""
+    "test": "node --test \"plugins/**/*.test.mjs\" \".claude/hooks/*.test.mjs\""
   },
   "dependencies": {
     "@notambourine/brand-kit": "1.1.0"

@@ -6,7 +6,10 @@ node_modules/
 
 # ~/.gitignore excludes .claude/ everywhere, and git will not descend into an
 # excluded directory, so re-including one child needs all three lines.
-# .claude/rules/ carries repo policy that clones need; settings.local.json does not.
+# rules/, hooks/, and settings.json carry repo policy that clones need;
+# settings.local.json does not.
 !.claude/
 .claude/*
 !.claude/rules/
+!.claude/hooks/
+!.claude/settings.json
