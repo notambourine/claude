@@ -13,19 +13,14 @@ allowed-tools:
 
 # End-of-day update
 
-Produce a paste-ready Slack update. Never post it.
+Draft only. Never post.
 
-## Know what happened
+Use today's local commits and authenticated GitHub events: authored, reviewed, commented,
+merged. Verify event timestamps; deduplicate PRs; collapse commits into outcomes. For
+teammate PRs, name the user's action. For authored PRs, name current state. Ask only for
+unrecoverable work, tomorrow, blockers.
 
-Use the current repository's local commits and authenticated GitHub activity from today. Include PRs the user authored, reviewed, commented on, or merged.
-
-GitHub search results updated today can contain older user activity. Verify the relevant event timestamps before including a PR. Deduplicate by PR and collapse related commits into outcomes. Describe teammate PRs by the user's action and authored PRs by their current state. Never invent activity when repository data is missing.
-
-Ask only for what the repository cannot reveal: other completed work, tomorrow's focus, and blockers or open questions. Do not repeat questions the user already answered.
-
-## Write the update
-
-Return only a plain-text block in this shape:
+Return only:
 
 ```text
 🌇 EOD Update DD-MM-YYYY
@@ -40,7 +35,8 @@ Return only a plain-text block in this shape:
 • [item or None]
 
 📝 Notes:
-[optional notes]
+[optional]
 ```
 
-Keep items short. Include PR numbers without URLs. Always include Blockers and omit Notes when empty. If repository context is unavailable, build the update from the user's answers.
+Short items. PR numbers, no URLs. Always Blockers. Omit empty Notes. Missing repo context:
+use answers only.

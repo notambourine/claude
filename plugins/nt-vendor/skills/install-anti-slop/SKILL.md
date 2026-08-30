@@ -3,91 +3,40 @@ name: install-anti-slop
 description: Install and configure the anti-slop Oxlint plugin in a local TypeScript or JavaScript repository. Use whenever a user asks to add anti-slop lint rules, copy the anti-slop plugin, configure opinionated Oxlint rules, or migrate an existing local anti-slop setup.
 disable-model-invocation: true
 ---
-<!-- vendored: dmmulroy/anti-slop@446268e skills/install-anti-slop (MIT). Edit freely: `node scripts/vendor-skills.mjs pull` merges upstream around local changes. -->
+<!-- vendored: dmmulroy/anti-slop@446268e skills/install-anti-slop (MIT). -->
 
 # Install anti-slop
 
-Install the bundled Oxlint plugin into the current repository and integrate it with the repository's existing lint setup. Preserve unrelated work and adapt to the project's package manager and configuration style.
+Read instructions; preserve dirty work; detect package manager, Oxlint config, existing
+copy. Install:
 
-## Procedure
+```bash
+node <skill-directory>/scripts/install.mjs [relative-destination]
+```
 
-1. Inspect the repository before changing it:
-   - Read its agent instructions.
-   - Check `git status` and preserve unrelated changes.
-   - Identify the package manager from `packageManager` and lockfiles.
-   - Find Oxlint configuration (`oxlint.config.*`, `.oxlintrc*`, or a Vite+ config).
-   - Check whether anti-slop files or rules already exist. Do not overwrite them without reviewing the diff.
+Default: `tools/oxlint/anti-slop/`. Existing destination: compare first; `--force` only
+after backup/review.
 
-2. Copy the bundled plugin from this skill. Run from the target repository:
+Query current `oxlint` and `@oxlint/plugins`; install matching dev versions with existing
+package manager. Merge, never replace:
 
-   ```bash
-   node <skill-directory>/scripts/install.mjs
-   ```
+```ts
+ignorePatterns: [
+  ".agent/**", ".agents/**", ".claude/**", ".codex/**", ".continue/**",
+  ".cursor/**", ".gemini/**", ".opencode/**", ".pi/**", ".roo/**",
+  ".windsurf/**", "tools/oxlint/anti-slop/**",
+],
+jsPlugins: [{ name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" }],
+```
 
-   This creates `tools/oxlint/anti-slop/`. Pass another relative destination as the first argument when the repository has an established tooling layout. The script refuses to replace an existing destination; only use `--force` after backing up and reviewing existing files.
+Add other agent-tool directories; never ignore all dot-directories. Vite+: merge into
+`lint.ignorePatterns`, `lint.jsPlugins`, and `fmt.ignorePatterns`.
 
-3. Install current compatible dependencies rather than trusting versions remembered by the agent:
-   - Query `npm view oxlint version` and `npm view @oxlint/plugins version`.
-   - Install the same current version of both packages with the repository's package manager.
-   - `oxlint` is a development dependency. The copied source imports `@oxlint/plugins`, so install it as a development dependency for a local-only plugin.
-   - Do not replace the package manager or rewrite unrelated dependency ranges.
+Enable every bundled `anti-slop/*` rule at `error`.
 
-4. Register the plugin, configure ignores, and enable all rules. For `oxlint.config.ts` or `.oxlintrc.json`, merge these fields with the existing configuration:
+Run repo lint and typecheck; Vite+: full `vp check`. Report owned-source findings unless
+migration/cleanup was requested. Never weaken rules, suppress errors, add unsafe casts, or
+launder types. Report destination, versions, config, checks, remaining findings.
 
-   ```ts
-   ignorePatterns: [
-     ".agent/**",
-     ".agents/**",
-     ".claude/**",
-     ".codex/**",
-     ".continue/**",
-     ".cursor/**",
-     ".gemini/**",
-     ".opencode/**",
-     ".pi/**",
-     ".roo/**",
-     ".windsurf/**",
-     "tools/oxlint/anti-slop/**",
-   ],
-   jsPlugins: [
-     { name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
-   ],
-   ```
-
-   Keep every existing ignore. Adjust the final pattern when the plugin was copied elsewhere. Inspect the repository for other project-local agent tooling directories and add them rather than linting installed skills, hooks, or generated agent configuration as application source. Do not broadly ignore all dot-directories, because some repositories keep owned source or checks in them.
-
-   For Vite+, add these fields to `lint.ignorePatterns` and `lint.jsPlugins`. Also merge the same patterns into `fmt.ignorePatterns` so `vp check` does not reformat installed agent assets or the vendored plugin. Merge existing entries instead of replacing them.
-
-   Enable these rules at `"error"`:
-
-   ```json
-   {
-     "anti-slop/no-chained-type-assertions": "error",
-     "anti-slop/no-conditional-empty-object-spread": "error",
-     "anti-slop/no-known-value-widening": "error",
-     "anti-slop/no-module-mocking": "error",
-     "anti-slop/no-object-parameters": "error",
-     "anti-slop/no-reflect-apply": "error",
-     "anti-slop/no-reflect-get": "error",
-     "anti-slop/no-runtime-typeof": "error",
-     "anti-slop/no-shape-in-symbol-names": "error",
-     "anti-slop/no-unknown-parameters": "error",
-     "anti-slop/no-unknown-returns": "error",
-     "anti-slop/no-unknown-type-aliases": "error",
-     "anti-slop/no-unsafe-dictionary-type": "error",
-     "anti-slop/no-widen-then-assert": "error",
-     "anti-slop/require-safety-comment-for-type-assertion": "error"
-   }
-   ```
-
-5. Run the repository's lint command and typecheck. For Vite+, run the repository's full `vp check` command after adding both lint and format ignores. If findings appear in owned project source, report them and fix them only when the user asked for migration/cleanup. Do not suppress rules, weaken rule severity, add unsafe casts, or mechanically launder types to make lint pass.
-
-6. Review the final diff and clearly report:
-   - copied path,
-   - dependency versions installed,
-   - configuration changed,
-   - checks run and any remaining findings.
-
-## Migration guidance
-
-When replacing an older local copy, compare its rules and diagnostics before overwriting. Keep project-specific rules in their own plugin; anti-slop is intentionally generic. Prefer inference, `as const`, `satisfies`, named owner contracts, and boundary parsing when resolving findings.
+Migration: compare old rules/diagnostics. Keep project rules separate. Prefer inference,
+`as const`, `satisfies`, named contracts, boundary parsing.

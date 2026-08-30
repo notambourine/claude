@@ -1,8 +1,6 @@
-# GitHub user attachments
+# GitHub attachments
 
-Capture the relevant application state with the available browser or platform tooling. Use a stable viewport and omit unrelated chrome or sensitive data.
-
-Upload a PNG as a GitHub user attachment:
+Capture stable viewport; relevant state only; no secrets or unrelated chrome.
 
 ```bash
 FILE=shot.png
@@ -14,10 +12,12 @@ URL=$(curl -s -X POST \
   --data-binary "@$FILE" | jq -r .url)
 ```
 
-Embed the result as `![descriptive label]($URL)`. The endpoint is undocumented. If it returns 404 or 422, create a prerelease with the capture and embed its asset URL:
+Embed: `![label]($URL)`.
+
+Undocumented endpoint failure (`404`/`422`):
 
 ```bash
 gh release create pr-<n>-shots --prerelease "$FILE"
 ```
 
-Remove the prerelease after the PR merges.
+Embed asset URL; delete prerelease after merge.
