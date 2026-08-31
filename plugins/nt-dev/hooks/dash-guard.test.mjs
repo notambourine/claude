@@ -1,4 +1,4 @@
-/* Decision table for the dash-guard hook, on both events it answers.
+/* Decision table for the dash-guard hook, which refuses a write under NT_DEV_DASH_GUARD=strict.
 
    Run: npm test
 
@@ -30,25 +30,23 @@ function scratch() {
   return path;
 }
 
-/* PostToolUse by default: that is the event the default mode answers, and the one a write
-   actually reaches. Pass `event` for the other half, `response` for a harness that sends a
-   patch with it. */
-function run(tool_input, { env = {}, cwd = HERE, event = 'PostToolUse', response } = {}) {
+/* Strict by default, because that is the only mode this hook answers in at all: the check
+   the plugin runs unconfigured is dash-commit.mjs, at the commit. */
+function run(tool_input, { env = {}, cwd = HERE, event = 'PreToolUse' } = {}) {
   const payload = { cwd, session_id: 'dash-guard-test', hook_event_name: event, tool_name: 'Write', tool_input };
-  if (event === 'PostToolUse') payload.tool_response = response ?? { success: true };
+  if (event === 'PostToolUse') payload.tool_response = { success: true };
   const result = spawnSync(process.execPath, [HOOK], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
-    env: { ...process.env, NT_DEV_DASH_GUARD: '', ...env },
+    env: { ...process.env, NT_DEV_DASH_GUARD: 'strict', ...env },
   });
   strictEqual(result.status, 0, `hook exited ${result.status}: ${result.stderr}`);
   const out = result.stdout.trim();
   return out ? JSON.parse(out) : null;
 }
 
-/* The two shapes the harness understands, kept apart so a test says which one it wanted. */
-const flagged = (r) => r?.decision === 'block' && r.reason;
-const denial = (r) => r?.hookSpecificOutput?.permissionDecision === 'deny'
+/* A refusal, and the reason the model reads off it. */
+const flagged = (r) => r?.hookSpecificOutput?.permissionDecision === 'deny'
   && r.hookSpecificOutput.permissionDecisionReason;
 
 /* A repo by default, with no workflow in it: a path git will never diff is out of scope
@@ -83,17 +81,6 @@ function repo({ workflow, file = 'dash-ratchet.yml', committed } = {}) {
   return root;
 }
 
-/* A repo whose `origin/main` holds `base` while the branch has already committed `head` -
-   the shape the gate reports on, and the one a HEAD baseline calls flat. `update-ref`
-   rather than a clone: the hook only reads the ref, and this needs no network. */
-function branched(base, head) {
-  const root = repo({ committed: base });
-  git(root, 'update-ref', 'refs/remotes/origin/main', 'HEAD');
-  git(root, 'symbolic-ref', 'refs/remotes/origin/HEAD', 'refs/remotes/origin/main');
-  commit(root, head, 'branch');
-  return root;
-}
-
 /* The gate as a reusable workflow, in the file the skill writes. */
 const WORKFLOW = `jobs:
   dashes:
@@ -120,7 +107,7 @@ const COMPOSITE = `jobs:
             - vendor
 `;
 
-describe('what it flags, once the write has landed', () => {
+describe('what it refuses', () => {
   for (const [name, text] of [
     ['an em dash', `The gate is the diff${EM}not the file.`],
     ['an en dash', `Runs 2020${EN}2024 inclusive.`],
@@ -139,7 +126,7 @@ describe('what it flags, once the write has landed', () => {
     ok(flagged(edit(`One${EM}here.`, `One${EM}here. And two${EM}there.`)));
   });
 
-  it('a write that raises the count the commit already carried', () => {
+  it('a write that raises the count the file on disk already carried', () => {
     const root = repo({ committed: `One${EM}here.\n` });
     const input = { file_path: join(root, 'notes.md'), content: `One${EM}here.\nTwo${EM}there.\n` };
     ok(flagged(run(input, { cwd: root })));
@@ -175,13 +162,13 @@ describe('what it leaves alone', () => {
     strictEqual(edit(`One${EM}here.`, 'One, here.'), null);
   });
 
-  it('a write that holds the committed count flat', () => {
+  it('a write that holds the on-disk count flat', () => {
     const root = repo({ committed: `One${EM}here.\n` });
     const input = { file_path: join(root, 'notes.md'), content: `One${EM}here, reworded.\n` };
     strictEqual(run(input, { cwd: root }), null);
   });
 
-  it('a write that marks a dash the commit already carried', () => {
+  it('a write that marks a dash the file already carried', () => {
     const root = repo({ committed: `One${EM}here.\n` });
     const input = { file_path: join(root, 'notes.md'), content: `One${EM}here. <!-- dash-ok -->\n` };
     strictEqual(run(input, { cwd: root }), null);
@@ -194,37 +181,20 @@ describe('what it leaves alone', () => {
     it(name, () => strictEqual(run(input), null));
   }
 
-  it('NT_DEV_DASH_GUARD=off, on either event', () => {
-    const env = { NT_DEV_DASH_GUARD: 'off' };
-    const content = `The gate is the diff${EM}not the file.`;
-    strictEqual(write(content, { env }), null);
-    strictEqual(write(content, { env, event: 'PreToolUse' }), null);
-  });
 });
 
-describe('which event answers', () => {
+describe('when it speaks at all', () => {
   const content = `The gate is the diff${EM}not the file.`;
 
-  it('the default speaks after the write, not before it', () => {
-    strictEqual(write(content, { event: 'PreToolUse' }), null);
-    ok(flagged(write(content, { event: 'PostToolUse' })));
-  });
-
-  it('strict refuses the write, and then has nothing to add', () => {
-    const env = { NT_DEV_DASH_GUARD: 'strict' };
-    match(denial(write(content, { env, event: 'PreToolUse' })), /dash-guard/);
-    strictEqual(write(content, { env, event: 'PostToolUse' }), null);
-  });
-
-  it('a payload with no event name is read by its tool_response', () => {
-    const file_path = join(repo(), 'notes.md');
-    const payload = { cwd: HERE, tool_name: 'Write', tool_input: { file_path, content }, tool_response: { success: true } };
-    const result = spawnSync(process.execPath, [HOOK], {
-      input: JSON.stringify(payload),
-      encoding: 'utf8',
-      env: { ...process.env, NT_DEV_DASH_GUARD: '' },
+  for (const [name, mode] of [['unset, which leaves the commit to answer', ''], ['off', 'off']]) {
+    it(`nothing at ${name}`, () => {
+      strictEqual(write(content, { env: { NT_DEV_DASH_GUARD: mode } }), null);
     });
-    ok(flagged(JSON.parse(result.stdout)));
+  }
+
+  it('before the write, never after it', () => {
+    ok(flagged(write(content)));
+    strictEqual(write(content, { event: 'PostToolUse' }), null);
   });
 });
 
@@ -245,33 +215,6 @@ describe('which lines it names', () => {
     strictEqual(/more$/m.test(reason), false);
   });
 
-  it('the line the harness\'s own patch adds, at the number the file now has', () => {
-    const root = repo({ committed: 'plain\n' });
-    const response = { structuredPatch: [{ newStart: 40, lines: [`+added${EM}here`, ' context'] }] };
-    const input = { file_path: join(root, 'notes.md'), content: 'plain\n' };
-    match(flagged(run(input, { cwd: root, response })), /line 40: added/);
-  });
-
-  it('and nothing, when that patch adds no dash to a file full of them', () => {
-    const root = repo({ committed: 'plain\n' });
-    const response = { structuredPatch: [{ newStart: 1, lines: [' plain', '+added, fine'] }] };
-    const input = { file_path: join(root, 'notes.md'), content: `One${EM}here.\nTwo${EM}there.\n` };
-    strictEqual(run(input, { cwd: root, response }), null);
-  });
-});
-
-describe('the baseline it measures against', () => {
-  it('the merge base, so a dash the branch committed is still named', () => {
-    const root = branched('plain\n', `One${EM}here.\n`);
-    const input = { file_path: join(root, 'notes.md'), content: `One${EM}here.\n` };
-    ok(flagged(run(input, { cwd: root })));
-  });
-
-  it('and one that was already there at the base is not', () => {
-    const root = branched(`One${EM}here.\n`, `One${EM}here.\nplain\n`);
-    const input = { file_path: join(root, 'notes.md'), content: `One${EM}here.\nplain again\n` };
-    strictEqual(run(input, { cwd: root }), null);
-  });
 });
 
 describe('whose repo answers', () => {
