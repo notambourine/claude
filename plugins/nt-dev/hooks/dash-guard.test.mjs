@@ -23,8 +23,7 @@ const MINUS = '\u2212';
 const temps = [];
 after(() => temps.forEach((path) => rmSync(path, { force: true, recursive: true })));
 
-/* A scratch directory outside any repo, so the gate-scope read finds no workflow and the
-   defaults apply. */
+/* A scratch directory outside any repo, which `repo()` builds on. */
 function scratch() {
   const path = realpathSync(mkdtempSync(join(tmpdir(), 'nt-dash-')));
   temps.push(path);
@@ -52,10 +51,12 @@ const flagged = (r) => r?.decision === 'block' && r.reason;
 const denial = (r) => r?.hookSpecificOutput?.permissionDecision === 'deny'
   && r.hookSpecificOutput.permissionDecisionReason;
 
-const write = (content, opts) => run({ file_path: join(opts?.dir ?? scratch(), 'notes.md'), content }, opts);
+/* A repo by default, with no workflow in it: a path git will never diff is out of scope
+   entirely, and a repo with no gate still gets the check on the defaults. */
+const write = (content, opts) => run({ file_path: join(opts?.dir ?? repo(), 'notes.md'), content }, opts);
 
 const edit = (old_string, new_string, opts) =>
-  run({ file_path: join(opts?.dir ?? scratch(), 'notes.md'), old_string, new_string }, opts);
+  run({ file_path: join(opts?.dir ?? repo(), 'notes.md'), old_string, new_string }, opts);
 
 const git = (root, ...args) => spawnSync(
   'git',
@@ -216,7 +217,7 @@ describe('which event answers', () => {
   });
 
   it('a payload with no event name is read by its tool_response', () => {
-    const file_path = join(scratch(), 'notes.md');
+    const file_path = join(repo(), 'notes.md');
     const payload = { cwd: HERE, tool_name: 'Write', tool_input: { file_path, content }, tool_response: { success: true } };
     const result = spawnSync(process.execPath, [HOOK], {
       input: JSON.stringify(payload),
@@ -284,6 +285,28 @@ describe('whose repo answers', () => {
     const other = repo({ committed: `One${EM}here.\n` });
     const input = { file_path: join(other, 'notes.md'), content: `One${EM}here.\n` };
     strictEqual(run(input, { cwd: repo({ committed: 'plain\n' }) }), null);
+  });
+});
+
+describe('a path git will never diff', () => {
+  it('a file outside any repo, which is where a scratchpad note lives', () => {
+    const input = { file_path: join(scratch(), 'plan.md'), content: `a${EM}b` };
+    strictEqual(run(input), null);
+  });
+
+  it('an ignored path, which no diff and so no gate ever reaches', () => {
+    const root = repo();
+    writeFileSync(join(root, '.gitignore'), 'build/\n');
+    mkdirSync(join(root, 'build'));
+    const input = { file_path: join(root, 'build', 'notes.md'), content: `a${EM}b` };
+    strictEqual(run(input, { cwd: root }), null);
+  });
+
+  it('but not one that is ignored and tracked, which the diff still carries', () => {
+    const root = repo({ committed: 'plain\n' });
+    writeFileSync(join(root, '.gitignore'), 'notes.md\n');
+    const input = { file_path: join(root, 'notes.md'), content: `a${EM}b` };
+    ok(flagged(run(input, { cwd: root })));
   });
 });
 
