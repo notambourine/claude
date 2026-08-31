@@ -118,6 +118,11 @@ function fromGitBash(path) {
 
 /* The repo root the command will run against, or null outside a repo. */
 export function repoRoot(cwd) {
-  const run = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8', timeout: 5_000 });
+  const run = git(cwd, ['rev-parse', '--show-toplevel']);
   return run.status === 0 ? run.stdout.trim() : null;
+}
+
+/* Bounded, so a hook cannot hang a tool call on a repo git is slow to answer for. */
+export function git(cwd, args) {
+  return spawnSync('git', args, { cwd, encoding: 'utf8', timeout: 5_000 });
 }

@@ -31,15 +31,13 @@
             "timeout": 30
           }
         ]
-      }
-    ],
-    "PostToolUse": [
+      },
       {
-        "matcher": "Write|Edit",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/dash-guard.mjs\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/dash-commit.mjs\"",
             "timeout": 30
           }
         ]

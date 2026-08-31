@@ -42,7 +42,7 @@ Config switches in `.claude/settings.json` `env`:
 | Variable | Values |
 | --- | --- |
 | `NT_DEV_SKILL_NUDGE` | unset: block once; `strict`: block until skill read; `off` |
-| `NT_DEV_DASH_GUARD` | unset: report added Unicode dashes; `strict`: block; `off` |
+| `NT_DEV_DASH_GUARD` | unset: block a commit adding Unicode dashes; `strict`: block the write too; `off` |
 | `NT_SHOPIFY_GUARD` | unset: block live writes; `off` |
 
 `nt-shopify` allows reads, local app work, theme development, and
