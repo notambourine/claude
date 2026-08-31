@@ -1,11 +1,11 @@
 ---
 name: system
-description: NoTambourine brand system - colors, type, spacing, component recipes, voice, and the audit that checks work against them. Use when building or styling anything NoTambourine-branded (site, landing page, mock, prototype, deck, email, README banner, slide), when asked for "the brand colors"/"brand tokens"/"our pink", when a design needs to match notambourine.com, or when checking copy before it ships to a client - wordmark forms, ASCII punctuation, sentence case, and AI tells. Ships tokens.css, components.css, and a Marpit deck theme to drop straight in.
+description: NoTambourine brand system - colors, tokens, type, spacing, components, deck theme, voice, and the audit that checks work against them. Use when building or styling anything NoTambourine-branded, when asked for the brand colors, or when checking copy before it ships.
 ---
 
 # NoTambourine brand
 
-A boutique skunkworks engineering agency, working as a hands-on operating partner inside
+A boutique AI-enabled engineering agency, working as a hands-on operating partner inside
 the client's org. The client's growth is capped by their tech: a legacy commerce stack, a
 revenue-share SaaS, a roadmap nobody can staff for. **Value creation is the deliverable,
 and trust is earned by shipping.** A CEO who wants the culture to change gets that from

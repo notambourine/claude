@@ -107,6 +107,35 @@ cp -R node_modules/@notambourine/brand-kit/{fonts,logo} public/
 load it first and serve `fonts/` beside it. The paths inside it are relative to the CSS
 file, so inlining it into a `<style>` block breaks the faces.
 
+### With Tailwind or StyleX
+
+A surface with its own faces and base layer imports `vars.css` alone and writes
+`var()` against the semantic aliases. Neither system needs anything from this kit
+beyond the custom properties.
+
+```js
+import "@notambourine/brand-kit/vars.css";
+
+const styles = stylex.create({
+  card: { backgroundColor: "var(--bg-card)", padding: "var(--sp-6)" },
+});
+```
+
+Tailwind claims the `--font-*` and `--ease-*` namespaces for its own utilities, which
+is why those two groups ship a `--nt-*` primitive under the alias: a Tailwind surface
+reads the primitive. StyleX hashes the names it generates and collides with neither.
+
+Two StyleX-specific traps. Bridging through `stylex.defineVars` breaks `.theme-light`,
+because StyleX declares those properties on `:root` and a custom property resolves
+where it is declared, so a `.theme-light` subtree still inherits the dark value; a raw
+`var()` string resolves at the element and themes correctly. And StyleX outranks the
+element styles in `elements.css` only while `useCSSLayers` is off - turn layers on and
+an unlayered `h1` wins, so import into a layer StyleX orders itself against:
+
+```css
+@import "@notambourine/brand-kit/tokens.css" layer(base);
+```
+
 The package ships the stylesheets, `fonts/`, `logo/`, and `SKILL.md`. The logo build
 script and `hello-world.html` stay in the repo. Pin an exact version and bump it on
 purpose; a caret range moves the brand under a consumer with no diff to review.
