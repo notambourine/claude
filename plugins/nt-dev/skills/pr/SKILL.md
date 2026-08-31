@@ -7,8 +7,10 @@ argument-hint: "[pr-number-to-edit]"
 
 # Pull request
 
-Use the repo template; fallback: `.github/pull_request_template.md`. Preserve headings and
-markers.
+Use the target repo's committed template, searching `.github/`, the repo root, and `docs/`.
+Without one, use this skill's
+[.github/pull_request_template.md](.github/pull_request_template.md). Preserve the chosen
+template's headings and markers.
 
 Derive problem, outcome, scope, decisions from issue, source, diff, and commits. Never rely
 on branch or subjects alone. Open on outcome. Explain behavior and decisions, not files.
