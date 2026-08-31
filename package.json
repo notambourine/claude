@@ -10,6 +10,6 @@
     "test": "node --test \"plugins/**/*.test.mjs\" \".claude/hooks/*.test.mjs\""
   },
   "dependencies": {
-    "@notambourine/brand-kit": "1.1.0"
+    "@notambourine/brand-kit": "1.1.2"
   }
 }
