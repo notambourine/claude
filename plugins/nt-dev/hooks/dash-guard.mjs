@@ -24,6 +24,11 @@
    way: the docs do not say whether it arrives when the call proceeds, so the default mode
    must not be built on it.
 
+   KEY-DECISION 2026-08-30: the hook's domain is the gate's domain, so a path git will
+   never diff - outside any repo, or ignored and untracked - is not this hook's business. A
+   scratchpad plan can no more fail CI than it can be read by anyone, and a check that stops
+   a write nothing downstream will ever see is the kind that gets switched off.
+
    The character set and the marker are the gate's: U+2010 through U+2015, U+2212, and the
    mdash, ndash, and minus HTML entities, with any line carrying the marker exempt. Excludes
    and a non-default marker are read off the gate's own call, in whichever workflow of the
@@ -74,8 +79,8 @@ const whole = typeof input.content === 'string';
 const after = whole ? input.content : typeof input.new_string === 'string' ? input.new_string : null;
 if (after === null) pass();
 
-const { marker, excluded, root, rel } = gateScope(target);
-if (excluded) pass();
+const { marker, skip, root, rel } = gateScope(target);
+if (skip) pass();
 
 /* The two sides of the comparison, best source first: the patch the harness reports for a
    `Write` that has landed, which is that write's own delta; an `Edit`'s old_string, which
@@ -104,10 +109,9 @@ const message = `${headline}
 
 ${listed.join('\n')}
 
-Rewrite now, before commit. Replace each unicode dash with a colon, comma pair or parens,
-semicolon or split sentences, or an ASCII hyphen for ranges and compounds. Keep a genuinely
-load-bearing dash and append \`${marker}\` to that line. Under \`env\` in .claude/settings.json,
-NT_DEV_DASH_GUARD=strict refuses the write, =off silences this hook.`;
+If this file is not prose someone outside this session will read, move on: no edit, no
+reply. Otherwise rewrite the lines above now: colon, comma pair, parens, semicolon, split
+sentence, or ASCII hyphen for ranges. Load-bearing dash: append \`${marker}\` to its line.`;
 
 if (strict) deny(message);
 feedback(message, headline);
@@ -211,11 +215,20 @@ function gateScope(path) {
      session started in, and the scope that governs a file is its own repo's. */
   const from = nearest(dirname(path));
   const root = repoRoot(from);
-  const text = root ? gateConfig(root) : '';
-  const marker = value(uncomment(/^[ \t]*marker:[ \t]*(.+)$/m.exec(text)?.[1] ?? '')) || 'dash-ok';
   const rel = root ? inside(from, path) : '';
-  const excluded = !!rel && excludes(text).some((one) => rel === one || rel.startsWith(`${one}/`));
-  return { marker, excluded, root, rel };
+  if (!rel || ignored(root, path)) return { skip: true };
+  const text = gateConfig(root);
+  const marker = value(uncomment(/^[ \t]*marker:[ \t]*(.+)$/m.exec(text)?.[1] ?? '')) || 'dash-ok';
+  const skip = excludes(text).some((one) => rel === one || rel.startsWith(`${one}/`));
+  return { marker, skip, root, rel };
+}
+
+/* Nothing git will ever diff is nothing the gate can fail: a scratchpad note, a file under
+   a temp directory, a build artifact. Ignored-but-tracked is still in the diff, so being
+   named in .gitignore is not on its own an answer. */
+function ignored(root, path) {
+  if (git(root, ['check-ignore', '--quiet', '--', path]).status !== 0) return false;
+  return git(root, ['ls-files', '--error-unmatch', '--', path]).status !== 0;
 }
 
 /* The path as git spells it, relative to the repo root: `--show-prefix` from the nearest
