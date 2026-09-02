@@ -25,7 +25,8 @@ allowed-tools:
 
 # Deploy updates
 
-Draft only. Never deploy or post.
+Draft only. Never deploy or post. Output obeys
+[../../recap-format.md](../../recap-format.md).
 
 Mode:
 
@@ -64,16 +65,8 @@ Return only:
 * **Label:** Outcome in one short sentence.
 ```
 
-Window names the range in the reader's terms: `Last N Days` retrospective, `Pending` pre-deploy.
+Window names the range in the reader's terms: `Last N Days` retrospective, `Pending`
+pre-deploy.
 
-Categories in this order, only those needed: ✨ Features, 🛠️ Fixes, ⚡ Performance,
-📈 SEO & Marketing, 🗂️ Admin & Internal, ⚙️ Behind the Scenes. Exactly these emoji,
-blank line under each header.
-
-Collapse to one bullet per theme, not per commit; merge until every bullet earns its line.
-Label is a bolded one-or-two-word noun for the surface that changed. Body is one declarative
-sentence naming the effect. Whole block under 200 words.
-
-Widely read shorthand is fine (9s, 404, RSS, zip). No PRs, hashes, branches, files,
-functions, database internals, attribution, or stock openings. Missing `gh`: use commits and
-warn. Apply later wording edits to full block.
+Sections in this order, only those needed: ✨ Features, 🛠️ Fixes, ⚡ Performance,
+📈 SEO & Marketing, 🗂️ Admin & Internal, ⚙️ Behind the Scenes.
