@@ -20,7 +20,7 @@ Auto-update: `/plugin` > Marketplaces > notambourine > Enable auto-update.
 | Plugin | Commands / purpose |
 | --- | --- |
 | `nt-brand` | `/nt-brand:system`: brand tokens, CSS, decks, voice, audit |
-| `nt-dev` | `/nt-dev:pr`, `issue`, `cleanup`, `recall`, `eod-update`, `commit` |
+| `nt-dev` | `/nt-dev:pr`, `issue`, `cleanup`, `recall`, `eod-update`, `commit`, `figma-build` |
 | `nt-pm` | `/nt-pm:shipped`, `/nt-pm:weekly-recap` |
 | `nt-seo-spider` | Screaming Frog MCP, 29 tools, SEO Spider 24+ |
 | `nt-shopify` | Blocks live-store writes |
