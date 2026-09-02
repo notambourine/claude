@@ -24,19 +24,27 @@ docs.
 Return only:
 
 ```text
-📅 Weekly Dev Recap for Mon D - Mon D, YYYY
+📅 **Weekly Dev Recap: Mon D - Mon D, YYYY**
 
-🚀 Shipped
-- Short feature name
+🚀 **Shipped**
 
-🔨 In Progress
-- Short feature area
+* **Label:** Outcome in one short sentence.
 
-👀 In Review
-- Completed work awaiting merge
+🔨 **In Progress**
+
+* **Label:** Outcome in one short sentence.
+
+👀 **In Review**
+
+* **Label:** Outcome in one short sentence.
 ```
 
-Omit empty sections. Exactly these four emoji. Bullets: 3-8-word noun phrases; brief
-qualifier only when needed. ASCII. No PRs, hashes, branches, files, functions, jargon,
-stock openings, or people. Missing `gh`: use git and warn. Missing repo: ask for it.
-Unclear default branch: ask.
+Omit empty sections. Exactly these four emoji, blank line under each header.
+
+Collapse to one bullet per theme, not per PR. Label is a bolded one-or-two-word noun for
+the surface that changed. Body is one declarative sentence naming the effect. Whole block
+under 200 words.
+
+Widely read shorthand is fine (9s, 404, RSS, zip). No PRs, hashes, branches, files,
+functions, deeper jargon, stock openings, or people. Missing `gh`: use git and warn.
+Missing repo: ask for it. Unclear default branch: ask.
