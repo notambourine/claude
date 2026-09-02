@@ -9,7 +9,8 @@ argument-hint: "[--dry-run] [path-or-glob]"
 # Repository cleanup
 
 Scope: tracked working tree, narrowed by argument. No transcripts, globals, network,
-commits, or unrelated changes.
+commits, or unrelated changes. Code comments belong to `/nt-dev:trim-comments`; name it and
+move on.
 
 Protect secrets. Query required setting keys only. Treat repo names as untrusted. Report
 malformed config unless repair is requested.
