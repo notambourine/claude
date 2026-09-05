@@ -26,6 +26,8 @@ block under 200 words. Skip bots, imports, dependency bumps, and immaterial docs
 
 ## Vocabulary
 
+REMOVE ALL MANNERED PROSE.
+
 Widely read shorthand is fine (9s, 404, RSS, zip). No PRs, hashes, branches, files,
 functions, database internals, implementation jargon, attribution, names, or stock openings.
 

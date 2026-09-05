@@ -12,6 +12,8 @@ Without one, use this skill's
 [.github/pull_request_template.md](.github/pull_request_template.md). Preserve the chosen
 template's headings and markers.
 
+REMOVE ALL MANNERED PROSE.
+
 Derive problem, outcome, scope, decisions from issue, source, diff, and commits. Never rely
 on branch or subjects alone. Open on outcome. Explain behavior and decisions, not files.
 Keep proportional. Specific title. Draft unless ready requested.
