@@ -14,7 +14,8 @@ Use an applicable committed form or template from the target repo's `.github/ISS
 or `.github/issue_template.md`, and follow its headings exactly. Without one, use this skill's
 [.github/issue_template.md](.github/issue_template.md).
 
-REMOVE ALL MANNERED PROSE.
+Plain register: concrete nouns, no inflated adjectives, no `not just X but Y` framing, no
+closing flourish.
 
 Title: outcome, not activity or mechanism. Body: problem, scope, constraints, context,
 observable acceptance. User behavior and business rules first. Implementation only when

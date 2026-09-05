@@ -18,7 +18,7 @@ Flags win; default surgical. State choice in one line, then read method. For aut
 after machine rewrite: separate rewrite, then separate surgical pass. Never load both in one
 pass.
 
-REMOVE ALL MANNERED PROSE.
+Hold your own choice line and rationale to the same standard as the draft.
 
 User requirements win. Preserve claims, identifiers, commands, paths. Stable terms. ASCII
 hyphens unless required otherwise. Prefer deletion.
