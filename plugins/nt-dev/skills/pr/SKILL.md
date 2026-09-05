@@ -12,6 +12,9 @@ Without one, use this skill's
 [.github/pull_request_template.md](.github/pull_request_template.md). Preserve the chosen
 template's headings and markers.
 
+Plain register: concrete nouns, no inflated adjectives, no `not just X but Y` framing, no
+closing flourish.
+
 Derive problem, outcome, scope, decisions from issue, source, diff, and commits. Never rely
 on branch or subjects alone. Open on outcome. Explain behavior and decisions, not files.
 Keep proportional. Specific title. Draft unless ready requested.
